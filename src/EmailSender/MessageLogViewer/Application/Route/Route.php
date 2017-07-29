@@ -3,10 +3,16 @@
 namespace EmailSender\MessageLogViewer\Application\Route;
 
 use EmailSender\Core\Route\RouteAbstract;
+use EmailSender\Core\Route\RouteInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
 
-class Route extends RouteAbstract
+/**
+ * Class Route
+ *
+ * @package EmailSender\MessageLogViewer
+ */
+class Route extends RouteAbstract implements RouteInterface
 {
     /**
      * Init MessageLogViewer routes.

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpunit colors="true" verbose="true">
+    <testsuites>
+        <testsuite name="EmailSender Test Suite">
+            <directory>../test/Unit/EmailSender</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">../src/EmailSender</directory>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-html" target="../log/CodeCoverageReport" charset="UTF-8" highlight="false" lowUpperBound="35" highUpperBound="70" />
+    </logging>
+</phpunit>

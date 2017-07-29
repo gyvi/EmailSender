@@ -12,5 +12,5 @@ interface RouteInterface
     /**
      * Init the routes of a feature.
      */
-    public function init();
+    public function init(): void;
 }

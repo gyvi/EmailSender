@@ -3,15 +3,16 @@
 namespace EmailSender\MessageAdder\Application\Route;
 
 use EmailSender\Core\Route\RouteAbstract;
+use EmailSender\Core\Route\RouteInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class Route
  *
- * @package EmailSender\MessageAdder\Application\Route
+ * @package EmailSender\MessageAdder
  */
-class Route extends RouteAbstract
+class Route extends RouteAbstract implements RouteInterface
 {
     /**
      * Init MessageAdder routes.

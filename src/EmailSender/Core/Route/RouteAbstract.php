@@ -4,8 +4,16 @@ namespace EmailSender\Core\Route;
 
 use Slim\App;
 
-class RouteAbstract implements RouteInterface
+/**
+ * Class RouteAbstract
+ *
+ * @package EmailSender\Core
+ */
+class RouteAbstract
 {
+    /**
+     * @var \Slim\App
+     */
     protected $application;
 
     /**
@@ -16,12 +24,5 @@ class RouteAbstract implements RouteInterface
     public function __construct(App $application)
     {
         $this->application = $application;
-    }
-
-    /**
-     * Routes init method.
-     */
-    public function init(): void
-    {
     }
 }

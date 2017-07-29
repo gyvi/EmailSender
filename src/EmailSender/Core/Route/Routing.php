@@ -5,7 +5,7 @@ namespace EmailSender\Core\Route;
 /**
  * Class Routing
  *
- * @package EmailSender\Core\Route
+ * @package EmailSender\Core
  */
 class Routing
 {

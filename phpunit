@@ -1,0 +1,14 @@
+#!/bin/bash
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+  echo "PHPUnit usage"
+  echo "----------------------------"
+  echo "w/o parameter: Run PHPUnit"
+  echo "-c:            Run PHPUnit with code coverage report. Check log/CodeCoverageReport"
+  exit
+fi
+
+if [ "$1" == "-c" ]; then
+    php vendor/bin/phpunit -c build/phpunit-with-code-coverage.xml ${@:2}
+else
+    php vendor/bin/phpunit -c build/phpunit.xml $@
+fi
