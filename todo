@@ -1,0 +1,22 @@
+EmailSender
+
+Core
+----
+Create core VO-s (Integer, StringLiteral etc)
+
+
+MessageAdd
+-----------
+
+
+
+
+MessageLogLister
+----------------
+
+
+
+
+MessageQueueWorker
+------------------
+
