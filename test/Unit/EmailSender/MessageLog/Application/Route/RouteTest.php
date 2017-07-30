@@ -1,8 +1,8 @@
 <?php
 
-namespace Test\Unit\EmailSender\MessageAdder\Application\Route;
+namespace Test\Unit\EmailSender\MessageLog\Application\Route;
 
-use EmailSender\MessageAdder\Application\Route\Route;
+use EmailSender\MessageLog\Application\Route\Route;
 use PHPUnit\Framework\TestCase;
 use Slim\App;
 
@@ -39,7 +39,7 @@ class RouteTest extends TestCase
             ->getMock();
 
         $application->expects($this->exactly(1))
-            ->method('post');
+            ->method('get');
 
         $route = new Route($application);
         $route->init();

@@ -1,8 +1,8 @@
 <?php
 
-namespace Test\Unit\EmailSender\MessageLogViewer\Application\Route;
+namespace Test\Unit\EmailSender\MessageQueue\Application\Route;
 
-use EmailSender\MessageLogViewer\Application\Route\Route;
+use EmailSender\MessageQueue\Application\Route\Route;
 use PHPUnit\Framework\TestCase;
 use Slim\App;
 
@@ -39,7 +39,7 @@ class RouteTest extends TestCase
             ->getMock();
 
         $application->expects($this->exactly(1))
-            ->method('get');
+            ->method('post');
 
         $route = new Route($application);
         $route->init();

@@ -1,6 +1,6 @@
 <?php
 
-namespace EmailSender\MessageAdder\Application\Route;
+namespace EmailSender\MessageQueue\Application\Route;
 
 use EmailSender\Core\Route\RouteAbstract;
 use EmailSender\Core\Route\RouteInterface;
@@ -10,17 +10,17 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Class Route
  *
- * @package EmailSender\MessageAdder
+ * @package EmailSender\MessageQueue
  */
 class Route extends RouteAbstract implements RouteInterface
 {
     /**
-     * Init MessageAdder routes.
+     * Init MessageQueue routes.
      */
     public function init(): void
     {
         $this->application->post('/add', function (RequestInterface $request, ResponseInterface $response) {
-            $response->getBody()->write('MessageAdder');
+            $response->getBody()->write('MessageQueue');
 
             return $response;
         });

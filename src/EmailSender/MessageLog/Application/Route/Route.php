@@ -1,6 +1,6 @@
 <?php
 
-namespace EmailSender\MessageLogViewer\Application\Route;
+namespace EmailSender\MessageLog\Application\Route;
 
 use EmailSender\Core\Route\RouteAbstract;
 use EmailSender\Core\Route\RouteInterface;
@@ -10,17 +10,17 @@ use Psr\Http\Message\RequestInterface;
 /**
  * Class Route
  *
- * @package EmailSender\MessageLogViewer
+ * @package EmailSender\MessageLog
  */
 class Route extends RouteAbstract implements RouteInterface
 {
     /**
-     * Init MessageLogViewer routes.
+     * Init MessageLog routes.
      */
     public function init(): void
     {
         $this->application->get('/', function (RequestInterface $request, ResponseInterface $response) {
-            $response->getBody()->write('MessageLogViewer');
+            $response->getBody()->write('MessageLog');
 
             return $response;
         });
