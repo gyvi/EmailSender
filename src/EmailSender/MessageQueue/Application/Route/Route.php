@@ -4,8 +4,7 @@ namespace EmailSender\MessageQueue\Application\Route;
 
 use EmailSender\Core\Route\RouteAbstract;
 use EmailSender\Core\Route\RouteInterface;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use EmailSender\MessageQueue\Application\Controller\MessageQueueController;
 
 /**
  * Class Route
@@ -19,10 +18,6 @@ class Route extends RouteAbstract implements RouteInterface
      */
     public function init(): void
     {
-        $this->application->post('/add', function (RequestInterface $request, ResponseInterface $response) {
-            $response->getBody()->write('MessageQueue');
-
-            return $response;
-        });
+        $this->application->post('/add', MessageQueueController::class . ':addMessageToQueue');
     }
 }

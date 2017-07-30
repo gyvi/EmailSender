@@ -9,8 +9,8 @@ $container = new Slim\Container($settings);
 $app       = new Slim\App($container);
 $routing   = new EmailSender\Core\Route\Routing();
 
-$routing->add(new \EmailSender\MessageLogViewer\Application\Route\Route($app));
-$routing->add(new \EmailSender\MessageAdder\Application\Route\Route($app));
+$routing->add(new \EmailSender\MessageLog\Application\Route\Route($app));
+$routing->add(new \EmailSender\MessageQueue\Application\Route\Route($app));
 
 $routing->init();
 
