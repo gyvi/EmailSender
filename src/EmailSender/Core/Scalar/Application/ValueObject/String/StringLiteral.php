@@ -41,7 +41,7 @@ class StringLiteral implements ValueObjectInterface
      *
      * @param string $value
      */
-    private function validate(string $value): void
+    protected function validate(string $value): void
     {
     }
 }
