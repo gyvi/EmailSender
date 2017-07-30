@@ -69,6 +69,6 @@ abstract class StringLiteralLimit extends StringLiteral
     {
         $fullQualifiedNameArray = explode('\\', static::class);
 
-        return array_pop($fullQualifiedNameArray);
+        return end($fullQualifiedNameArray);
     }
 }

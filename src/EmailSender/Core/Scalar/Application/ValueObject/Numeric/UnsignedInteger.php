@@ -52,7 +52,7 @@ class UnsignedInteger implements ValueObjectInterface
         if ($value > static::LIMIT_UPPER || $value < static::LIMIT_LOWER) {
             $fullQualifiedNameArray = explode('\\', static::class);
 
-            throw new ValueObjectException('Invalid ' .  array_pop($fullQualifiedNameArray));
+            throw new ValueObjectException('Invalid ' .  end($fullQualifiedNameArray));
         }
     }
 }
