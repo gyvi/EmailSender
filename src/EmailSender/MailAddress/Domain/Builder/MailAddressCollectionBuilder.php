@@ -37,14 +37,17 @@ class MailAddressCollectionBuilder
     {
         $mailAddressCollection = new MailAddressCollection();
 
-        $explodedMailAddressCollectionString = explode(';', $mailAddressCollectionString);
+        if (!empty(trim($mailAddressCollectionString))) {
+            $explodedMailAddressCollectionString = explode(';', $mailAddressCollectionString);
 
-        if (!empty($explodedMailAddressCollectionString)
-            && is_array($explodedMailAddressCollectionString)
-        ) {
             /** @var string $mailAddressString */
             foreach ($explodedMailAddressCollectionString as $mailAddressString) {
-                $mailAddressCollection->add($this->mailAddressBuilder->buildMailAddressFromString($mailAddressString));
+                if (!empty(trim($mailAddressString)))
+                {
+                    $mailAddressCollection->add(
+                        $this->mailAddressBuilder->buildMailAddressFromString($mailAddressString)
+                    );
+                }
             }
         }
 

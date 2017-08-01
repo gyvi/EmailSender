@@ -1,22 +1,65 @@
 EmailSender
 
-Core
-----
-Create core VO-s (Integer, StringLiteral etc)
+MessageQueue->add
+- build Message
+- build MessageStore
+- save to MessageStore, get messageId
+- build MessageLog
+- save to MessageLog, get messageLogId
+- build MessageQueue
+- send to the MessageQueue
+
+MessageQueue->send
+- parse	input
+- load message from MessageStore
+- load message from MessageLog
+- send to SMTP
+- update message to the MessageLog
+
+MessageLog->list
+- parse post
+- load messages from MessageLog
+- send to the html
+
+MessageLog->view
+- create twig
+- send to html
 
 
-MessageAdd
------------
-
-
-
-
-MessageLogLister
-----------------
-
-
-
-
-MessageQueueWorker
+Domain aggregates:
 ------------------
+
+Message (aggregate) not stored, just for validating, building, encapsulating data
+from
+to
+cc
+bcc
+subject
+body
+replyTo
+delay
+
+
+MessageStore (aggregate) SQL / NoSQL
+messageId
+recipients
+message
+
+MessageLog (aggregate) SQL
+logId
+messageId
+from
+recipients
+subject
+queued
+sent
+delay
+status
+errorMessage
+
+MessageQueue (aggregate) Rabbit
+logId
+messageId
+delay
+
 

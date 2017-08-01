@@ -12,17 +12,23 @@ use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteralMatch;
 class DisplayName extends StringLiteralMatch
 {
     /**
+     * Min length of the DisplayName.
+     *
      * @var int
      */
-    protected $minLength = 1;
+    protected const MIN_LENGTH = 1;
 
     /**
+     * Max length of the DisplayName.
+     *
      * @var int
      */
-    protected $maxLength = 64;
+    protected const MAX_LENGTH = 64;
 
     /**
+     * Regex pattern of the StringLiteralMatch.
+     *
      * @var string
      */
-    protected $pattern = "/^[-\'\.\, \p{L}]+$/u";
+    protected const PATTERN = "/^[-\'\.\, \p{L}]+$/u";
 }

@@ -12,11 +12,11 @@ use EmailSender\Core\Scalar\Application\Exception\ValueObjectException;
 abstract class StringLiteralMatch extends StringLiteralLimit
 {
     /**
-     * Regex pattern of the valid string
+     * Regex pattern of the StringLiteralMatch.
      *
      * @var string
      */
-    protected $pattern;
+    protected const PATTERN = '/*./';
 
     /**
      * @param string $value
@@ -27,7 +27,7 @@ abstract class StringLiteralMatch extends StringLiteralLimit
     {
         parent::validate($value);
 
-        if (!empty($this->pattern) && !preg_match($this->pattern, $value)) {
+        if (!empty(static::PATTERN) && !preg_match(static::PATTERN, $value)) {
             throw new ValueObjectException(
                 'Invalid ' . $this->getClassName() . '. The given value doesn\'t match with the pattern.'
             );

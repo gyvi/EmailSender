@@ -81,7 +81,7 @@ class MailAddressCollectionBuilderTest extends TestCase
 
         $mailAddressCollectionBuilder = new MailAddressCollectionBuilder($mailAddressBuilder);
 
-        $mailAddressCollectionBuilder->buildMailAddressCollectionFromString('');
+        $mailAddressCollectionBuilder->buildMailAddressCollectionFromString('test');
 
         $this->fail();
     }

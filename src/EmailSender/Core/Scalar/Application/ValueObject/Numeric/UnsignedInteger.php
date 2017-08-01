@@ -37,7 +37,7 @@ class UnsignedInteger implements ValueObjectInterface
     /**
      * @return int
      */
-    public function getValue()
+    public function getValue(): int
     {
         return $this->value;
     }
@@ -47,12 +47,20 @@ class UnsignedInteger implements ValueObjectInterface
      *
      * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
      */
-    public function validate(int $value)
+    protected function validate(int $value)
     {
         if ($value > static::LIMIT_UPPER || $value < static::LIMIT_LOWER) {
-            $fullQualifiedNameArray = explode('\\', static::class);
-
-            throw new ValueObjectException('Invalid ' .  end($fullQualifiedNameArray));
+            throw new ValueObjectException('Invalid ' .  $this->getClassName() . '. Integer is out of range.');
         }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getClassName(): string
+    {
+        $fullQualifiedNameArray = explode('\\', static::class);
+
+        return end($fullQualifiedNameArray);
     }
 }

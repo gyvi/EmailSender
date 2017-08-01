@@ -16,14 +16,14 @@ abstract class StringLiteralLimit extends StringLiteral
      *
      * @var int
      */
-    protected $maxLength;
+    protected const MAX_LENGTH = PHP_INT_MAX;
 
     /**
      * Min length of the StringLiteralLimit.
      *
      * @var int
      */
-    protected $minLength;
+    protected const MIN_LENGTH = 0;
 
     /**
      * @param string $value
@@ -45,8 +45,10 @@ abstract class StringLiteralLimit extends StringLiteral
      */
     protected function validateMinLength(string $value): void
     {
-        if (!empty($this->minLength) && strlen($value) < $this->minLength) {
-            throw new ValueObjectException('Invalid ' . $this->getClassName() . '. String is too short!');
+        if (strlen($value) < static::MIN_LENGTH) {
+            throw new ValueObjectException(
+                'Invalid ' . $this->getClassName() . '. String is too short! Minimum length: ' . static::MIN_LENGTH
+            );
         }
     }
 
@@ -57,8 +59,10 @@ abstract class StringLiteralLimit extends StringLiteral
      */
     protected function validateMaxLength(string $value): void
     {
-        if (!empty($this->maxLength) && strlen($value) > $this->maxLength) {
-            throw new ValueObjectException('Invalid ' . $this->getClassName() . '. String is too long!');
+        if (strlen($value) > static::MAX_LENGTH) {
+            throw new ValueObjectException(
+                'Invalid ' . $this->getClassName() . '. String is too long! Maximum length: ' . static::MAX_LENGTH
+            );
         }
     }
 

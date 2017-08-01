@@ -13,14 +13,18 @@ use EmailSender\Core\Scalar\Application\Exception\ValueObjectException;
 class Address extends StringLiteralLimit
 {
     /**
+     * Min length of the Address.
+     *
      * @var int
      */
-    protected $minLength = 1;
+    protected const MIN_LENGTH = 1;
 
     /**
+     * Max length of the Address.
+     *
      * @var int
      */
-    protected $maxLength = 254;
+    protected const MAX_LENGTH = 254;
 
     /**
      * @param string $value

@@ -89,6 +89,11 @@ class MailAddressBuilderTest extends TestCase
                 'test@test.com',
                 null,
             ],
+            [
+                'test@test.com',
+                'test@test.com',
+                null,
+            ],
         ];
     }
 }

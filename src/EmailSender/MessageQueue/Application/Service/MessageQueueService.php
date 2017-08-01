@@ -2,7 +2,9 @@
 
 namespace EmailSender\MessageQueue\Application\Service;
 
+use EmailSender\Message\Application\Service\MessageService;
 use EmailSender\MessageQueue\Application\Contract\MessageQueueServiceInterface;
+use EmailSender\MessageQueue\Application\Validator\MessageQueueAddRequestValidator;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\MessageInterface;
@@ -28,7 +30,19 @@ class MessageQueueService implements MessageQueueServiceInterface
         ResponseInterface $response,
         array $getRequest
     ): MessageInterface {
-        $response->getBody()->write('addMessageToQueue');
+        $getRequest = $request->getParsedBody();
+
+        (new MessageQueueAddRequestValidator())->validate($getRequest);
+
+        $messageService = new MessageService();
+
+        $message = $messageService->getMessageFromRequest($getRequest);
+
+        $response
+            ->withStatus(400)
+            ->withHeader('Content-Type', 'application/json')
+            ->getBody()
+            ->write(json_encode(['status' => 0, 'statusMessage' => 'Queued.']));
 
         return $response;
     }

@@ -2,6 +2,8 @@
 
 namespace EmailSender\Core\Services;
 
+use Closure;
+
 /**
  * Interface ServiceInterface
  *
@@ -9,5 +11,5 @@ namespace EmailSender\Core\Services;
  */
 interface ServiceInterface
 {
-    public function getService(): ServiceInterface;
+    public function getService(): Closure;
 }
