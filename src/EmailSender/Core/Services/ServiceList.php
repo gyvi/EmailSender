@@ -29,4 +29,11 @@ class ServiceList
      * @var string
      */
     const PHP_ERROR_HANDLER = 'phpErrorHandler';
+
+    /**
+     * Email builder.
+     *
+     * @var string
+     */
+    const EMAIL_BUILDER = 'emailBuilder';
 }

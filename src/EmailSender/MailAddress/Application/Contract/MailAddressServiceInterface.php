@@ -25,4 +25,11 @@ interface MailAddressServiceInterface
      * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
      */
     public function getMailAddressCollectionFromString(string $mailAddressCollectionString): MailAddressCollection;
+
+    /**
+     * @param array $mailAddressCollectionArray
+     *
+     * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     */
+    public function getMailAddressCollectionFromArray(array $mailAddressCollectionArray): MailAddressCollection;
 }

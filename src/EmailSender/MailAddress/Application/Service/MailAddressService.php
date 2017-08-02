@@ -43,4 +43,17 @@ class MailAddressService implements MailAddressServiceInterface
 
         return $mailAddressCollectionBuilder->buildMailAddressCollectionFromString($mailAddressCollectionString);
     }
+
+    /**
+     * @param array $mailAddressCollectionArray
+     *
+     * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     */
+    public function getMailAddressCollectionFromArray(array $mailAddressCollectionArray): MailAddressCollection
+    {
+        $mailAddressBuilder           = new MailAddressBuilder();
+        $mailAddressCollectionBuilder = new MailAddressCollectionBuilder($mailAddressBuilder);
+
+        return $mailAddressCollectionBuilder->buildMailAddressCollectionFromArray($mailAddressCollectionArray);
+    }
 }

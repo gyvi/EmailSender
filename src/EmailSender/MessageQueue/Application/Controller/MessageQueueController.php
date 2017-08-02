@@ -3,6 +3,7 @@
 namespace EmailSender\MessageQueue\Application\Controller;
 
 use EmailSender\Core\Controller\AbstractController;
+use EmailSender\Core\Services\ServiceList;
 use EmailSender\MessageQueue\Application\Service\MessageQueueService;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -29,7 +30,9 @@ class MessageQueueController extends AbstractController
         ResponseInterface $response,
         array $getRequest
     ): MessageInterface {
-        $messageQueueService = new MessageQueueService();
+        $emailBuilder = $this->container->get(ServiceList::EMAIL_BUILDER);
+
+        $messageQueueService = new MessageQueueService($emailBuilder);
 
         return $messageQueueService->addMessageToQueue($request, $response, $getRequest);
     }

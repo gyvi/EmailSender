@@ -5,6 +5,8 @@ namespace EmailSender\MessageQueue\Application\Service;
 use EmailSender\Message\Application\Service\MessageService;
 use EmailSender\MessageQueue\Application\Contract\MessageQueueServiceInterface;
 use EmailSender\MessageQueue\Application\Validator\MessageQueueAddRequestValidator;
+use EmailSender\MessageStore\Application\Service\MessageStoreService;
+use EmailSender\MessageStore\Domain\Contract\EmailBuilderInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\MessageInterface;
@@ -16,6 +18,21 @@ use Psr\Http\Message\MessageInterface;
  */
 class MessageQueueService implements MessageQueueServiceInterface
 {
+    /**
+     * @var \EmailSender\MessageStore\Domain\Contract\EmailBuilderInterface
+     */
+    private $emailBuilder;
+
+    /**
+     * MessageQueueService constructor.
+     *
+     * @param \EmailSender\MessageStore\Domain\Contract\EmailBuilderInterface $emailBuilder
+     */
+    public function __construct(EmailBuilderInterface $emailBuilder)
+    {
+        $this->emailBuilder = $emailBuilder;
+    }
+
     /**
      * @param \Psr\Http\Message\ServerRequestInterface $request
      * @param \Psr\Http\Message\ResponseInterface      $response
@@ -38,12 +55,21 @@ class MessageQueueService implements MessageQueueServiceInterface
 
         $message = $messageService->getMessageFromRequest($getRequest);
 
+        $messageStoreService = new MessageStoreService($this->emailBuilder);
+
+        $messageStore = $messageStoreService->addMessageToMessageStore($message);
+
         $response
             ->withStatus(400)
-//            ->withHeader('Content-Type', 'application/json')
+            ->withHeader('Content-Type', 'application/json')
             ->getBody()
-            ->write(print_r($message, true));
-            //->write(json_encode(['status' => 0, 'statusMessage' => 'Queued.']));
+            ->write(json_encode([
+                'status' => 0,
+                'statusMessage' => 'Queued.',
+                'messageId' => $messageStore->getMessageId()->getValue(),
+                'recipients' => $messageStore->getRecipients(),
+                'message' => $messageStore->getMessage()->getValue(),
+            ]));
 
         return $response;
     }

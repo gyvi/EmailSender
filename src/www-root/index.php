@@ -21,6 +21,10 @@ $serviceProvider->addService(
     \EmailSender\Core\Services\ServiceList::PHP_ERROR_HANDLER, new \EmailSender\Core\Services\PhpErrorHandler()
 );
 
+$serviceProvider->addService(
+    \EmailSender\Core\Services\ServiceList::EMAIL_BUILDER, new \EmailSender\Core\Services\EmailBuilderService()
+);
+
 $serviceProvider->init();
 
 $app       = new Slim\App($container);

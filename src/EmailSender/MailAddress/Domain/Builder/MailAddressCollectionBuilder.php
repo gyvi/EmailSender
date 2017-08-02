@@ -2,7 +2,10 @@
 
 namespace EmailSender\MailAddress\Domain\Builder;
 
+use EmailSender\Core\ValueObject\Address;
+use EmailSender\Core\ValueObject\DisplayName;
 use EmailSender\MailAddress\Application\Collection\MailAddressCollection;
+use EmailSender\MailAddress\Domain\Aggregate\MailAddress;
 
 /**
  * Class MailAddressCollectionBuilder
@@ -57,6 +60,27 @@ class MailAddressCollectionBuilder
                     );
                 }
             }
+        }
+
+        return $mailAddressCollection;
+    }
+
+    /**
+     * @param array $mailAddressCollectionArray
+     *
+     * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     */
+    public function buildMailAddressCollectionFromArray(array $mailAddressCollectionArray): MailAddressCollection
+    {
+        $mailAddressCollection = new MailAddressCollection();
+
+        foreach ($mailAddressCollectionArray as $mailAddressArray) {
+            $mailAddressCollection->add(
+                new MailAddress(
+                    new Address($mailAddressArray[MailAddress::FIELD_ADDRESS]),
+                    new DisplayName($mailAddressArray[MailAddress::FIELD_DISPLAYNAME])
+                )
+            );
         }
 
         return $mailAddressCollection;

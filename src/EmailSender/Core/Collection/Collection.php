@@ -30,7 +30,8 @@ abstract class Collection implements IteratorAggregate, Countable, JsonSerializa
      */
     public function __construct()
     {
-        $this->type = $this->getType();
+        $this->items = array();
+        $this->type  = $this->getType();
     }
 
     /**
