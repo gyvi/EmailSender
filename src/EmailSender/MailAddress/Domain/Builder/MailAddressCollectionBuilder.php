@@ -38,10 +38,18 @@ class MailAddressCollectionBuilder
         $mailAddressCollection = new MailAddressCollection();
 
         if (!empty(trim($mailAddressCollectionString))) {
-            $explodedMailAddressCollectionString = explode(';', $mailAddressCollectionString);
 
-            /** @var string $mailAddressString */
-            foreach ($explodedMailAddressCollectionString as $mailAddressString) {
+            $mailAddressCollectionArray = imap_rfc822_parse_adrlist($mailAddressCollectionString, '');
+
+            /** @var \stdClass $mailAddressObject */
+            foreach ($mailAddressCollectionArray as $mailAddressObject) {
+
+                $mailAddressString = imap_rfc822_write_address(
+                    isset($mailAddressObject->mailbox)  ? $mailAddressObject->mailbox  : '',
+                    isset($mailAddressObject->host)     ? $mailAddressObject->host     : '',
+                    isset($mailAddressObject->personal) ? $mailAddressObject->personal : ''
+                );
+
                 if (!empty(trim($mailAddressString)))
                 {
                     $mailAddressCollection->add(

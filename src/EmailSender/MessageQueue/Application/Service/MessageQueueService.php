@@ -40,9 +40,10 @@ class MessageQueueService implements MessageQueueServiceInterface
 
         $response
             ->withStatus(400)
-            ->withHeader('Content-Type', 'application/json')
+//            ->withHeader('Content-Type', 'application/json')
             ->getBody()
-            ->write(json_encode(['status' => 0, 'statusMessage' => 'Queued.']));
+            ->write(print_r($message, true));
+            //->write(json_encode(['status' => 0, 'statusMessage' => 'Queued.']));
 
         return $response;
     }

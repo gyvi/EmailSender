@@ -90,7 +90,7 @@ class DisplayNameTest extends TestCase
     public function providerForTestConstructWithNotMatchedValues()
     {
         return [
-            ["asd +"],
+            ["asd €"],
             ["dfdfg
             dfgdg"],
         ];

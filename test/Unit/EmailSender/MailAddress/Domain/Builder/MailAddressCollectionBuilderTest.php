@@ -95,10 +95,10 @@ class MailAddressCollectionBuilderTest extends TestCase
     {
         return [
             [
-                'test string',
+                'test@test.hu, Test test <test@test.com>, "Test test" <test@test.lu>',
             ],
             [
-                'test;string',
+                'test@test.hu, Test test <test@test.com>',
             ],
         ];
     }
