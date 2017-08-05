@@ -31,9 +31,37 @@ class ServiceList
     const PHP_ERROR_HANDLER = 'phpErrorHandler';
 
     /**
-     * Email builder.
+     * Email composer.
      *
      * @var string
      */
-    const EMAIL_BUILDER = 'emailBuilder';
+    const EMAIL_COMPOSER = 'emailComposer';
+
+    /**
+     * Message store reader.
+     *
+     * @var string
+     */
+    const MESSAGE_STORE_READER = 'messageStoreReader';
+
+    /**
+     * Message store writer.
+     *
+     * @var string
+     */
+    const MESSAGE_STORE_WRITER = 'messageStoreWriter';
+
+    /**
+     * Message log reader.
+     *
+     * @var string
+     */
+    const MESSAGE_LOG_READER =  'messageLogReader';
+
+    /**
+     * Message log writer.
+     *
+     * @var string
+     */
+    const MESSAGE_LOG_WRITER =  'messageLogReader';
 }

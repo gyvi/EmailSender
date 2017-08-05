@@ -4,14 +4,15 @@ namespace EmailSender\MessageStore\Domain\Aggregate;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
-use EmailSender\MailAddress\Application\Collection\MailAddressCollection;
+use EmailSender\Recipients\Domain\Aggregate\Recipients;
+use JsonSerializable;
 
 /**
  * Class MessageStore
  *
  * @package EmailSender\MessageStore
  */
-class MessageStore
+class MessageStore implements JsonSerializable
 {
     /**
      * @var \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
@@ -19,7 +20,7 @@ class MessageStore
     private $messageId;
 
     /**
-     * @var \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     * @var \EmailSender\Recipients\Domain\Aggregate\Recipients
      */
     private $recipients;
 
@@ -31,19 +32,19 @@ class MessageStore
     /**
      * MessageStore constructor.
      *
-     * @param \EmailSender\MailAddress\Application\Collection\MailAddressCollection $recipients
+     * @param \EmailSender\Recipients\Domain\Aggregate\Recipients                   $recipients
      * @param \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral $message
      */
-    public function __construct(MailAddressCollection $recipients, StringLiteral $message)
+    public function __construct(Recipients $recipients, StringLiteral $message)
     {
         $this->recipients = $recipients;
         $this->message    = $message;
     }
 
     /**
-     * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     * @return \EmailSender\Recipients\Domain\Aggregate\Recipients
      */
-    public function getRecipients(): MailAddressCollection
+    public function getRecipients(): Recipients
     {
         return $this->recipients;
     }
@@ -70,5 +71,13 @@ class MessageStore
     public function setMessageId(UnsignedInteger $messageId)
     {
         $this->messageId = $messageId;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
     }
 }

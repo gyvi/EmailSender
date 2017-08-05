@@ -37,14 +37,13 @@ class ErrorHandler implements ServiceInterface
                     $errorMessage .= ' - ' . $exception->getMessage();
                 }
 
-                return $container['response']
-                    ->withStatus(400)
-                    ->withHeader('Content-Type', 'application/json')
-                    ->write(
-                        json_encode([
+                /** @var \Slim\Http\Response $response */
+                return $response
+                    ->withJson(
+                        [
                             'status' => -1,
                             'statusMessage' => $errorMessage,
-                        ])
+                        ]
                     );
             };
         };

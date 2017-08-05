@@ -30,7 +30,7 @@ class MessageQueueController extends AbstractController
         ResponseInterface $response,
         array $getRequest
     ): MessageInterface {
-        $emailBuilder = $this->container->get(ServiceList::EMAIL_BUILDER);
+        $emailBuilder = $this->container->get(ServiceList::EMAIL_COMPOSER);
 
         $messageQueueService = new MessageQueueService($emailBuilder);
 

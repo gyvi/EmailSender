@@ -3,10 +3,12 @@
 namespace EmailSender\MessageQueue\Application\Service;
 
 use EmailSender\Message\Application\Service\MessageService;
+use EmailSender\MessageLog\Application\Service\MessageLogService;
 use EmailSender\MessageQueue\Application\Contract\MessageQueueServiceInterface;
 use EmailSender\MessageQueue\Application\Validator\MessageQueueAddRequestValidator;
+use EmailSender\MessageQueue\Domain\Builder\MessageQueueBuilder;
 use EmailSender\MessageStore\Application\Service\MessageStoreService;
-use EmailSender\MessageStore\Domain\Contract\EmailBuilderInterface;
+use EmailSender\MessageStore\Domain\Contract\EmailComposerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\MessageInterface;
@@ -19,18 +21,18 @@ use Psr\Http\Message\MessageInterface;
 class MessageQueueService implements MessageQueueServiceInterface
 {
     /**
-     * @var \EmailSender\MessageStore\Domain\Contract\EmailBuilderInterface
+     * @var \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface
      */
-    private $emailBuilder;
+    private $emailComposer;
 
     /**
      * MessageQueueService constructor.
      *
-     * @param \EmailSender\MessageStore\Domain\Contract\EmailBuilderInterface $emailBuilder
+     * @param \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface $emailComposer
      */
-    public function __construct(EmailBuilderInterface $emailBuilder)
+    public function __construct(EmailComposerInterface $emailComposer)
     {
-        $this->emailBuilder = $emailBuilder;
+        $this->emailComposer = $emailComposer;
     }
 
     /**
@@ -52,24 +54,28 @@ class MessageQueueService implements MessageQueueServiceInterface
         (new MessageQueueAddRequestValidator())->validate($getRequest);
 
         $messageService = new MessageService();
+        $message        = $messageService->getMessageFromRequest($getRequest);
 
-        $message = $messageService->getMessageFromRequest($getRequest);
+        $messageStoreService = new MessageStoreService($this->emailComposer);
+        $messageStore        = $messageStoreService->addMessageToMessageStore($message);
 
-        $messageStoreService = new MessageStoreService($this->emailBuilder);
+        $messageLogService = new MessageLogService();
+        $messageLog        = $messageLogService->addMessageToMessageLog($message, $messageStore);
 
-        $messageStore = $messageStoreService->addMessageToMessageStore($message);
+        $messageQueueBuilder = new MessageQueueBuilder();
+        $messageQueue        = $messageQueueBuilder->buildMessageQueueFromMessageLog($messageLog);
 
-        $response
-            ->withStatus(400)
-            ->withHeader('Content-Type', 'application/json')
-            ->getBody()
-            ->write(json_encode([
+        // TODO: Implement repository to store MessageQueue. Return with the status.
+
+        /** @var \Slim\Http\Response $response */
+        $response = $response->withJson([
                 'status' => 0,
                 'statusMessage' => 'Queued.',
-                'messageId' => $messageStore->getMessageId()->getValue(),
-                'recipients' => $messageStore->getRecipients(),
-                'message' => $messageStore->getMessage()->getValue(),
-            ]));
+                'message' => $message,
+                'messageStore' => $messageStore,
+                'messageLog' => $messageLog,
+                'messageQueue' => $messageQueue,
+            ]);
 
         return $response;
     }

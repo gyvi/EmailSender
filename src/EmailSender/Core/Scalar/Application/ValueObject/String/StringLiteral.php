@@ -3,13 +3,14 @@
 namespace EmailSender\Core\Scalar\Application\ValueObject\String;
 
 use EmailSender\Core\Scalar\Application\Contract\ValueObjectInterface;
+use JsonSerializable;
 
 /**
  * Class StringLiteral
  *
  * @package EmailSender\Core\Scalar\Application\ValueObject\String
  */
-class StringLiteral implements ValueObjectInterface
+class StringLiteral implements ValueObjectInterface, JsonSerializable
 {
     /**
      * @var string
@@ -43,5 +44,13 @@ class StringLiteral implements ValueObjectInterface
      */
     protected function validate(string $value): void
     {
+    }
+
+    /**
+     * @return string
+     */
+    public function jsonSerialize()
+    {
+        return $this->getValue();
     }
 }

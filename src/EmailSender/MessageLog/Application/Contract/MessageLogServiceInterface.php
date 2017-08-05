@@ -2,6 +2,9 @@
 
 namespace EmailSender\MessageLog\Application\Contract;
 
+use EmailSender\Message\Domain\Aggregate\Message;
+use EmailSender\MessageLog\Domain\Aggregator\MessageLog;
+use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\MessageInterface;
@@ -25,4 +28,12 @@ interface MessageLogServiceInterface
         ResponseInterface $response,
         array $getRequest
     ): MessageInterface;
+
+    /**
+     * @param \EmailSender\Message\Domain\Aggregate\Message           $message
+     * @param \EmailSender\MessageStore\Domain\Aggregate\MessageStore $messageStore
+     *
+     * @return \EmailSender\MessageLog\Domain\Aggregator\MessageLog
+     */
+    public function addMessageToMessageLog(Message $message, MessageStore $messageStore): MessageLog;
 }

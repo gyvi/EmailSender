@@ -3,7 +3,7 @@
 namespace EmailSender\Core\Services;
 
 use Closure;
-use EmailSender\MessageStore\Domain\Builder\MessageStoreBuilderWithPHPMailer;
+use EmailSender\MessageStore\Domain\Composer\EmailComposerWithPHPMailer;
 use PHPMailer;
 
 /**
@@ -11,7 +11,7 @@ use PHPMailer;
  *
  * @package EmailSender\Core
  */
-class EmailBuilderService implements ServiceInterface
+class EmailComposerService implements ServiceInterface
 {
     /**
      * Get the EmailBuilder.
@@ -23,7 +23,7 @@ class EmailBuilderService implements ServiceInterface
         return function () {
             $phpMailer = new PHPMailer();
 
-            $emailBuilderWithPHPMailer = new MessageStoreBuilderWithPHPMailer($phpMailer);
+            $emailBuilderWithPHPMailer = new EmailComposerWithPHPMailer($phpMailer);
 
             return $emailBuilderWithPHPMailer;
         };

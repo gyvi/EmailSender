@@ -3,7 +3,7 @@
 namespace Test\Unit\EmailSender\MessageQueue\Application\Service;
 
 use EmailSender\MessageQueue\Application\Service\MessageQueueService;
-use EmailSender\MessageStore\Domain\Contract\EmailBuilderInterface;
+use EmailSender\MessageStore\Domain\Contract\EmailComposerInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -18,7 +18,7 @@ class MessageQueueServiceTest extends TestCase
      */
     public function testConstruct()
     {
-        $emailBuilder = $this->getMockBuilder(EmailBuilderInterface::class)
+        $emailBuilder = $this->getMockBuilder(EmailComposerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 

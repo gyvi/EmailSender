@@ -4,13 +4,14 @@ namespace EmailSender\Core\Scalar\Application\ValueObject\Numeric;
 
 use EmailSender\Core\Scalar\Application\Contract\ValueObjectInterface;
 use EmailSender\Core\Scalar\Application\Exception\ValueObjectException;
+use JsonSerializable;
 
 /**
  * Class SignedInteger
  *
  * @package EmailSender\Core\Scalar
  */
-class SignedInteger implements ValueObjectInterface
+class SignedInteger implements ValueObjectInterface, JsonSerializable
 {
     /**
      * Lower limit of the SignedInteger.
@@ -67,5 +68,13 @@ class SignedInteger implements ValueObjectInterface
         $fullQualifiedNameArray = explode('\\', static::class);
 
         return end($fullQualifiedNameArray);
+    }
+
+    /**
+     * @return int
+     */
+    public function jsonSerialize()
+    {
+        return $this->getValue();
     }
 }

@@ -1,15 +1,26 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: gyvi
- * Date: 2017. 08. 05.
- * Time: 16:08
- */
 
 namespace EmailSender\Recipients\Application\Catalog;
 
-
+/**
+ * Class RecipientsPropertyList
+ *
+ * @package EmailSender\Recipients
+ */
 class RecipientsPropertyList
 {
+    /**
+     * Recipients To property name.
+     */
+    const TO = 'to';
 
+    /**
+     * Recipients To property name.
+     */
+    const CC = 'cc';
+
+    /**
+     * Recipients To property name.
+     */
+    const BCC = 'bcc';
 }

@@ -1,15 +1,17 @@
 <?php
 
-namespace EmailSender\Recipients\Domain;
+namespace EmailSender\Recipients\Domain\Aggregate;
 
 use EmailSender\MailAddress\Application\Collection\MailAddressCollection;
+use EmailSender\Recipients\Application\Catalog\RecipientsPropertyList;
+use JsonSerializable;
 
 /**
  * Class Recipients
  *
  * @package EmailSender\Recipients
  */
-class Recipients
+class Recipients implements JsonSerializable
 {
     /**
      * @var \EmailSender\MailAddress\Application\Collection\MailAddressCollection
@@ -62,5 +64,17 @@ class Recipients
     public function getBcc(): MailAddressCollection
     {
         return $this->bcc;
+    }
+
+    /**
+     * Return with the Json serializable array.
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            RecipientsPropertyList::TO  => $this->to,
+            RecipientsPropertyList::CC  => $this->cc,
+            RecipientsPropertyList::BCC => $this->bcc,
+        ];
     }
 }

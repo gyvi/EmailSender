@@ -1,12 +1,8 @@
 EmailSender
 
 MessageQueue->add
-- build Message
-- build MessageStore
 - save to MessageStore, get messageId
-- build MessageLog
 - save to MessageLog, get messageLogId
-- build MessageQueue
 - send to the MessageQueue
 
 MessageQueue->send

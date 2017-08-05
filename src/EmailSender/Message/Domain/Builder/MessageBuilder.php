@@ -4,13 +4,13 @@ namespace EmailSender\Message\Domain\Builder;
 
 use EmailSender\Core\Scalar\Application\Exception\ValueObjectException;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
-use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\MailAddress\Application\Collection\MailAddressCollection;
 use EmailSender\MailAddress\Application\Service\MailAddressService;
 use EmailSender\MailAddress\Domain\Aggregate\MailAddress;
 use EmailSender\Message\Application\Catalog\MessagePropertyList;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\Core\ValueObject\Subject;
+use EmailSender\Message\Domain\ValueObject\Body;
 use InvalidArgumentException;
 
 /**
@@ -156,12 +156,12 @@ class MessageBuilder
     /**
      * @param array $request
      *
-     * @return \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral
+     * @return \EmailSender\Message\Domain\ValueObject\Body
      */
-    private function getBodyFromRequest(array $request): StringLiteral
+    private function getBodyFromRequest(array $request): Body
     {
         try {
-            $body = new StringLiteral($request[MessagePropertyList::BODY]);
+            $body = new Body($request[MessagePropertyList::BODY]);
         } catch (ValueObjectException $e) {
 
             throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyList::BODY . "'", 0, $e);

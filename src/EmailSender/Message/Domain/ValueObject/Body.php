@@ -1,15 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: gyvi
- * Date: 2017. 08. 03.
- * Time: 21:55
- */
 
 namespace EmailSender\Message\Domain\ValueObject;
 
+use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteralLimit;
 
-class Body
+/**
+ * Class Body
+ *
+ * @package EmailSender\Message\Domain\ValueObject
+ */
+class Body extends StringLiteralLimit
 {
-
+    /**
+     * @var int
+     */
+    protected const MIN_LENGTH = 1;
 }

@@ -6,11 +6,11 @@ use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\Recipients\Domain\Aggregate\Recipients;
 
 /**
- * Interface RecipientsService
+ * Interface RecipientsServiceInterface
  *
  * @package EmailSender\Recipients
  */
-interface RecipientsService
+interface RecipientsServiceInterface
 {
     /**
      * @param \EmailSender\Message\Domain\Aggregate\Message $message
@@ -18,4 +18,11 @@ interface RecipientsService
      * @return \EmailSender\Recipients\Domain\Aggregate\Recipients
      */
     public function getRecipientsFromMessage(Message $message): Recipients;
+
+    /**
+     * @param array $recipientsArray
+     *
+     * @return \EmailSender\Recipients\Domain\Aggregate\Recipients
+     */
+    public function getRecipientsFromArray(array $recipientsArray): Recipients;
 }

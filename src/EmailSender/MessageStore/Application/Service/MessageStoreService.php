@@ -7,7 +7,8 @@ use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\MessageStore\Application\Contract\MessageStoreServiceInterface;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
 use EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder;
-use EmailSender\MessageStore\Domain\Contract\EmailBuilderInterface;
+use EmailSender\MessageStore\Domain\Contract\EmailComposerInterface;
+use EmailSender\Recipients\Application\Service\RecipientsService;
 
 /**
  * Class MessageStoreService
@@ -17,13 +18,18 @@ use EmailSender\MessageStore\Domain\Contract\EmailBuilderInterface;
 class MessageStoreService implements MessageStoreServiceInterface
 {
     /**
-     * @var \EmailSender\MessageStore\Domain\Contract\EmailBuilderInterface
+     * @var \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface
      */
-    private $emailBuilder;
+    private $emailComposer;
 
-    public function __construct(EmailBuilderInterface $emailBuilder)
+    /**
+     * MessageStoreService constructor.
+     *
+     * @param \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface $emailComposer
+     */
+    public function __construct(EmailComposerInterface $emailComposer)
     {
-        $this->emailBuilder = $emailBuilder;
+        $this->emailComposer = $emailComposer;
     }
 
     /**
@@ -33,7 +39,8 @@ class MessageStoreService implements MessageStoreServiceInterface
      */
     public function addMessageToMessageStore(Message $message): MessageStore
     {
-        $messageStoreBuilder = new MessageStoreBuilder($this->emailBuilder);
+        $recipientsService   = new RecipientsService();
+        $messageStoreBuilder = new MessageStoreBuilder($this->emailComposer, $recipientsService);
 
         $messageStore = $messageStoreBuilder->buildMessageStoreFromMessage($message);
 

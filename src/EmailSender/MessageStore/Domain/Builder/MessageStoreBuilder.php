@@ -4,11 +4,10 @@ namespace EmailSender\MessageStore\Domain\Builder;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
-use EmailSender\MailAddress\Application\Collection\MailAddressCollection;
-use EmailSender\MailAddress\Application\Service\MailAddressService;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
-use EmailSender\MessageStore\Domain\Contract\EmailBuilderInterface;
+use EmailSender\MessageStore\Domain\Contract\EmailComposerInterface;
+use EmailSender\Recipients\Application\Service\RecipientsService;
 
 /**
  * Class MessageStoreBuilder
@@ -18,18 +17,25 @@ use EmailSender\MessageStore\Domain\Contract\EmailBuilderInterface;
 class MessageStoreBuilder
 {
     /**
-     * @var \EmailSender\MessageStore\Domain\Contract\EmailBuilderInterface
+     * @var \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface
      */
-    private $emailBuilder;
+    private $emailComposer;
+
+    /**
+     * @var \EmailSender\Recipients\Application\Service\RecipientsService
+     */
+    private $recipientsService;
 
     /**
      * MessageStoreBuilder constructor.
      *
-     * @param \EmailSender\MessageStore\Domain\Contract\EmailBuilderInterface $emailBuilder
+     * @param \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface $emailComposer
+     * @param \EmailSender\Recipients\Application\Service\RecipientsService    $recipientsService
      */
-    public function __construct(EmailBuilderInterface $emailBuilder)
+    public function __construct(EmailComposerInterface $emailComposer, RecipientsService $recipientsService)
     {
-        $this->emailBuilder = $emailBuilder;
+        $this->emailComposer     = $emailComposer;
+        $this->recipientsService = $recipientsService;
     }
 
     /**
@@ -39,9 +45,8 @@ class MessageStoreBuilder
      */
     public function buildMessageStoreFromMessage(Message $message): MessageStore
     {
-        $recipients = $this->getAllRecipients($message);
-
-        $renderedMessage = $this->emailBuilder->buildEmailFromMessage($message);
+        $recipients      = $this->recipientsService->getRecipientsFromMessage($message);
+        $renderedMessage = $this->emailComposer->composeEmailFromMessage($message);
 
         return new MessageStore($recipients, $renderedMessage);
     }
@@ -55,38 +60,15 @@ class MessageStoreBuilder
      */
     public function buildMessageStoreFromRepository(int $messageId, string $recipients, string $message): MessageStore
     {
-        $mailAddressService    = new MailAddressService();
-        $mailAddressCollection = $mailAddressService->getMailAddressCollectionFromArray(json_decode($recipients));
+        $recipients = $this->recipientsService->getRecipientsFromArray(json_decode($recipients));
 
         $messageStore = new MessageStore(
-            $mailAddressCollection,
+            $recipients,
             new StringLiteral($message)
         );
 
         $messageStore->setMessageId(new UnsignedInteger($messageId));
 
         return $messageStore;
-    }
-
-    /**
-     * @param \EmailSender\Message\Domain\Aggregate\Message $message
-     *
-     * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
-     */
-    private function getAllRecipients(Message $message): MailAddressCollection
-    {
-        $allRecipients = clone $message->getTo();
-
-        foreach ($message->getCc() as $mailAddress)
-        {
-            $allRecipients->add($mailAddress);
-        }
-
-        foreach ($message->getBcc() as $mailAddress)
-        {
-            $allRecipients->add($mailAddress);
-        }
-
-        return $allRecipients;
     }
 }

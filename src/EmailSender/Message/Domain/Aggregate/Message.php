@@ -3,17 +3,18 @@
 namespace EmailSender\Message\Domain\Aggregate;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
-use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\MailAddress\Application\Collection\MailAddressCollection;
 use EmailSender\MailAddress\Domain\Aggregate\MailAddress;
 use EmailSender\Core\ValueObject\Subject;
+use EmailSender\Message\Domain\ValueObject\Body;
+use JsonSerializable;
 
 /**
  * Class Message
  *
  * @package EmailSender\Message
  */
-class Message
+class Message implements JsonSerializable
 {
     /**
      * @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress
@@ -41,7 +42,7 @@ class Message
     private $subject;
 
     /**
-     * @var \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral
+     * @var \EmailSender\Message\Domain\ValueObject\Body
      */
     private $body;
 
@@ -63,7 +64,7 @@ class Message
      * @param \EmailSender\MailAddress\Application\Collection\MailAddressCollection    $cc
      * @param \EmailSender\MailAddress\Application\Collection\MailAddressCollection    $bcc
      * @param \EmailSender\Core\ValueObject\Subject                                    $subject
-     * @param \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral    $body
+     * @param \EmailSender\Message\Domain\ValueObject\Body                             $body
      * @param \EmailSender\MailAddress\Domain\Aggregate\MailAddress|null               $replyTo
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $delay
      */
@@ -73,7 +74,7 @@ class Message
         MailAddressCollection $cc,
         MailAddressCollection $bcc,
         Subject $subject,
-        StringLiteral $body,
+        Body $body,
         ?MailAddress $replyTo,
         UnsignedInteger $delay
     ) {
@@ -128,9 +129,9 @@ class Message
     }
 
     /**
-     * @return \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral
+     * @return \EmailSender\Message\Domain\ValueObject\Body
      */
-    public function getBody(): StringLiteral
+    public function getBody(): Body
     {
         return $this->body;
     }
@@ -149,5 +150,13 @@ class Message
     public function getDelay(): UnsignedInteger
     {
         return $this->delay;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
     }
 }

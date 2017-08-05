@@ -11,5 +11,8 @@ use Closure;
  */
 interface ServiceInterface
 {
+    /**
+     * @return \Closure
+     */
     public function getService(): Closure;
 }

@@ -3,18 +3,20 @@
 namespace EmailSender\MessageQueue\Domain\Aggregator;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
+use EmailSender\MessageQueue\Application\Catalog\MessageQueuePropertyList;
+use JsonSerializable;
 
 /**
  * Class MessageQueue
  *
  * @package EmailSender\MessageQueue
  */
-class MessageQueue
+class MessageQueue implements JsonSerializable
 {
     /**
      * @var \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
      */
-    private $logId;
+    private $messageLogId;
 
     /**
      * @var \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
@@ -29,23 +31,23 @@ class MessageQueue
     /**
      * MessageQueue constructor.
      *
-     * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $logId
+     * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageLogId
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageId
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $delay
      */
-    public function __construct(UnsignedInteger $logId, UnsignedInteger $messageId, UnsignedInteger $delay)
+    public function __construct(UnsignedInteger $messageLogId, UnsignedInteger $messageId, UnsignedInteger $delay)
     {
-        $this->logId     = $logId;
-        $this->messageId = $messageId;
-        $this->delay     = $delay;
+        $this->messageLogId = $messageLogId;
+        $this->messageId    = $messageId;
+        $this->delay        = $delay;
     }
 
     /**
      * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
      */
-    public function getLogId(): UnsignedInteger
+    public function getMessageLogId(): UnsignedInteger
     {
-        return $this->logId;
+        return $this->messageLogId;
     }
 
     /**
@@ -62,5 +64,17 @@ class MessageQueue
     public function getDelay(): UnsignedInteger
     {
         return $this->delay;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            MessageQueuePropertyList::MESSAGE_LOG_ID => $this->getMessageLogId(),
+            MessageQueuePropertyList::MESSAGE_ID => $this->getMessageId(),
+            MessageQueuePropertyList::DELAY => $this->getDelay(),
+        ];
     }
 }
