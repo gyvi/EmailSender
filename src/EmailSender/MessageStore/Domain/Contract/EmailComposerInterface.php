@@ -10,12 +10,12 @@ use EmailSender\Message\Domain\Aggregate\Message;
  *
  * @package EmailSender\MessageStore
  */
-interface EmailBuilderInterface
+interface MessageStoreBuilderInterface
 {
     /**
      * @param \EmailSender\Message\Domain\Aggregate\Message $message
      *
      * @return \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral
      */
-    public function buildEmailFromMessage(Message $message): StringLiteral;
+    public function buildMessageStoreFromMessage(Message $message): StringLiteral;
 }

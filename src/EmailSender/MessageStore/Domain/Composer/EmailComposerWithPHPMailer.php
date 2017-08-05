@@ -3,11 +3,13 @@
 namespace EmailSender\MessageStore\Domain\Builder;
 
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
+use EmailSender\MailAddress\Application\Collection\MailAddressCollection;
 use EmailSender\Message\Domain\Aggregate\Message;
-use EmailSender\MessageStore\Domain\Contract\EmailBuilderInterface;
+use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
+use EmailSender\MessageStore\Domain\Contract\MessageStoreBuilderInterface;
 use PHPMailer;
 
-class EmailBuilderWithPHPMailer implements EmailBuilderInterface
+class MessageStoreBuilderWithPHPMailer implements MessageStoreBuilderInterface
 {
     /**
      * @var \PHPMailer
@@ -27,9 +29,9 @@ class EmailBuilderWithPHPMailer implements EmailBuilderInterface
     /**
      * @param \EmailSender\Message\Domain\Aggregate\Message $message
      *
-     * @return \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral
+     * @return \EmailSender\MessageStore\Domain\Aggregate\MessageStore
      */
-    public function buildEmailFromMessage(Message $message): StringLiteral
+    public function buildMessageStoreFromMessage(Message $message): MessageStore
     {
         $this->phpMailer->XMailer     = 'EmailSenderForSenoritaaaa';
 
@@ -41,6 +43,38 @@ class EmailBuilderWithPHPMailer implements EmailBuilderInterface
             (!empty($message->getFrom()->getDisplayName()) ? $message->getFrom()->getDisplayName()->getValue() : '')
         );
 
+        $this->addAllRecipients($message);
+
+        if ($message->getReplyTo()) {
+            $this->phpMailer->addReplyTo(
+                $message->getReplyTo()->getAddress()->getValue(),
+                (!empty($message->getReplyTo()->getDisplayName())
+                    ? $message->getReplyTo()->getDisplayName()->getValue() : '')
+            );
+        }
+
+        $this->phpMailer->Subject = $message->getSubject()->getValue();
+        $this->phpMailer->Body    = $message->getBody()->getValue();
+
+        $this->phpMailer->isHTML(false);
+
+        $this->phpMailer->preSend();
+
+
+
+        return new MessageStore(
+            new MailAddressCollection(),
+            new StringLiteral($this->phpMailer->getSentMIMEMessage()),
+        );
+    }
+
+    /**
+     * Add all recipients to PHPMailer.
+     *
+     * @param \EmailSender\Message\Domain\Aggregate\Message $message
+     */
+    private function addAllRecipients(Message $message): void
+    {
         /** @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress $toAddress */
         foreach ($message->getTo() as $toAddress) {
             $this->phpMailer->addAddress(
@@ -64,22 +98,5 @@ class EmailBuilderWithPHPMailer implements EmailBuilderInterface
                 (!empty($bccAddress->getDisplayName()) ? $bccAddress->getDisplayName()->getValue() : '')
             );
         }
-
-        if ($message->getReplyTo()) {
-            $this->phpMailer->addReplyTo(
-                $message->getReplyTo()->getAddress()->getValue(),
-                (!empty($message->getReplyTo()->getDisplayName())
-                    ? $message->getReplyTo()->getDisplayName()->getValue() : '')
-            );
-        }
-
-        $this->phpMailer->Subject = $message->getSubject()->getValue();
-        $this->phpMailer->Body    = $message->getBody()->getValue();
-
-        $this->phpMailer->isHTML(false);
-
-        $this->phpMailer->preSend();
-
-        return new StringLiteral($this->phpMailer->getSentMIMEMessage());
     }
 }
