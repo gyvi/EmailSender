@@ -12,6 +12,7 @@ use EmailSender\MessageStore\Domain\Contract\EmailComposerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\MessageInterface;
+use Closure;
 
 /**
  * Class MessageQueueService
@@ -26,13 +27,46 @@ class MessageQueueService implements MessageQueueServiceInterface
     private $emailComposer;
 
     /**
+     * @var \Closure
+     */
+    private $messageStoreReaderService;
+
+    /**
+     * @var \Closure
+     */
+    private $messageStoreWriterService;
+
+    /**
+     * @var \Closure
+     */
+    private $messageLogReaderService;
+
+    /**
+     * @var \Closure
+     */
+    private $messageLogWriterService;
+
+    /**
      * MessageQueueService constructor.
      *
      * @param \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface $emailComposer
+     * @param \Closure                                                         $messageStoreReaderService
+     * @param \Closure                                                         $messageStoreWriterService
+     * @param \Closure                                                         $messageLogReaderService
+     * @param \Closure                                                         $messageLogWriterService
      */
-    public function __construct(EmailComposerInterface $emailComposer)
-    {
-        $this->emailComposer = $emailComposer;
+    public function __construct(
+        EmailComposerInterface $emailComposer,
+        Closure $messageStoreReaderService,
+        Closure $messageStoreWriterService,
+        Closure $messageLogReaderService,
+        Closure $messageLogWriterService
+    ) {
+        $this->emailComposer             = $emailComposer;
+        $this->messageStoreReaderService = $messageStoreReaderService;
+        $this->messageStoreWriterService = $messageStoreWriterService;
+        $this->messageLogReaderService   = $messageLogReaderService;
+        $this->messageLogWriterService   = $messageLogWriterService;
     }
 
     /**
@@ -56,8 +90,12 @@ class MessageQueueService implements MessageQueueServiceInterface
         $messageService = new MessageService();
         $message        = $messageService->getMessageFromRequest($getRequest);
 
-        $messageStoreService = new MessageStoreService($this->emailComposer);
-        $messageStore        = $messageStoreService->addMessageToMessageStore($message);
+        $messageStoreService = new MessageStoreService(
+            $this->emailComposer,
+            $this->messageStoreReaderService,
+            $this->messageStoreWriterService
+        );
+        $messageStore = $messageStoreService->addMessageToMessageStore($message);
 
         $messageLogService = new MessageLogService();
         $messageLog        = $messageLogService->addMessageToMessageLog($message, $messageStore);

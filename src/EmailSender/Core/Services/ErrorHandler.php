@@ -16,7 +16,7 @@ use Throwable;
 class ErrorHandler implements ServiceInterface
 {
     /**
-     * Return with the PhpErrorhandler
+     * Return with the Errorhandler
      *
      * @return \Closure
      */
@@ -26,13 +26,14 @@ class ErrorHandler implements ServiceInterface
             return function (
                 ServerRequestInterface $request,
                 ResponseInterface $response,
-                Throwable$exception
+                Throwable $exception
             ) use ($container) {
                 /** @var \Monolog\Logger $logger */
                 $logger = $container->get(ServiceList::LOGGER);
                 $logger->notice($exception->getMessage(), $exception->getTrace());
 
                 $errorMessage = $exception->getMessage();
+
                 while ($exception = $exception->getPrevious()) {
                     $errorMessage .= ' - ' . $exception->getMessage();
                 }

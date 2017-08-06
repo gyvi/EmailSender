@@ -7,7 +7,9 @@ use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
 use EmailSender\MessageStore\Domain\Contract\EmailComposerInterface;
+use EmailSender\MessageStore\Infrastructure\Persistence\MessageStoreFieldList;
 use EmailSender\Recipients\Application\Service\RecipientsService;
+use EmailSender\MessageStore\Domain\Contract\MessageStoreRepositoryReaderInterface;
 
 /**
  * Class MessageStoreBuilder
@@ -27,15 +29,25 @@ class MessageStoreBuilder
     private $recipientsService;
 
     /**
+     * @var \EmailSender\MessageStore\Domain\Contract\MessageStoreRepositoryReaderInterface
+     */
+    private $repositoryReader;
+
+    /**
      * MessageStoreBuilder constructor.
      *
-     * @param \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface $emailComposer
-     * @param \EmailSender\Recipients\Application\Service\RecipientsService    $recipientsService
+     * @param \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface                $emailComposer
+     * @param \EmailSender\Recipients\Application\Service\RecipientsService                   $recipientsService
+     * @param \EmailSender\MessageStore\Domain\Contract\MessageStoreRepositoryReaderInterface $repositoryReader
      */
-    public function __construct(EmailComposerInterface $emailComposer, RecipientsService $recipientsService)
-    {
+    public function __construct(
+        EmailComposerInterface $emailComposer,
+        RecipientsService $recipientsService,
+        MessageStoreRepositoryReaderInterface $repositoryReader
+    ) {
         $this->emailComposer     = $emailComposer;
         $this->recipientsService = $recipientsService;
+        $this->repositoryReader  = $repositoryReader;
     }
 
     /**
@@ -52,22 +64,24 @@ class MessageStoreBuilder
     }
 
     /**
-     * @param int    $messageId
-     * @param string $recipients
-     * @param string $message
+     * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageId
      *
      * @return \EmailSender\MessageStore\Domain\Aggregate\MessageStore
      */
-    public function buildMessageStoreFromRepository(int $messageId, string $recipients, string $message): MessageStore
+    public function buildMessageStoreFromRepository(UnsignedInteger $messageId): MessageStore
     {
-        $recipients = $this->recipientsService->getRecipientsFromArray(json_decode($recipients));
+        $messageStoreArray = $this->repositoryReader->readByMessageId($messageId);
+
+        $recipients = $this->recipientsService->getRecipientsFromArray(
+            json_decode($messageStoreArray[MessageStoreFieldList::RECIPIENTS_FIELD])
+        );
 
         $messageStore = new MessageStore(
             $recipients,
-            new StringLiteral($message)
+            new StringLiteral($messageStoreArray[MessageStoreFieldList::MESSAGE_FIELD])
         );
 
-        $messageStore->setMessageId(new UnsignedInteger($messageId));
+        $messageStore->setMessageId(new UnsignedInteger($messageStoreArray[MessageStoreFieldList::MESSAGE_ID_FIELD]));
 
         return $messageStore;
     }

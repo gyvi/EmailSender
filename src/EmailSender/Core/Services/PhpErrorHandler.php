@@ -26,14 +26,13 @@ class PhpErrorHandler implements ServiceInterface
             return function (
                 ServerRequestInterface $request,
                 ResponseInterface $response,
-                Throwable$exception
+                Throwable $exception
             ) use ($container) {
                 /** @var \Monolog\Logger $logger */
                 $logger = $container->get(ServiceList::LOGGER);
                 $logger->warning($exception->getMessage(), $exception->getTrace());
 
-                /** @var \Interop\Container\ContainerInterface $container */
-                return $container['response']->withStatus(500)
+                return $response->withStatus(500)
                     ->withHeader('Content-Type', 'application/json')
                     ->write(
                         json_encode([

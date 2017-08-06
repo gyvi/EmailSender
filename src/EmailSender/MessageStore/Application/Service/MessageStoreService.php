@@ -8,7 +8,10 @@ use EmailSender\MessageStore\Application\Contract\MessageStoreServiceInterface;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
 use EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder;
 use EmailSender\MessageStore\Domain\Contract\EmailComposerInterface;
+use EmailSender\MessageStore\Infrastructure\Persistence\MessageStoreRepositoryReader;
+use EmailSender\MessageStore\Infrastructure\Persistence\MessageStoreRepositoryWriter;
 use EmailSender\Recipients\Application\Service\RecipientsService;
+use Closure;
 
 /**
  * Class MessageStoreService
@@ -23,13 +26,30 @@ class MessageStoreService implements MessageStoreServiceInterface
     private $emailComposer;
 
     /**
+     * @var \EmailSender\MessageStore\Infrastructure\Persistence\MessageStoreRepositoryReader
+     */
+    private $repositoryReader;
+
+    /**
+     * @var \EmailSender\MessageStore\Infrastructure\Persistence\MessageStoreRepositoryWriter
+     */
+    private $repositoryWriter;
+
+    /**
      * MessageStoreService constructor.
      *
      * @param \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface $emailComposer
+     * @param \Closure                                                         $messageStoreReaderService
+     * @param \Closure                                                         $messageStoreWriterService
      */
-    public function __construct(EmailComposerInterface $emailComposer)
-    {
-        $this->emailComposer = $emailComposer;
+    public function __construct(
+        EmailComposerInterface $emailComposer,
+        Closure $messageStoreReaderService,
+        Closure $messageStoreWriterService
+    ) {
+        $this->emailComposer    = $emailComposer;
+        $this->repositoryReader = new MessageStoreRepositoryReader($messageStoreReaderService);
+        $this->repositoryWriter = new MessageStoreRepositoryWriter($messageStoreWriterService);
     }
 
     /**
@@ -39,13 +59,18 @@ class MessageStoreService implements MessageStoreServiceInterface
      */
     public function addMessageToMessageStore(Message $message): MessageStore
     {
-        $recipientsService   = new RecipientsService();
-        $messageStoreBuilder = new MessageStoreBuilder($this->emailComposer, $recipientsService);
+        $recipientsService = new RecipientsService();
+
+        $messageStoreBuilder = new MessageStoreBuilder(
+            $this->emailComposer,
+            $recipientsService,
+            $this->repositoryReader
+        );
 
         $messageStore = $messageStoreBuilder->buildMessageStoreFromMessage($message);
+        $messageId    = $this->repositoryWriter->add($messageStore);
 
-        // TODO: Implement repository store. Return with the messageId.
-        $messageStore->setMessageId(new UnsignedInteger(1));
+        $messageStore->setMessageId(new UnsignedInteger($messageId));
 
         return $messageStore;
     }
@@ -57,6 +82,14 @@ class MessageStoreService implements MessageStoreServiceInterface
      */
     public function getMessageFromMessageStore(UnsignedInteger $messageId): MessageStore
     {
-        // TODO: Implement getMessageFromMessageStore() method.
+        $recipientsService = new RecipientsService();
+
+        $messageStoreBuilder = new MessageStoreBuilder(
+            $this->emailComposer,
+            $recipientsService,
+            $this->repositoryReader
+        );
+
+        return $messageStoreBuilder->buildMessageStoreFromRepository($messageId);
     }
 }

@@ -19,8 +19,8 @@ class MessageStoreWriterService implements ServiceInterface
     public function getService(): Closure
     {
         return function (ContainerInterface $container): Closure {
-            return function () use ($container): PDO {
-                $settings = $container->get(ServiceList::MESSAGE_STORE_WRITER);
+            return function () use (&$container): PDO {
+                $settings = $container->get('settings')[ServiceList::MESSAGE_STORE_WRITER];
 
                 return new PDO($settings['dsn'], $settings['user'], $settings['password'], $settings['options']);
             };
