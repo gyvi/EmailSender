@@ -78,7 +78,10 @@ class MailAddressCollectionBuilder
             $mailAddressCollection->add(
                 new MailAddress(
                     new Address($mailAddressArray[MailAddress::FIELD_ADDRESS]),
-                    new DisplayName($mailAddressArray[MailAddress::FIELD_DISPLAYNAME])
+                    (!empty($mailAddressArray[MailAddress::FIELD_DISPLAYNAME])
+                        ? new DisplayName($mailAddressArray[MailAddress::FIELD_DISPLAYNAME])
+                        : null
+                    )
                 )
             );
         }

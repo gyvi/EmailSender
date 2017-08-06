@@ -12,6 +12,7 @@ use EmailSender\MessageStore\Infrastructure\Persistence\MessageStoreRepositoryRe
 use EmailSender\MessageStore\Infrastructure\Persistence\MessageStoreRepositoryWriter;
 use EmailSender\Recipients\Application\Service\RecipientsService;
 use Closure;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class MessageStoreService
@@ -24,6 +25,11 @@ class MessageStoreService implements MessageStoreServiceInterface
      * @var \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface
      */
     private $emailComposer;
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
 
     /**
      * @var \EmailSender\MessageStore\Infrastructure\Persistence\MessageStoreRepositoryReader
@@ -39,15 +45,18 @@ class MessageStoreService implements MessageStoreServiceInterface
      * MessageStoreService constructor.
      *
      * @param \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface $emailComposer
+     * @param \Psr\Log\LoggerInterface                                         $logger
      * @param \Closure                                                         $messageStoreReaderService
      * @param \Closure                                                         $messageStoreWriterService
      */
     public function __construct(
         EmailComposerInterface $emailComposer,
+        LoggerInterface $logger,
         Closure $messageStoreReaderService,
         Closure $messageStoreWriterService
     ) {
         $this->emailComposer    = $emailComposer;
+        $this->logger           = $logger;
         $this->repositoryReader = new MessageStoreRepositoryReader($messageStoreReaderService);
         $this->repositoryWriter = new MessageStoreRepositoryWriter($messageStoreWriterService);
     }

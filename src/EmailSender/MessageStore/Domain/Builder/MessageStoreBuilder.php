@@ -73,7 +73,7 @@ class MessageStoreBuilder
         $messageStoreArray = $this->repositoryReader->readByMessageId($messageId);
 
         $recipients = $this->recipientsService->getRecipientsFromArray(
-            json_decode($messageStoreArray[MessageStoreFieldList::RECIPIENTS_FIELD])
+            json_decode($messageStoreArray[MessageStoreFieldList::RECIPIENTS_FIELD], true)
         );
 
         $messageStore = new MessageStore(

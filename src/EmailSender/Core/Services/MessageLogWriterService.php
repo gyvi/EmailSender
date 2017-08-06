@@ -22,7 +22,7 @@ class MessageLogWriterService implements ServiceInterface
             return function () use (&$container): PDO {
                 $settings = $container->get('settings')[ServiceList::MESSAGE_LOG_WRITER];
 
-                return new PDO($settings['dsn'], $settings['user'], $settings['password'], $settings['options']);
+                return new PDO($settings['dsn'], $settings['username'], $settings['password'], $settings['options']);
             };
         };
     }

@@ -13,6 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\MessageInterface;
 use Closure;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class MessageQueueService
@@ -25,6 +26,11 @@ class MessageQueueService implements MessageQueueServiceInterface
      * @var \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface
      */
     private $emailComposer;
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
 
     /**
      * @var \Closure
@@ -50,6 +56,7 @@ class MessageQueueService implements MessageQueueServiceInterface
      * MessageQueueService constructor.
      *
      * @param \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface $emailComposer
+     * @param \Psr\Log\LoggerInterface                                         $logger
      * @param \Closure                                                         $messageStoreReaderService
      * @param \Closure                                                         $messageStoreWriterService
      * @param \Closure                                                         $messageLogReaderService
@@ -57,12 +64,14 @@ class MessageQueueService implements MessageQueueServiceInterface
      */
     public function __construct(
         EmailComposerInterface $emailComposer,
+        LoggerInterface $logger,
         Closure $messageStoreReaderService,
         Closure $messageStoreWriterService,
         Closure $messageLogReaderService,
         Closure $messageLogWriterService
     ) {
         $this->emailComposer             = $emailComposer;
+        $this->logger                    = $logger;
         $this->messageStoreReaderService = $messageStoreReaderService;
         $this->messageStoreWriterService = $messageStoreWriterService;
         $this->messageLogReaderService   = $messageLogReaderService;
@@ -92,6 +101,7 @@ class MessageQueueService implements MessageQueueServiceInterface
 
         $messageStoreService = new MessageStoreService(
             $this->emailComposer,
+            $this->logger,
             $this->messageStoreReaderService,
             $this->messageStoreWriterService
         );

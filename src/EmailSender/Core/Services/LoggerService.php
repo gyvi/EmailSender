@@ -5,6 +5,7 @@ namespace EmailSender\Core\Services;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Closure;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class MonologService
@@ -18,7 +19,7 @@ class LoggerService implements ServiceInterface
      */
     public function getService(): Closure
     {
-        return function () {
+        return function (): LoggerInterface {
             $log = new Logger('EmailSenderLog');
             $log->pushHandler(new StreamHandler(__DIR__ . '/../../../../log/application.log', Logger::NOTICE));
 
