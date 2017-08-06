@@ -12,15 +12,15 @@ class MessageStoreFieldList
     /**
      * Primary key of the messageStore SQL table.
      */
-    const MESSAGE_ID_FIELD = 'messageId';
+    const FIELD_MESSAGE_ID = 'messageId';
 
     /**
      * Recipients field of the messageStore SQL table.
      */
-    const RECIPIENTS_FIELD = 'recipients';
+    const FIELD_RECIPIENTS = 'recipients';
 
     /**
      * Message field of the messageStore SQL table.
      */
-    const MESSAGE_FIELD = 'message';
+    const FIELD_MESSAGE = 'message';
 }

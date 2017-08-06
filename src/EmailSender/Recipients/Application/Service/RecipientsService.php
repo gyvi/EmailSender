@@ -30,12 +30,14 @@ class RecipientsService implements RecipientsServiceInterface
     }
 
     /**
-     * @param array $recipientsArray
+     * @param string $recipients
      *
      * @return \EmailSender\Recipients\Domain\Aggregate\Recipients
      */
-    public function getRecipientsFromArray(array $recipientsArray): Recipients
+    public function getRecipientsFromJson(string $recipients): Recipients
     {
+        $recipientsArray    = json_decode($recipients, true);
+
         $mailAddressService = new MailAddressService();
         $recipientsBuilder  = new RecipientsBuilder($mailAddressService);
 

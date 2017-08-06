@@ -4,6 +4,7 @@ namespace EmailSender\MailAddress\Domain\Aggregate;
 
 use EmailSender\Core\ValueObject\Address;
 use EmailSender\Core\ValueObject\DisplayName;
+use EmailSender\MailAddress\Application\Catalog\MailAddressPropertyList;
 use JsonSerializable;
 
 /**
@@ -13,16 +14,6 @@ use JsonSerializable;
  */
 class MailAddress implements JsonSerializable
 {
-    /**
-     * @var string
-     */
-    const FIELD_DISPLAYNAME = 'name';
-
-    /**
-     * @var string
-     */
-    const FIELD_ADDRESS     = 'address';
-
     /**
      * @var \EmailSender\Core\ValueObject\Address
      */
@@ -67,8 +58,10 @@ class MailAddress implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            static::FIELD_DISPLAYNAME => !empty($this->displayName) ? $this->displayName->getValue() : '',
-            static::FIELD_ADDRESS     => $this->address->getValue(),
+            MailAddressPropertyList::PROPERTY_DISPLAY_NAME => !empty($this->displayName)
+                                                                  ? $this->displayName->getValue()
+                                                                  : '',
+            MailAddressPropertyList::PROPERTY_ADDRESS      => $this->address->getValue(),
         ];
     }
 

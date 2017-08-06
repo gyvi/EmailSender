@@ -50,24 +50,26 @@ class MessageStoreRepositoryReader implements MessageStoreRepositoryReaderInterf
 
             $sql = '
                 SELECT
-                    messageId,
-                    recipients,
-                    message
+                    `messageId`,
+                    `recipients`,
+                    `message`
                 FROM
-                    messageStore
+                    `messageStore`
                 WHERE
-                    messageId = :messageId; 
+                    `messageId` = :messageId; 
             ';
 
             $statement = $pdo->prepare($sql);
 
             $statement->bindParam(
-                ':' . MessageStoreFieldList::MESSAGE_ID_FIELD,
+                ':' . MessageStoreFieldList::FIELD_MESSAGE_ID,
                 $messageId->getValue(),
                 PDO::PARAM_INT
             );
 
-            $statement->execute();
+            if (!$statement->execute()) {
+                throw new PDOException('Unable read from the database.');
+            }
 
             $messageStoreArray = $statement->fetch(PDO::FETCH_ASSOC);
 

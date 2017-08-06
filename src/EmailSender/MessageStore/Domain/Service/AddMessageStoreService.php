@@ -4,7 +4,9 @@ namespace EmailSender\MessageStore\Domain\Service;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
+use EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder;
 use EmailSender\MessageStore\Domain\Contract\MessageStoreRepositoryWriterInterface;
+use EmailSender\Message\Domain\Aggregate\Message;
 
 /**
  * Class AddMessageStoreService
@@ -19,22 +21,36 @@ class AddMessageStoreService
     private $repositoryWriter;
 
     /**
+     * @var \EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder
+     */
+    private $messageStoreBuilder;
+
+    /**
      * AddMessageStoreService constructor.
      *
      * @param \EmailSender\MessageStore\Domain\Contract\MessageStoreRepositoryWriterInterface $repositoryWriter
+     * @param \EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder                    $messageStoreBuilder
      */
-    public function __construct(MessageStoreRepositoryWriterInterface $repositoryWriter)
-    {
-        $this->repositoryWriter = $repositoryWriter;
+    public function __construct(
+        MessageStoreRepositoryWriterInterface $repositoryWriter,
+        MessageStoreBuilder $messageStoreBuilder
+    ) {
+        $this->repositoryWriter    = $repositoryWriter;
+        $this->messageStoreBuilder = $messageStoreBuilder;
     }
 
     /**
-     * @param \EmailSender\MessageStore\Domain\Aggregate\MessageStore $messageStore
+     * @param \EmailSender\Message\Domain\Aggregate\Message $message
      *
-     * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
+     * @return \EmailSender\MessageStore\Domain\Aggregate\MessageStore
      */
-    public function add(MessageStore $messageStore): UnsignedInteger
+    public function add(Message $message): MessageStore
     {
-        return new UnsignedInteger($this->repositoryWriter->add($messageStore));
+        $messageStore   = $this->messageStoreBuilder->buildMessageStoreFromMessage($message);
+        $messageStoreId = new UnsignedInteger($this->repositoryWriter->add($messageStore));
+
+        $messageStore->setMessageId($messageStoreId);
+
+        return $messageStore;
     }
 }

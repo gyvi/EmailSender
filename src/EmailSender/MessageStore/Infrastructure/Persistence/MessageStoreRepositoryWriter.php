@@ -50,7 +50,7 @@ class MessageStoreRepositoryWriter implements MessageStoreRepositoryWriterInterf
 
             $sql = '
                 INSERT INTO
-                    messageStore (recipients, message)
+                    `messageStore` (`recipients`, `message`)
                 VALUES
                     (:recipients, :message); 
             ';
@@ -58,18 +58,20 @@ class MessageStoreRepositoryWriter implements MessageStoreRepositoryWriterInterf
             $statement = $pdo->prepare($sql);
 
             $statement->bindParam(
-                ':' . MessageStoreFieldList::RECIPIENTS_FIELD,
+                ':' . MessageStoreFieldList::FIELD_RECIPIENTS,
                 json_encode($messageStore->getRecipients()),
                 PDO::PARAM_STR
             );
 
             $statement->bindParam(
-                ':' . MessageStoreFieldList::MESSAGE_FIELD,
+                ':' . MessageStoreFieldList::FIELD_MESSAGE,
                 $messageStore->getMessage()->getValue(),
                 PDO::PARAM_STR
             );
 
-            $statement->execute();
+            if (!$statement->execute()) {
+                throw new PDOException('Unable write to the database.');
+            }
 
             $messageId = (int)$pdo->lastInsertId();
 

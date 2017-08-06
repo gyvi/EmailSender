@@ -4,6 +4,7 @@ namespace EmailSender\MailAddress\Domain\Builder;
 
 use EmailSender\Core\ValueObject\Address;
 use EmailSender\Core\ValueObject\DisplayName;
+use EmailSender\MailAddress\Application\Catalog\MailAddressPropertyList;
 use EmailSender\MailAddress\Application\Collection\MailAddressCollection;
 use EmailSender\MailAddress\Domain\Aggregate\MailAddress;
 
@@ -77,9 +78,9 @@ class MailAddressCollectionBuilder
         foreach ($mailAddressCollectionArray as $mailAddressArray) {
             $mailAddressCollection->add(
                 new MailAddress(
-                    new Address($mailAddressArray[MailAddress::FIELD_ADDRESS]),
-                    (!empty($mailAddressArray[MailAddress::FIELD_DISPLAYNAME])
-                        ? new DisplayName($mailAddressArray[MailAddress::FIELD_DISPLAYNAME])
+                    new Address($mailAddressArray[MailAddressPropertyList::PROPERTY_ADDRESS]),
+                    (!empty($mailAddressArray[MailAddressPropertyList::PROPERTY_DISPLAY_NAME])
+                        ? new DisplayName($mailAddressArray[MailAddressPropertyList::PROPERTY_DISPLAY_NAME])
                         : null
                     )
                 )

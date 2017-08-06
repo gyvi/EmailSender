@@ -20,9 +20,9 @@ interface RecipientsServiceInterface
     public function getRecipientsFromMessage(Message $message): Recipients;
 
     /**
-     * @param array $recipientsArray
+     * @param string $recipients
      *
      * @return \EmailSender\Recipients\Domain\Aggregate\Recipients
      */
-    public function getRecipientsFromArray(array $recipientsArray): Recipients;
+    public function getRecipientsFromJson(string $recipients): Recipients;
 }

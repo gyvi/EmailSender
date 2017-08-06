@@ -7,6 +7,8 @@ use EmailSender\MessageLog\Application\Service\MessageLogService;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use EmailSender\Core\Services\ServiceList;
+use Closure;
 
 /**
  * Class MessageLogController
@@ -29,7 +31,21 @@ class MessageLogController extends AbstractController
         ResponseInterface $response,
         array $getRequest
     ): MessageInterface {
-        $messageQueueService = new MessageLogService();
+
+        /** @var \Psr\Log\LoggerInterface $logger */
+        $logger = $this->container->get(ServiceList::LOGGER);
+
+        /** @var Closure $messageLogReader */
+        $messageLogReader = $this->container->get(ServiceList::MESSAGE_LOG_READER);
+
+        /** @var Closure $messageLogWriter */
+        $messageLogWriter = $this->container->get(ServiceList::MESSAGE_LOG_WRITER);
+
+        $messageQueueService = new MessageLogService(
+            $logger,
+            $messageLogReader,
+            $messageLogWriter
+        );
 
         return $messageQueueService->listMessagesFromLog($request, $response, $getRequest);
     }

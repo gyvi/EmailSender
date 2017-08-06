@@ -8,6 +8,8 @@ use EmailSender\MessageStore\Application\Contract\MessageStoreServiceInterface;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
 use EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder;
 use EmailSender\MessageStore\Domain\Contract\EmailComposerInterface;
+use EmailSender\MessageStore\Domain\Service\AddMessageStoreService;
+use EmailSender\MessageStore\Domain\Service\GetMessageStoreService;
 use EmailSender\MessageStore\Infrastructure\Persistence\MessageStoreRepositoryReader;
 use EmailSender\MessageStore\Infrastructure\Persistence\MessageStoreRepositoryWriter;
 use EmailSender\Recipients\Application\Service\RecipientsService;
@@ -68,20 +70,11 @@ class MessageStoreService implements MessageStoreServiceInterface
      */
     public function addMessageToMessageStore(Message $message): MessageStore
     {
-        $recipientsService = new RecipientsService();
+        $recipientsService      = new RecipientsService();
+        $messageStoreBuilder    = new MessageStoreBuilder($this->emailComposer, $recipientsService);
+        $addMessageStoreService = new AddMessageStoreService($this->repositoryWriter, $messageStoreBuilder);
 
-        $messageStoreBuilder = new MessageStoreBuilder(
-            $this->emailComposer,
-            $recipientsService,
-            $this->repositoryReader
-        );
-
-        $messageStore = $messageStoreBuilder->buildMessageStoreFromMessage($message);
-        $messageId    = $this->repositoryWriter->add($messageStore);
-
-        $messageStore->setMessageId(new UnsignedInteger($messageId));
-
-        return $messageStore;
+        return $addMessageStoreService->add($message);
     }
 
     /**
@@ -89,16 +82,12 @@ class MessageStoreService implements MessageStoreServiceInterface
      *
      * @return \EmailSender\MessageStore\Domain\Aggregate\MessageStore
      */
-    public function getMessageFromMessageStore(UnsignedInteger $messageId): MessageStore
+    public function getMessageStoreFromRepository(UnsignedInteger $messageId): MessageStore
     {
-        $recipientsService = new RecipientsService();
+        $recipientsService      = new RecipientsService();
+        $messageStoreBuilder    = new MessageStoreBuilder($this->emailComposer, $recipientsService);
+        $getMessageStoreService = new GetMessageStoreService($this->repositoryReader, $messageStoreBuilder);
 
-        $messageStoreBuilder = new MessageStoreBuilder(
-            $this->emailComposer,
-            $recipientsService,
-            $this->repositoryReader
-        );
-
-        return $messageStoreBuilder->buildMessageStoreFromRepository($messageId);
+        return $getMessageStoreService->readByMessageId($messageId);
     }
 }

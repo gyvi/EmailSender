@@ -46,8 +46,7 @@ class RecipientsBuilder
         $bcc = new MailAddressCollection();
 
         /** @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress $toAddress */
-        foreach ($message->getTo() as $toAddress)
-        {
+        foreach ($message->getTo() as $toAddress) {
             if (!in_array(strtolower($toAddress->getAddress()->getValue()), $allRecipientsEmailAddresses, true)) {
                 $to->add($toAddress);
                 $allRecipientsEmailAddresses[] = strtolower($toAddress->getAddress()->getValue());
@@ -55,8 +54,7 @@ class RecipientsBuilder
         }
 
         /** @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress $ccAddress */
-        foreach ($message->getCc() as $ccAddress)
-        {
+        foreach ($message->getCc() as $ccAddress) {
             if (!in_array(strtolower($ccAddress->getAddress()->getValue()), $allRecipientsEmailAddresses, true)) {
                 $cc->add($ccAddress);
                 $allRecipientsEmailAddresses[] = strtolower($ccAddress->getAddress()->getValue());
@@ -64,8 +62,7 @@ class RecipientsBuilder
         }
 
         /** @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress $bccAddress */
-        foreach ($message->getBcc() as $bccAddress)
-        {
+        foreach ($message->getBcc() as $bccAddress) {
             if (!in_array(strtolower($bccAddress->getAddress()->getValue()), $allRecipientsEmailAddresses, true)) {
                 $bcc->add($bccAddress);
                 $allRecipientsEmailAddresses[] = strtolower($ccAddress->getAddress()->getValue());

@@ -107,8 +107,12 @@ class MessageQueueService implements MessageQueueServiceInterface
         );
         $messageStore = $messageStoreService->addMessageToMessageStore($message);
 
-        $messageLogService = new MessageLogService();
-        $messageLog        = $messageLogService->addMessageToMessageLog($message, $messageStore);
+        $messageLogService = new MessageLogService(
+            $this->logger,
+            $this->messageLogReaderService,
+            $this->messageLogWriterService
+        );
+        $messageLog = $messageLogService->addMessageToMessageLog($message, $messageStore);
 
         $messageQueueBuilder = new MessageQueueBuilder();
         $messageQueue        = $messageQueueBuilder->buildMessageQueueFromMessageLog($messageLog);

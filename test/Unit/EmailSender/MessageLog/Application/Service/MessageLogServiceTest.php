@@ -4,6 +4,8 @@ namespace Test\Unit\EmailSender\MessageLog\Application\Service;
 
 use EmailSender\MessageLog\Application\Service\MessageLogService;
 use PHPUnit\Framework\TestCase;
+use Closure;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class MessageLogServiceTest
@@ -17,7 +19,19 @@ class MessageLogServiceTest extends TestCase
      */
     public function testConstruct()
     {
-        $messageLogService = new MessageLogService();
+        /** @var Closure $repositoryService */
+        $repositoryService = function () {};
+
+        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        $logger = $this->getMockBuilder(LoggerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $messageLogService = new MessageLogService(
+            $logger,
+            $repositoryService,
+            $repositoryService
+        );
 
         $this->assertInstanceOf(MessageLogService::class, $messageLogService);
     }

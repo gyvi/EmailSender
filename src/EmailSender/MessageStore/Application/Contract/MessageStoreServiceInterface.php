@@ -25,5 +25,5 @@ interface MessageStoreServiceInterface
      *
      * @return \EmailSender\MessageStore\Domain\Aggregate\MessageStore
      */
-    public function getMessageFromMessageStore(UnsignedInteger $messageId): MessageStore;
+    public function getMessageStoreFromRepository(UnsignedInteger $messageId): MessageStore;
 }

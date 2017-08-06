@@ -2,6 +2,7 @@
 
 namespace EmailSender\MessageLog\Application\Contract;
 
+use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\MessageLog\Domain\Aggregator\MessageLog;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
@@ -36,4 +37,11 @@ interface MessageLogServiceInterface
      * @return \EmailSender\MessageLog\Domain\Aggregator\MessageLog
      */
     public function addMessageToMessageLog(Message $message, MessageStore $messageStore): MessageLog;
+
+    /**
+     * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageLogId
+     *
+     * @return \EmailSender\MessageLog\Domain\Aggregator\MessageLog
+     */
+    public function getMessageLogFromRepository(UnsignedInteger $messageLogId): MessageLog;
 }
