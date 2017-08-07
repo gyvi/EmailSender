@@ -8,7 +8,7 @@ use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\Core\ValueObject\Subject;
 use EmailSender\MailAddress\Application\Service\MailAddressService;
 use EmailSender\Message\Domain\Aggregate\Message;
-use EmailSender\MessageLog\Domain\Aggregator\MessageLog;
+use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
 use EmailSender\MessageLog\Infrastructure\Persistence\MessageLogFieldList;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
 use EmailSender\Recipients\Application\Service\RecipientsService;
@@ -48,7 +48,7 @@ class MessageLogBuilder
      * @param \EmailSender\Message\Domain\Aggregate\Message           $message
      * @param \EmailSender\MessageStore\Domain\Aggregate\MessageStore $messageStore
      *
-     * @return \EmailSender\MessageLog\Domain\Aggregator\MessageLog
+     * @return \EmailSender\MessageLog\Domain\Aggregate\MessageLog
      */
     public function buildMessageLogFromMessage(Message $message, MessageStore $messageStore): MessageLog
     {
@@ -64,13 +64,13 @@ class MessageLogBuilder
     /**
      * @param array $messageLogArray
      *
-     * @return \EmailSender\MessageLog\Domain\Aggregator\MessageLog
+     * @return \EmailSender\MessageLog\Domain\Aggregate\MessageLog
      */
     public function buildMessageLogFromArray(array $messageLogArray): MessageLog
     {
         $messageLog = new MessageLog(
             new UnsignedInteger($messageLogArray[MessageLogFieldList::FIELD_MESSAGE_ID]),
-            $this->mailAddressService->getMailAddressFromString($messageLogArray[MessageLogFieldList::FIELD_FROM]),
+            $this->mailAddressService->getMailAddress($messageLogArray[MessageLogFieldList::FIELD_FROM]),
             $this->recipientsService->getRecipientsFromJson($messageLogArray[MessageLogFieldList::FIELD_RECIPIENTS]),
             new Subject($messageLogArray[MessageLogFieldList::FIELD_SUBJECT]),
             new UnsignedInteger($messageLogArray[MessageLogFieldList::FIELD_DELAY])

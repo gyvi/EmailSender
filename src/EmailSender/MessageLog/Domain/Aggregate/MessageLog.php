@@ -1,6 +1,6 @@
 <?php
 
-namespace EmailSender\MessageLog\Domain\Aggregator;
+namespace EmailSender\MessageLog\Domain\Aggregate;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\MailAddress\Domain\Aggregate\MailAddress;

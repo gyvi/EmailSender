@@ -5,7 +5,7 @@ namespace EmailSender\Message\Application\Service;
 use EmailSender\MailAddress\Application\Service\MailAddressService;
 use EmailSender\Message\Application\Contract\MessageServiceInterface;
 use EmailSender\Message\Domain\Aggregate\Message;
-use EmailSender\Message\Domain\Builder\MessageBuilder;
+use EmailSender\Message\Domain\Service\GetMessageService;
 
 /**
  * Class MessageService
@@ -22,8 +22,8 @@ class MessageService implements MessageServiceInterface
     public function getMessageFromRequest(array $request): Message
     {
         $mailAddressService = new MailAddressService();
-        $messageBuilder     = new MessageBuilder($mailAddressService);
+        $getMessageService  = new GetMessageService($mailAddressService);
 
-        return $messageBuilder->buildMessageFromRequest($request);
+        return $getMessageService->getMessageFromRequest($request);
     }
 }

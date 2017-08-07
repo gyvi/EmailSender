@@ -3,7 +3,7 @@
 namespace EmailSender\MessageQueue\Domain\Builder;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
-use EmailSender\MessageLog\Domain\Aggregator\MessageLog;
+use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
 use EmailSender\MessageQueue\Application\Catalog\MessageQueuePropertyList;
 use EmailSender\MessageQueue\Domain\Aggregator\MessageQueue;
 
@@ -15,7 +15,7 @@ use EmailSender\MessageQueue\Domain\Aggregator\MessageQueue;
 class MessageQueueBuilder
 {
     /**
-     * @param \EmailSender\MessageLog\Domain\Aggregator\MessageLog $messageLog
+     * @param \EmailSender\MessageLog\Domain\Aggregate\MessageLog $messageLog
      *
      * @return \EmailSender\MessageQueue\Domain\Aggregator\MessageQueue
      */

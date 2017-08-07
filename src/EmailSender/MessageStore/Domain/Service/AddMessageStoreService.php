@@ -5,8 +5,10 @@ namespace EmailSender\MessageStore\Domain\Service;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
 use EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder;
+use EmailSender\MessageStore\Domain\Contract\EmailComposerInterface;
 use EmailSender\MessageStore\Domain\Contract\MessageStoreRepositoryWriterInterface;
 use EmailSender\Message\Domain\Aggregate\Message;
+use EmailSender\Recipients\Application\Service\RecipientsService;
 
 /**
  * Class AddMessageStoreService
@@ -21,22 +23,30 @@ class AddMessageStoreService
     private $repositoryWriter;
 
     /**
-     * @var \EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder
+     * @var \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface
      */
-    private $messageStoreBuilder;
+    private $emailComposer;
+
+    /**
+     * @var \EmailSender\Recipients\Application\Service\RecipientsService
+     */
+    private $recipientsService;
 
     /**
      * AddMessageStoreService constructor.
      *
      * @param \EmailSender\MessageStore\Domain\Contract\MessageStoreRepositoryWriterInterface $repositoryWriter
-     * @param \EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder                    $messageStoreBuilder
+     * @param \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface                $emailComposer
+     * @param \EmailSender\Recipients\Application\Service\RecipientsService                   $recipientsService
      */
     public function __construct(
         MessageStoreRepositoryWriterInterface $repositoryWriter,
-        MessageStoreBuilder $messageStoreBuilder
+        EmailComposerInterface $emailComposer,
+        RecipientsService $recipientsService
     ) {
-        $this->repositoryWriter    = $repositoryWriter;
-        $this->messageStoreBuilder = $messageStoreBuilder;
+        $this->repositoryWriter  = $repositoryWriter;
+        $this->emailComposer     = $emailComposer;
+        $this->recipientsService = $recipientsService;
     }
 
     /**
@@ -46,8 +56,9 @@ class AddMessageStoreService
      */
     public function add(Message $message): MessageStore
     {
-        $messageStore   = $this->messageStoreBuilder->buildMessageStoreFromMessage($message);
-        $messageStoreId = new UnsignedInteger($this->repositoryWriter->add($messageStore));
+        $messageStoreBuilder = new MessageStoreBuilder($this->emailComposer, $this->recipientsService);
+        $messageStore        = $messageStoreBuilder->buildMessageStoreFromMessage($message);
+        $messageStoreId      = new UnsignedInteger($this->repositoryWriter->add($messageStore));
 
         $messageStore->setMessageId($messageStoreId);
 

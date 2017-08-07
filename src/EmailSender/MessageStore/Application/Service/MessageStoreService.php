@@ -6,7 +6,6 @@ use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\MessageStore\Application\Contract\MessageStoreServiceInterface;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
-use EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder;
 use EmailSender\MessageStore\Domain\Contract\EmailComposerInterface;
 use EmailSender\MessageStore\Domain\Service\AddMessageStoreService;
 use EmailSender\MessageStore\Domain\Service\GetMessageStoreService;
@@ -71,8 +70,11 @@ class MessageStoreService implements MessageStoreServiceInterface
     public function addMessageToMessageStore(Message $message): MessageStore
     {
         $recipientsService      = new RecipientsService();
-        $messageStoreBuilder    = new MessageStoreBuilder($this->emailComposer, $recipientsService);
-        $addMessageStoreService = new AddMessageStoreService($this->repositoryWriter, $messageStoreBuilder);
+        $addMessageStoreService = new AddMessageStoreService(
+            $this->repositoryWriter,
+            $this->emailComposer,
+            $recipientsService
+        );
 
         return $addMessageStoreService->add($message);
     }
@@ -85,8 +87,11 @@ class MessageStoreService implements MessageStoreServiceInterface
     public function getMessageStoreFromRepository(UnsignedInteger $messageId): MessageStore
     {
         $recipientsService      = new RecipientsService();
-        $messageStoreBuilder    = new MessageStoreBuilder($this->emailComposer, $recipientsService);
-        $getMessageStoreService = new GetMessageStoreService($this->repositoryReader, $messageStoreBuilder);
+        $getMessageStoreService = new GetMessageStoreService(
+            $this->repositoryReader,
+            $this->emailComposer,
+            $recipientsService
+        );
 
         return $getMessageStoreService->readByMessageId($messageId);
     }

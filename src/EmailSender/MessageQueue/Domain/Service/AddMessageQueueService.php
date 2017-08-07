@@ -2,10 +2,12 @@
 
 namespace EmailSender\MessageQueue\Domain\Service;
 
-use EmailSender\MessageLog\Domain\Aggregator\MessageLog;
 use EmailSender\MessageQueue\Domain\Aggregator\MessageQueue;
 use EmailSender\MessageQueue\Domain\Builder\MessageQueueBuilder;
 use EmailSender\MessageQueue\Domain\Contract\MessageQueueRepositoryWriterInterface;
+use EmailSender\Message\Application\Service\MessageService;
+use EmailSender\MessageLog\Application\Service\MessageLogService;
+use EmailSender\MessageStore\Application\Service\MessageStoreService;
 
 /**
  * Class AddMessageQueueService
@@ -20,40 +22,58 @@ class AddMessageQueueService
     private $queueWriter;
 
     /**
-     * @var \EmailSender\MessageQueue\Domain\Builder\MessageQueueBuilder
+     * @var \EmailSender\Message\Application\Service\MessageService
      */
-    private $messageQueueBuilder;
+    private $messageService;
 
     /**
-     * AddMessageQueueService constructor.
-     *
-     * @param \Closure                                                     $queueService
-     * @param \EmailSender\MessageQueue\Domain\Builder\MessageQueueBuilder $messageQueueBuilder
+     * @var \EmailSender\MessageStore\Application\Service\MessageStoreService
      */
+    private $messageStoreService;
+
+    /**
+     * @var \EmailSender\MessageLog\Application\Service\MessageLogService
+     */
+    private $messageLogService;
+
     /**
      * AddMessageQueueService constructor.
      *
      * @param \EmailSender\MessageQueue\Domain\Contract\MessageQueueRepositoryWriterInterface $queueWriter
-     * @param \EmailSender\MessageQueue\Domain\Builder\MessageQueueBuilder                    $messageQueueBuilder
+     * @param \EmailSender\Message\Application\Service\MessageService                         $messageService
+     * @param \EmailSender\MessageStore\Application\Service\MessageStoreService               $messageStoreService
+     * @param \EmailSender\MessageLog\Application\Service\MessageLogService                   $messageLogService
      */
     public function __construct(
         MessageQueueRepositoryWriterInterface $queueWriter,
-        MessageQueueBuilder $messageQueueBuilder
+        MessageService $messageService,
+        MessageStoreService $messageStoreService,
+        MessageLogService $messageLogService
     ) {
         $this->queueWriter         = $queueWriter;
-        $this->messageQueueBuilder = $messageQueueBuilder;
+        $this->messageService      = $messageService;
+        $this->messageStoreService = $messageStoreService;
+        $this->messageLogService   = $messageLogService;
     }
 
     /**
-     * @param \EmailSender\MessageLog\Domain\Aggregator\MessageLog $messageLog
+     * @param array $request
      *
      * @return \EmailSender\MessageQueue\Domain\Aggregator\MessageQueue
      */
-    public function add(MessageLog $messageLog): MessageQueue
+    public function add(array $request): MessageQueue
     {
-        $messageQueue = $this->messageQueueBuilder->buildMessageQueueFromMessageLog($messageLog);
+        $message      = $this->messageService->getMessageFromRequest($request);
+        $messageStore = $this->messageStoreService->addMessageToMessageStore($message);
+        $messageLog   = $this->messageLogService->addMessageToMessageLog($message, $messageStore);
+
+        $messageQueueBuilder = new MessageQueueBuilder();
+
+        $messageQueue = $messageQueueBuilder->buildMessageQueueFromMessageLog($messageLog);
 
         $this->queueWriter->add($messageQueue);
+
+        /** TODO update MessageLog queued field in the repository */
 
         return $messageQueue;
     }

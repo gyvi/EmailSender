@@ -7,7 +7,7 @@ use EmailSender\MailAddress\Application\Service\MailAddressService;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\Recipients\Application\Contract\RecipientsServiceInterface;
 use EmailSender\Recipients\Domain\Aggregate\Recipients;
-use EmailSender\Recipients\Domain\Builder\RecipientsBuilder;
+use EmailSender\Recipients\Domain\Service\GetRecipientsService;
 
 /**
  * Class RecipientsService
@@ -23,10 +23,10 @@ class RecipientsService implements RecipientsServiceInterface
      */
     public function getRecipientsFromMessage(Message $message): Recipients
     {
-        $mailAddressService = new MailAddressService();
-        $recipientsBuilder  = new RecipientsBuilder($mailAddressService);
+        $mailAddressService   = new MailAddressService();
+        $getRecipientsService = new GetRecipientsService($mailAddressService);
 
-        return $recipientsBuilder->buildRecipientsFromMessage($message);
+        return $getRecipientsService->getRecipientsFromMessage($message);
     }
 
     /**
@@ -36,11 +36,9 @@ class RecipientsService implements RecipientsServiceInterface
      */
     public function getRecipientsFromJson(string $recipients): Recipients
     {
-        $recipientsArray    = json_decode($recipients, true);
+        $mailAddressService   = new MailAddressService();
+        $getRecipientsService = new GetRecipientsService($mailAddressService);
 
-        $mailAddressService = new MailAddressService();
-        $recipientsBuilder  = new RecipientsBuilder($mailAddressService);
-
-        return $recipientsBuilder->buildRecipientsFromArray($recipientsArray);
+        return $getRecipientsService->getRecipientsFromJson($recipients);
     }
 }

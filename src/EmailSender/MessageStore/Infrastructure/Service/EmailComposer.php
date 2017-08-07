@@ -1,6 +1,6 @@
 <?php
 
-namespace EmailSender\MessageStore\Domain\Composer;
+namespace EmailSender\MessageStore\Infrastructure\Service;
 
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\Message\Domain\Aggregate\Message;
@@ -8,11 +8,11 @@ use EmailSender\MessageStore\Domain\Contract\EmailComposerInterface;
 use PHPMailer;
 
 /**
- * Class EmailComposerWithPHPMailer
+ * Class EmailComposer
  *
  * @package EmailSender\MessageStore
  */
-class EmailComposerWithPHPMailer implements EmailComposerInterface
+class EmailComposer implements EmailComposerInterface
 {
     /**
      * @var \PHPMailer

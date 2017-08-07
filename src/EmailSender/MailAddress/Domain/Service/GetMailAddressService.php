@@ -1,20 +1,18 @@
 <?php
 
-namespace EmailSender\MailAddress\Application\Service;
+namespace EmailSender\MailAddress\Domain\Service;
 
-use EmailSender\MailAddress\Application\Collection\MailAddressCollection;
-use EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface;
-use EmailSender\MailAddress\Domain\Builder\MailAddressBuilder;
 use EmailSender\MailAddress\Domain\Aggregate\MailAddress;
+use EmailSender\MailAddress\Domain\Builder\MailAddressBuilder;
 use EmailSender\MailAddress\Domain\Builder\MailAddressCollectionBuilder;
-use EmailSender\MailAddress\Domain\Service\GetMailAddressService;
+use EmailSender\MailAddress\Application\Collection\MailAddressCollection;
 
 /**
- * Class MailAddressService
+ * Class GetMailAddressService
  *
- * @package EmailSender\MailAddress\Application\Service
+ * @package EmailSender\MailAddress
  */
-class MailAddressService implements MailAddressServiceInterface
+class GetMailAddressService
 {
     /**
      * Return with MailAddress from the given string.
@@ -25,9 +23,9 @@ class MailAddressService implements MailAddressServiceInterface
      */
     public function getMailAddress(string $mailAddressString): MailAddress
     {
-        $getMailAddressService = new GetMailAddressService();
+        $mailAddressBuilder = new MailAddressBuilder();
 
-        return $getMailAddressService->getMailAddress($mailAddressString);
+        return $mailAddressBuilder->buildMailAddressFromString($mailAddressString);
     }
 
     /**
@@ -39,9 +37,10 @@ class MailAddressService implements MailAddressServiceInterface
      */
     public function getMailAddressCollectionFromRequest(string $mailAddressCollectionString): MailAddressCollection
     {
-        $getMailAddressService = new GetMailAddressService();
+        $mailAddressBuilder           = new MailAddressBuilder();
+        $mailAddressCollectionBuilder = new MailAddressCollectionBuilder($mailAddressBuilder);
 
-        return $getMailAddressService->getMailAddressCollectionFromRequest($mailAddressCollectionString);
+        return $mailAddressCollectionBuilder->buildMailAddressCollectionFromString($mailAddressCollectionString);
     }
 
     /**
@@ -51,8 +50,9 @@ class MailAddressService implements MailAddressServiceInterface
      */
     public function getMailAddressCollectionFromRepository(array $mailAddressCollectionArray): MailAddressCollection
     {
-        $getMailAddressService = new GetMailAddressService();
+        $mailAddressBuilder           = new MailAddressBuilder();
+        $mailAddressCollectionBuilder = new MailAddressCollectionBuilder($mailAddressBuilder);
 
-        return $getMailAddressService->getMailAddressCollectionFromRepository($mailAddressCollectionArray);
+        return $mailAddressCollectionBuilder->buildMailAddressCollectionFromArray($mailAddressCollectionArray);
     }
 }

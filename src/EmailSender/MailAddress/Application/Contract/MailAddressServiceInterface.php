@@ -17,19 +17,19 @@ interface MailAddressServiceInterface
      *
      * @return \EmailSender\MailAddress\Domain\Aggregate\MailAddress
      */
-    public function getMailAddressFromString(string $mailAddressString): MailAddress;
+    public function getMailAddress(string $mailAddressString): MailAddress;
 
     /**
      * @param string $mailAddressCollectionString
      *
      * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
      */
-    public function getMailAddressCollectionFromString(string $mailAddressCollectionString): MailAddressCollection;
+    public function getMailAddressCollectionFromRequest(string $mailAddressCollectionString): MailAddressCollection;
 
     /**
      * @param array $mailAddressCollectionArray
      *
      * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
      */
-    public function getMailAddressCollectionFromArray(array $mailAddressCollectionArray): MailAddressCollection;
+    public function getMailAddressCollectionFromRepository(array $mailAddressCollectionArray): MailAddressCollection;
 }

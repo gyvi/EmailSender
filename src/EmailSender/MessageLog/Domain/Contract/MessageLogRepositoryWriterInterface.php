@@ -2,7 +2,7 @@
 
 namespace EmailSender\MessageLog\Domain\Contract;
 
-use EmailSender\MessageLog\Domain\Aggregator\MessageLog;
+use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
 
 /**
  * Interface MessageLogRepositoryWriterInterface
@@ -12,7 +12,7 @@ use EmailSender\MessageLog\Domain\Aggregator\MessageLog;
 interface MessageLogRepositoryWriterInterface
 {
     /**
-     * @param \EmailSender\MessageLog\Domain\Aggregator\MessageLog $messageLog
+     * @param \EmailSender\MessageLog\Domain\Aggregate\MessageLog $messageLog
      *
      * @return int
      */

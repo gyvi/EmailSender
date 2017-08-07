@@ -62,7 +62,7 @@ class MessageBuilder
     private function getFromFromRequest(array $request): MailAddress
     {
         try {
-            $from = $this->mailAddressService->getMailAddressFromString($request[MessagePropertyList::FROM]);
+            $from = $this->mailAddressService->getMailAddress($request[MessagePropertyList::FROM]);
         } catch (ValueObjectException $e) {
 
             throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyList::FROM . "'", 0, $e);
@@ -81,7 +81,7 @@ class MessageBuilder
     private function getToFromRequest(array $request): MailAddressCollection
     {
         try {
-            $to = $this->mailAddressService->getMailAddressCollectionFromString($request[MessagePropertyList::TO]);
+            $to = $this->mailAddressService->getMailAddressCollectionFromRequest($request[MessagePropertyList::TO]);
         } catch (ValueObjectException $e) {
 
             throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyList::TO . "'", 0, $e);
@@ -106,7 +106,7 @@ class MessageBuilder
     private function getCcFromRequest(array $request): MailAddressCollection
     {
         try {
-            $cc = $this->mailAddressService->getMailAddressCollectionFromString(
+            $cc = $this->mailAddressService->getMailAddressCollectionFromRequest(
                 isset($request[MessagePropertyList::CC]) ? $request[MessagePropertyList::CC] : ''
             );
         } catch (ValueObjectException $e) {
@@ -125,7 +125,7 @@ class MessageBuilder
     private function getBccFromRequest(array $request): MailAddressCollection
     {
         try {
-            $bcc = $this->mailAddressService->getMailAddressCollectionFromString(
+            $bcc = $this->mailAddressService->getMailAddressCollectionFromRequest(
                 isset($request[MessagePropertyList::BCC]) ? $request[MessagePropertyList::BCC] : ''
             );
         } catch (ValueObjectException $e) {
@@ -183,7 +183,7 @@ class MessageBuilder
             if (isset($request[MessagePropertyList::REPLY_TO])
                 && !empty(trim($request[MessagePropertyList::REPLY_TO]))
             ) {
-                $replyTo = $this->mailAddressService->getMailAddressFromString($request[MessagePropertyList::REPLY_TO]);
+                $replyTo = $this->mailAddressService->getMailAddress($request[MessagePropertyList::REPLY_TO]);
             }
         } catch (ValueObjectException $e) {
 

@@ -81,21 +81,21 @@ class RecipientsBuilder
     {
         if (!empty($recipientsArray[RecipientsPropertyList::TO])) {
             $to = $this->mailAddressService
-                ->getMailAddressCollectionFromArray($recipientsArray[RecipientsPropertyList::TO]);
+                ->getMailAddressCollectionFromRepository($recipientsArray[RecipientsPropertyList::TO]);
         } else {
             throw new InvalidArgumentException('Empty recipients field!');
         }
 
         if (!empty($recipientsArray[RecipientsPropertyList::CC])) {
             $cc = $this->mailAddressService
-                ->getMailAddressCollectionFromArray($recipientsArray[RecipientsPropertyList::CC]);
+                ->getMailAddressCollectionFromRepository($recipientsArray[RecipientsPropertyList::CC]);
         } else {
             $cc = new MailAddressCollection();
         }
 
         if (!empty($recipientsArray[RecipientsPropertyList::BCC])) {
             $bcc = $this->mailAddressService
-                ->getMailAddressCollectionFromArray($recipientsArray[RecipientsPropertyList::BCC]);
+                ->getMailAddressCollectionFromRepository($recipientsArray[RecipientsPropertyList::BCC]);
         } else {
             $bcc = new MailAddressCollection();
         }

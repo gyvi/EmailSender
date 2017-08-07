@@ -6,7 +6,6 @@ use EmailSender\Message\Application\Service\MessageService;
 use EmailSender\MessageLog\Application\Service\MessageLogService;
 use EmailSender\MessageQueue\Application\Contract\MessageQueueServiceInterface;
 use EmailSender\MessageQueue\Application\Validator\MessageQueueAddRequestValidator;
-use EmailSender\MessageQueue\Domain\Builder\MessageQueueBuilder;
 use EmailSender\MessageQueue\Domain\Service\AddMessageQueueService;
 use EmailSender\MessageQueue\Infrastructure\NonPersistence\MessageQueueRepositoryWriter;
 use EmailSender\MessageStore\Application\Service\MessageStoreService;
@@ -107,7 +106,6 @@ class MessageQueueService implements MessageQueueServiceInterface
         (new MessageQueueAddRequestValidator())->validate($getRequest);
 
         $messageService = new MessageService();
-        $message        = $messageService->getMessageFromRequest($getRequest);
 
         $messageStoreService = new MessageStoreService(
             $this->emailComposer,
@@ -115,30 +113,28 @@ class MessageQueueService implements MessageQueueServiceInterface
             $this->messageStoreReaderService,
             $this->messageStoreWriterService
         );
-        $messageStore = $messageStoreService->addMessageToMessageStore($message);
 
         $messageLogService = new MessageLogService(
             $this->logger,
             $this->messageLogReaderService,
             $this->messageLogWriterService
         );
-        $messageLog = $messageLogService->addMessageToMessageLog($message, $messageStore);
 
-        $queueWriter            = new MessageQueueRepositoryWriter($this->queueService);
-        $messageQueueBuilder    = new MessageQueueBuilder();
-        $addMessageQueueService = new AddMessageQueueService($queueWriter, $messageQueueBuilder);
+        $queueWriter = new MessageQueueRepositoryWriter($this->queueService);
 
-        $messageQueue = $addMessageQueueService->add($messageLog);
+        $addMessageQueueService = new AddMessageQueueService(
+            $queueWriter,
+            $messageService,
+            $messageStoreService,
+            $messageLogService
+         );
 
-        /** TODO update MessageLog queued field in the repository */
+        $messageQueue = $addMessageQueueService->add($getRequest);
 
         /** @var \Slim\Http\Response $response */
         $response = $response->withJson([
                 'status' => 0,
                 'statusMessage' => 'Queued.',
-                'message' => $message,
-                'messageStore' => $messageStore,
-                'messageLog' => $messageLog,
                 'messageQueue' => $messageQueue,
             ]);
 

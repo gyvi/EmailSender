@@ -2,7 +2,7 @@
 
 namespace EmailSender\MessageLog\Infrastructure\Persistence;
 
-use EmailSender\MessageLog\Domain\Aggregator\MessageLog;
+use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
 use EmailSender\MessageLog\Domain\Contract\MessageLogRepositoryWriterInterface;
 use Closure;
 use PDO;
@@ -37,7 +37,7 @@ class MessageLogRepositoryWriter implements MessageLogRepositoryWriterInterface
     }
 
     /**
-     * @param \EmailSender\MessageLog\Domain\Aggregator\MessageLog $messageLog
+     * @param \EmailSender\MessageLog\Domain\Aggregate\MessageLog $messageLog
      *
      * @return int
      *
