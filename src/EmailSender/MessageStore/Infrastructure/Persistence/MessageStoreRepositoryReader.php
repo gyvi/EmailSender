@@ -61,7 +61,7 @@ class MessageStoreRepositoryReader implements MessageStoreRepositoryReaderInterf
 
             $statement = $pdo->prepare($sql);
 
-            $statement->bindParam(
+            $statement->bindValue(
                 ':' . MessageStoreFieldList::FIELD_MESSAGE_ID,
                 $messageId->getValue(),
                 PDO::PARAM_INT

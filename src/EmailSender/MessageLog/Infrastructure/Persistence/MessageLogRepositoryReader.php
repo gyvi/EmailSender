@@ -68,7 +68,7 @@ class MessageLogRepositoryReader implements MessageLogRepositoryReaderInterface
 
             $statement = $pdo->prepare($sql);
 
-            $statement->bindParam(
+            $statement->bindValue(
                 ':' . MessageLogFieldList::FIELD_MESSAGE_LOG_ID,
                 $messageLogId->getValue(),
                 PDO::PARAM_INT

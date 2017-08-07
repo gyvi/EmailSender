@@ -64,4 +64,11 @@ class ServiceList
      * @var string
      */
     const MESSAGE_LOG_WRITER =  'messageLogReader';
+
+    /**
+     * Queue writer.
+     *
+     * @var string
+     */
+    const QUEUE = 'queue';
 }

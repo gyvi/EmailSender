@@ -39,6 +39,7 @@ class MessageQueueServiceTest extends TestCase
             $repositoryService,
             $repositoryService,
             $repositoryService,
+            $repositoryService,
             $repositoryService
         );
 

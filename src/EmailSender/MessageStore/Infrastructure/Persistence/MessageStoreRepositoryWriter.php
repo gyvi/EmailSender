@@ -57,13 +57,13 @@ class MessageStoreRepositoryWriter implements MessageStoreRepositoryWriterInterf
 
             $statement = $pdo->prepare($sql);
 
-            $statement->bindParam(
+            $statement->bindValue(
                 ':' . MessageStoreFieldList::FIELD_RECIPIENTS,
                 json_encode($messageStore->getRecipients()),
                 PDO::PARAM_STR
             );
 
-            $statement->bindParam(
+            $statement->bindValue(
                 ':' . MessageStoreFieldList::FIELD_MESSAGE,
                 $messageStore->getMessage()->getValue(),
                 PDO::PARAM_STR

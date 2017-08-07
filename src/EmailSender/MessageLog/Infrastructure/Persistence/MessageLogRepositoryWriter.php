@@ -57,31 +57,31 @@ class MessageLogRepositoryWriter implements MessageLogRepositoryWriterInterface
 
             $statement = $pdo->prepare($sql);
 
-            $statement->bindParam(
+            $statement->bindValue(
                 ':' . MessageLogFieldList::FIELD_MESSAGE_ID,
                 $messageLog->getMessageId()->getValue(),
                 PDO::PARAM_INT
             );
 
-            $statement->bindParam(
+            $statement->bindValue(
                 ':' . MessageLogFieldList::FIELD_FROM,
                 $messageLog->getFrom()->getAddress()->getValue(),
                 PDO::PARAM_STR
             );
 
-            $statement->bindParam(
+            $statement->bindValue(
                 ':' . MessageLogFieldList::FIELD_RECIPIENTS,
                 json_encode($messageLog->getRecipients()),
                 PDO::PARAM_STR
             );
 
-            $statement->bindParam(
+            $statement->bindValue(
                 ':' . MessageLogFieldList::FIELD_SUBJECT,
                 $messageLog->getSubject()->getValue(),
                 PDO::PARAM_STR
             );
 
-            $statement->bindParam(
+            $statement->bindValue(
                 ':' . MessageLogFieldList::FIELD_DELAY,
                 $messageLog->getDelay()->getValue(),
                 PDO::PARAM_INT

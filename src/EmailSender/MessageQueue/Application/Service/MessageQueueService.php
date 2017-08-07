@@ -7,6 +7,8 @@ use EmailSender\MessageLog\Application\Service\MessageLogService;
 use EmailSender\MessageQueue\Application\Contract\MessageQueueServiceInterface;
 use EmailSender\MessageQueue\Application\Validator\MessageQueueAddRequestValidator;
 use EmailSender\MessageQueue\Domain\Builder\MessageQueueBuilder;
+use EmailSender\MessageQueue\Domain\Service\AddMessageQueueService;
+use EmailSender\MessageQueue\Infrastructure\NonPersistence\MessageQueueRepositoryWriter;
 use EmailSender\MessageStore\Application\Service\MessageStoreService;
 use EmailSender\MessageStore\Domain\Contract\EmailComposerInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -35,6 +37,11 @@ class MessageQueueService implements MessageQueueServiceInterface
     /**
      * @var \Closure
      */
+    private $queueService;
+
+    /**
+     * @var \Closure
+     */
     private $messageStoreReaderService;
 
     /**
@@ -57,6 +64,7 @@ class MessageQueueService implements MessageQueueServiceInterface
      *
      * @param \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface $emailComposer
      * @param \Psr\Log\LoggerInterface                                         $logger
+     * @param \Closure                                                         $queueService
      * @param \Closure                                                         $messageStoreReaderService
      * @param \Closure                                                         $messageStoreWriterService
      * @param \Closure                                                         $messageLogReaderService
@@ -65,6 +73,7 @@ class MessageQueueService implements MessageQueueServiceInterface
     public function __construct(
         EmailComposerInterface $emailComposer,
         LoggerInterface $logger,
+        Closure $queueService,
         Closure $messageStoreReaderService,
         Closure $messageStoreWriterService,
         Closure $messageLogReaderService,
@@ -72,6 +81,7 @@ class MessageQueueService implements MessageQueueServiceInterface
     ) {
         $this->emailComposer             = $emailComposer;
         $this->logger                    = $logger;
+        $this->queueService              = $queueService;
         $this->messageStoreReaderService = $messageStoreReaderService;
         $this->messageStoreWriterService = $messageStoreWriterService;
         $this->messageLogReaderService   = $messageLogReaderService;
@@ -114,10 +124,13 @@ class MessageQueueService implements MessageQueueServiceInterface
         );
         $messageLog = $messageLogService->addMessageToMessageLog($message, $messageStore);
 
-        $messageQueueBuilder = new MessageQueueBuilder();
-        $messageQueue        = $messageQueueBuilder->buildMessageQueueFromMessageLog($messageLog);
+        $queueWriter            = new MessageQueueRepositoryWriter($this->queueService);
+        $messageQueueBuilder    = new MessageQueueBuilder();
+        $addMessageQueueService = new AddMessageQueueService($queueWriter, $messageQueueBuilder);
 
-        // TODO: Implement repository to store MessageQueue. Return with the status.
+        $messageQueue = $addMessageQueueService->add($messageLog);
+
+        /** TODO update MessageLog queued field in the repository */
 
         /** @var \Slim\Http\Response $response */
         $response = $response->withJson([

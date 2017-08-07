@@ -49,9 +49,13 @@ class MessageQueueController extends AbstractController
         /** @var Closure $messageLogWriter */
         $messageLogWriter = $this->container->get(ServiceList::MESSAGE_LOG_WRITER);
 
+        /** @var Closure $queue */
+        $queue = $this->container->get(ServiceList::QUEUE);
+
         $messageQueueService = new MessageQueueService(
             $emailComposer,
             $logger,
+            $queue,
             $messageStoreReader,
             $messageStoreWriter,
             $messageLogReader,
