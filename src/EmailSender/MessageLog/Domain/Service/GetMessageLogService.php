@@ -3,11 +3,9 @@
 namespace EmailSender\MessageLog\Domain\Service;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
-use EmailSender\MailAddress\Application\Service\MailAddressService;
 use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
 use EmailSender\MessageLog\Domain\Contract\MessageLogRepositoryReaderInterface;
 use EmailSender\MessageLog\Domain\Builder\MessageLogBuilder;
-use EmailSender\Recipients\Application\Service\RecipientsService;
 
 /**
  * Class GetMessageLogService
@@ -22,30 +20,22 @@ class GetMessageLogService
     private $repositoryReader;
 
     /**
-     * @var \EmailSender\Recipients\Application\Service\RecipientsService
+     * @var \EmailSender\MessageLog\Domain\Builder\MessageLogBuilder
      */
-    private $recipientsService;
-
-    /**
-     * @var \EmailSender\MailAddress\Application\Service\MailAddressService
-     */
-    private $mailAddressService;
+    private $messageLogBuilder;
 
     /**
      * GetMessageLogService constructor.
      *
      * @param \EmailSender\MessageLog\Domain\Contract\MessageLogRepositoryReaderInterface $repositoryReader
-     * @param \EmailSender\Recipients\Application\Service\RecipientsService               $recipientsService
-     * @param \EmailSender\MailAddress\Application\Service\MailAddressService             $mailAddressService
+     * @param \EmailSender\MessageLog\Domain\Builder\MessageLogBuilder                    $messageLogBuilder
      */
     public function __construct(
         MessageLogRepositoryReaderInterface $repositoryReader,
-        RecipientsService $recipientsService,
-        MailAddressService $mailAddressService
+        MessageLogBuilder $messageLogBuilder
     ) {
-        $this->repositoryReader   = $repositoryReader;
-        $this->recipientsService  = $recipientsService;
-        $this->mailAddressService = $mailAddressService;
+        $this->repositoryReader  = $repositoryReader;
+        $this->messageLogBuilder = $messageLogBuilder;
     }
 
     /**
@@ -55,9 +45,8 @@ class GetMessageLogService
      */
     public function readByMessageLogId(UnsignedInteger $messageLogId): MessageLog
     {
-        $messageLogArray   = $this->repositoryReader->readByMessageLogId($messageLogId);
-        $messageLogBuilder = new MessageLogBuilder($this->recipientsService, $this->mailAddressService);
+        $messageLogArray = $this->repositoryReader->readByMessageLogId($messageLogId);
 
-        return $messageLogBuilder->buildMessageLogFromArray($messageLogArray);
+        return $this->messageLogBuilder->buildMessageLogFromArray($messageLogArray);
     }
 }

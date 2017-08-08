@@ -6,12 +6,12 @@ use EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\Core\ValueObject\Subject;
-use EmailSender\MailAddress\Application\Service\MailAddressService;
+use EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
 use EmailSender\MessageLog\Infrastructure\Persistence\MessageLogFieldList;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
-use EmailSender\Recipients\Application\Service\RecipientsService;
+use EmailSender\Recipients\Application\Contract\RecipientsServiceInterface;
 
 /**
  * Class MessageLogBuilder
@@ -21,24 +21,24 @@ use EmailSender\Recipients\Application\Service\RecipientsService;
 class MessageLogBuilder
 {
     /**
-     * @var \EmailSender\Recipients\Application\Service\RecipientsService
+     * @var \EmailSender\Recipients\Application\Contract\RecipientsServiceInterface
      */
     private $recipientsService;
 
     /**
-     * @var \EmailSender\MailAddress\Application\Service\MailAddressService
+     * @var \EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface
      */
     private $mailAddressService;
 
     /**
      * MessageLogBuilder constructor.
      *
-     * @param \EmailSender\Recipients\Application\Service\RecipientsService   $recipientsService
-     * @param \EmailSender\MailAddress\Application\Service\MailAddressService $mailAddressService
+     * @param \EmailSender\Recipients\Application\Contract\RecipientsServiceInterface   $recipientsService
+     * @param \EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface $mailAddressService
      */
     public function __construct(
-        RecipientsService $recipientsService,
-        MailAddressService $mailAddressService
+        RecipientsServiceInterface $recipientsService,
+        MailAddressServiceInterface $mailAddressService
     ) {
         $this->recipientsService  = $recipientsService;
         $this->mailAddressService = $mailAddressService;
@@ -80,13 +80,19 @@ class MessageLogBuilder
         $messageLog->setStatus(new UnsignedInteger(MessageLogFieldList::FIELD_STATUS));
 
         if (!empty($messageLogArray[MessageLogFieldList::FIELD_QUEUED])) {
-            /** TODO implement DateTime */
-            $messageLog->setQueued(new DateTime());
+            $messageLog->setQueued(
+                DateTime::buildFromDateTime(
+                    new \DateTime($messageLogArray[MessageLogFieldList::FIELD_QUEUED])
+                )
+            );
         }
 
         if (!empty($messageLogArray[MessageLogFieldList::FIELD_SENT])) {
-            /** TODO implement DateTime */
-            $messageLog->setSent(new DateTime());
+            $messageLog->setSent(
+                DateTime::buildFromDateTime(
+                    new \DateTime($messageLogArray[MessageLogFieldList::FIELD_SENT])
+                )
+            );
         }
 
         if (!empty($messageLogArray[MessageLogFieldList::FIELD_ERROR_MESSAGE])) {

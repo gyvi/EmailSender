@@ -5,7 +5,7 @@ namespace EmailSender\Message\Domain\Builder;
 use EmailSender\Core\Scalar\Application\Exception\ValueObjectException;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\MailAddress\Application\Collection\MailAddressCollection;
-use EmailSender\MailAddress\Application\Service\MailAddressService;
+use EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface;
 use EmailSender\MailAddress\Domain\Aggregate\MailAddress;
 use EmailSender\Message\Application\Catalog\MessagePropertyList;
 use EmailSender\Message\Domain\Aggregate\Message;
@@ -21,16 +21,16 @@ use InvalidArgumentException;
 class MessageBuilder
 {
     /**
-     * @var \EmailSender\MailAddress\Application\Service\MailAddressService
+     * @var \EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface
      */
     private $mailAddressService;
 
     /**
      * MessageBuilder constructor.
      *
-     * @param \EmailSender\MailAddress\Application\Service\MailAddressService $mailAddressService
+     * @param \EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface $mailAddressService
      */
-    public function __construct(MailAddressService $mailAddressService)
+    public function __construct(MailAddressServiceInterface $mailAddressService)
     {
         $this->mailAddressService = $mailAddressService;
     }

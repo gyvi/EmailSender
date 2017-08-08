@@ -14,6 +14,7 @@ use EmailSender\MessageStore\Infrastructure\Persistence\MessageStoreRepositoryWr
 use EmailSender\Recipients\Application\Service\RecipientsService;
 use Closure;
 use Psr\Log\LoggerInterface;
+use EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder;
 
 /**
  * Class MessageStoreService
@@ -70,11 +71,8 @@ class MessageStoreService implements MessageStoreServiceInterface
     public function addMessageToMessageStore(Message $message): MessageStore
     {
         $recipientsService      = new RecipientsService();
-        $addMessageStoreService = new AddMessageStoreService(
-            $this->repositoryWriter,
-            $this->emailComposer,
-            $recipientsService
-        );
+        $messageStoreBuilder    = new MessageStoreBuilder($this->emailComposer, $recipientsService);
+        $addMessageStoreService = new AddMessageStoreService($this->repositoryWriter, $messageStoreBuilder);
 
         return $addMessageStoreService->add($message);
     }
@@ -87,11 +85,8 @@ class MessageStoreService implements MessageStoreServiceInterface
     public function getMessageStoreFromRepository(UnsignedInteger $messageId): MessageStore
     {
         $recipientsService      = new RecipientsService();
-        $getMessageStoreService = new GetMessageStoreService(
-            $this->repositoryReader,
-            $this->emailComposer,
-            $recipientsService
-        );
+        $messageStoreBuilder    = new MessageStoreBuilder($this->emailComposer, $recipientsService);
+        $getMessageStoreService = new GetMessageStoreService($this->repositoryReader, $messageStoreBuilder);
 
         return $getMessageStoreService->readByMessageId($messageId);
     }

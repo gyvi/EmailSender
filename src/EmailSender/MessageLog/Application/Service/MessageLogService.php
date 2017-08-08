@@ -6,7 +6,6 @@ use EmailSender\MailAddress\Application\Service\MailAddressService;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\MessageLog\Application\Contract\MessageLogServiceInterface;
 use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
-use EmailSender\MessageLog\Domain\Builder\MessageLogBuilder;
 use EmailSender\MessageLog\Domain\Service\AddMessageLogService;
 use EmailSender\MessageLog\Domain\Service\GetMessageLogService;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
@@ -19,6 +18,7 @@ use Closure;
 use Psr\Log\LoggerInterface;
 use EmailSender\MessageLog\Infrastructure\Persistence\MessageLogRepositoryReader;
 use EmailSender\MessageLog\Infrastructure\Persistence\MessageLogRepositoryWriter;
+use EmailSender\MessageLog\Domain\Builder\MessageLogBuilder;
 
 /**
  * Class MessageLogService
@@ -86,14 +86,11 @@ class MessageLogService implements MessageLogServiceInterface
      */
     public function addMessageToMessageLog(Message $message, MessageStore $messageStore): MessageLog
     {
-        $recipientsService    = new RecipientsService();
-        $mailAddressService   = new MailAddressService();
+        $recipientsService  = new RecipientsService();
+        $mailAddressService = new MailAddressService();
+        $messageLogBuilder  = new MessageLogBuilder($recipientsService, $mailAddressService);
 
-        $addMessageLogService = new AddMessageLogService(
-            $this->repositoryWriter,
-            $recipientsService,
-            $mailAddressService
-        );
+        $addMessageLogService = new AddMessageLogService($this->repositoryWriter, $messageLogBuilder);
 
         return $addMessageLogService->add($message, $messageStore);
     }
@@ -105,14 +102,11 @@ class MessageLogService implements MessageLogServiceInterface
      */
     public function getMessageLogFromRepository(UnsignedInteger $messageLogId): MessageLog
     {
-        $recipientsService    = new RecipientsService();
-        $mailAddressService   = new MailAddressService();
+        $recipientsService  = new RecipientsService();
+        $mailAddressService = new MailAddressService();
+        $messageLogBuilder  = new MessageLogBuilder($recipientsService, $mailAddressService);
 
-        $getMessageLogService = new GetMessageLogService(
-            $this->repositoryReader,
-            $recipientsService,
-            $mailAddressService
-        );
+        $getMessageLogService = new GetMessageLogService($this->repositoryReader, $messageLogBuilder);
 
         return $getMessageLogService->readByMessageLogId($messageLogId);
     }

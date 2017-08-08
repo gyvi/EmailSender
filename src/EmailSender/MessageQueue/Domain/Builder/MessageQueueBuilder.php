@@ -21,11 +21,7 @@ class MessageQueueBuilder
      */
     public function buildMessageQueueFromMessageLog(MessageLog $messageLog): MessageQueue
     {
-        return new MessageQueue(
-            $messageLog->getMessageLogId(),
-            $messageLog->getMessageId(),
-            $messageLog->getDelay()
-        );
+        return new MessageQueue($messageLog->getMessageLogId(), $messageLog->getMessageId(), $messageLog->getDelay());
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace EmailSender\Recipients\Domain\Builder;
 
 use EmailSender\MailAddress\Application\Collection\MailAddressCollection;
-use EmailSender\MailAddress\Application\Service\MailAddressService;
+use EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\Recipients\Application\Catalog\RecipientsPropertyList;
 use EmailSender\Recipients\Domain\Aggregate\Recipients;
@@ -17,18 +17,18 @@ use InvalidArgumentException;
 class RecipientsBuilder
 {
     /**
-     * @var \EmailSender\MailAddress\Application\Service\MailAddressService
+     * @var \EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface
      */
     private $mailAddressService;
 
     /**
      * RecipientsBuilder constructor.
      *
-     * @param \EmailSender\MailAddress\Application\Service\MailAddressService $mailAddressService
+     * @param \EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface $mailAddressService
      */
-    public function __construct(MailAddressService $mailAddressService)
+    public function __construct(MailAddressServiceInterface $mailAddressService)
     {
-        $this->mailAddressService    = new MailAddressService();
+        $this->mailAddressService = $mailAddressService;
     }
 
     /**
@@ -83,6 +83,7 @@ class RecipientsBuilder
             $to = $this->mailAddressService
                 ->getMailAddressCollectionFromRepository($recipientsArray[RecipientsPropertyList::TO]);
         } else {
+
             throw new InvalidArgumentException('Empty recipients field!');
         }
 

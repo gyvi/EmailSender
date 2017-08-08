@@ -1,6 +1,6 @@
 <?php
 
-namespace EmailSender\MessageQueue\Infrastructure\NonPersistence;
+namespace EmailSender\MessageQueue\Infrastructure\Service;
 
 use EmailSender\MessageQueue\Domain\Aggregator\MessageQueue;
 use EmailSender\MessageQueue\Domain\Contract\MessageQueueRepositoryWriterInterface;

@@ -36,7 +36,7 @@ class EmailComposer implements EmailComposerInterface
      */
     public function composeEmailFromMessage(Message $message): StringLiteral
     {
-        $this->phpMailer->XMailer     = 'EmailSenderForSenoritaaaa';
+        $this->phpMailer->XMailer = 'EmailSenderForSenorita';
 
         // Set the delay in the message date.
         $this->phpMailer->MessageDate = date('D, j M Y H:i:s O', time() + $message->getDelay()->getValue());

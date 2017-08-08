@@ -1,6 +1,5 @@
 <?php
 
-
 namespace EmailSender\Recipients\Application\Service;
 
 use EmailSender\MailAddress\Application\Service\MailAddressService;
@@ -8,6 +7,7 @@ use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\Recipients\Application\Contract\RecipientsServiceInterface;
 use EmailSender\Recipients\Domain\Aggregate\Recipients;
 use EmailSender\Recipients\Domain\Service\GetRecipientsService;
+use EmailSender\Recipients\Domain\Builder\RecipientsBuilder;
 
 /**
  * Class RecipientsService
@@ -24,7 +24,8 @@ class RecipientsService implements RecipientsServiceInterface
     public function getRecipientsFromMessage(Message $message): Recipients
     {
         $mailAddressService   = new MailAddressService();
-        $getRecipientsService = new GetRecipientsService($mailAddressService);
+        $recipientsBuilder    = new RecipientsBuilder($mailAddressService);
+        $getRecipientsService = new GetRecipientsService($recipientsBuilder);
 
         return $getRecipientsService->getRecipientsFromMessage($message);
     }
@@ -37,7 +38,8 @@ class RecipientsService implements RecipientsServiceInterface
     public function getRecipientsFromJson(string $recipients): Recipients
     {
         $mailAddressService   = new MailAddressService();
-        $getRecipientsService = new GetRecipientsService($mailAddressService);
+        $recipientsBuilder    = new RecipientsBuilder($mailAddressService);
+        $getRecipientsService = new GetRecipientsService($recipientsBuilder);
 
         return $getRecipientsService->getRecipientsFromJson($recipients);
     }

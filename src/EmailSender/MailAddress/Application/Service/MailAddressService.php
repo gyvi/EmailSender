@@ -25,7 +25,9 @@ class MailAddressService implements MailAddressServiceInterface
      */
     public function getMailAddress(string $mailAddressString): MailAddress
     {
-        $getMailAddressService = new GetMailAddressService();
+        $mailAddressBuilder           = new MailAddressBuilder();
+        $mailAddressCollectionBuilder = new MailAddressCollectionBuilder($mailAddressBuilder);
+        $getMailAddressService        = new GetMailAddressService($mailAddressBuilder, $mailAddressCollectionBuilder);
 
         return $getMailAddressService->getMailAddress($mailAddressString);
     }
@@ -39,7 +41,9 @@ class MailAddressService implements MailAddressServiceInterface
      */
     public function getMailAddressCollectionFromRequest(string $mailAddressCollectionString): MailAddressCollection
     {
-        $getMailAddressService = new GetMailAddressService();
+        $mailAddressBuilder           = new MailAddressBuilder();
+        $mailAddressCollectionBuilder = new MailAddressCollectionBuilder($mailAddressBuilder);
+        $getMailAddressService        = new GetMailAddressService($mailAddressBuilder, $mailAddressCollectionBuilder);
 
         return $getMailAddressService->getMailAddressCollectionFromRequest($mailAddressCollectionString);
     }
@@ -51,7 +55,9 @@ class MailAddressService implements MailAddressServiceInterface
      */
     public function getMailAddressCollectionFromRepository(array $mailAddressCollectionArray): MailAddressCollection
     {
-        $getMailAddressService = new GetMailAddressService();
+        $mailAddressBuilder           = new MailAddressBuilder();
+        $mailAddressCollectionBuilder = new MailAddressCollectionBuilder($mailAddressBuilder);
+        $getMailAddressService        = new GetMailAddressService($mailAddressBuilder, $mailAddressCollectionBuilder);
 
         return $getMailAddressService->getMailAddressCollectionFromRepository($mailAddressCollectionArray);
     }

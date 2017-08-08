@@ -7,7 +7,7 @@ use EmailSender\MessageLog\Application\Service\MessageLogService;
 use EmailSender\MessageQueue\Application\Contract\MessageQueueServiceInterface;
 use EmailSender\MessageQueue\Application\Validator\MessageQueueAddRequestValidator;
 use EmailSender\MessageQueue\Domain\Service\AddMessageQueueService;
-use EmailSender\MessageQueue\Infrastructure\NonPersistence\MessageQueueRepositoryWriter;
+use EmailSender\MessageQueue\Infrastructure\Service\MessageQueueRepositoryWriter;
 use EmailSender\MessageStore\Application\Service\MessageStoreService;
 use EmailSender\MessageStore\Domain\Contract\EmailComposerInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -15,6 +15,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\MessageInterface;
 use Closure;
 use Psr\Log\LoggerInterface;
+use EmailSender\MessageQueue\Domain\Builder\MessageQueueBuilder;
 
 /**
  * Class MessageQueueService
@@ -120,23 +121,24 @@ class MessageQueueService implements MessageQueueServiceInterface
             $this->messageLogWriterService
         );
 
-        $queueWriter = new MessageQueueRepositoryWriter($this->queueService);
-
+        $queueWriter            = new MessageQueueRepositoryWriter($this->queueService);
+        $messageQueueBuilder    = new MessageQueueBuilder();
         $addMessageQueueService = new AddMessageQueueService(
             $queueWriter,
             $messageService,
             $messageStoreService,
-            $messageLogService
+            $messageLogService,
+            $messageQueueBuilder
          );
 
         $messageQueue = $addMessageQueueService->add($getRequest);
 
         /** @var \Slim\Http\Response $response */
         $response = $response->withJson([
-                'status' => 0,
-                'statusMessage' => 'Queued.',
-                'messageQueue' => $messageQueue,
-            ]);
+            'status' => 0,
+            'statusMessage' => 'Queued.',
+            'messageQueue' => $messageQueue,
+        ]);
 
         return $response;
     }

@@ -2,7 +2,7 @@
 
 namespace EmailSender\Message\Domain\Service;
 
-use EmailSender\MailAddress\Application\Service\MailAddressService;
+use EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\Message\Domain\Builder\MessageBuilder;
 
@@ -14,18 +14,25 @@ use EmailSender\Message\Domain\Builder\MessageBuilder;
 class GetMessageService
 {
     /**
-     * @var \EmailSender\MailAddress\Application\Service\MailAddressService
+     * @var \EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface
      */
     private $mailAddressService;
 
     /**
+     * @var \EmailSender\Message\Domain\Builder\MessageBuilder
+     */
+    private $messageBuilder;
+
+    /**
      * GetMessageService constructor.
      *
-     * @param \EmailSender\MailAddress\Application\Service\MailAddressService $mailAddressService
+     * @param \EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface $mailAddressService
+     * @param \EmailSender\Message\Domain\Builder\MessageBuilder                        $messageBuilder
      */
-    public function __construct(MailAddressService $mailAddressService)
+    public function __construct(MailAddressServiceInterface $mailAddressService, MessageBuilder $messageBuilder)
     {
         $this->mailAddressService = $mailAddressService;
+        $this->messageBuilder     = $messageBuilder;
     }
 
     /**
@@ -35,8 +42,6 @@ class GetMessageService
      */
     public function getMessageFromRequest(array $request): Message
     {
-        $messageBuilder = new MessageBuilder($this->mailAddressService);
-
-        return $messageBuilder->buildMessageFromRequest($request);
+        return $this->messageBuilder->buildMessageFromRequest($request);
     }
 }

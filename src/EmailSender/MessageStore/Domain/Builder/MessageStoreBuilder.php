@@ -8,7 +8,7 @@ use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
 use EmailSender\MessageStore\Domain\Contract\EmailComposerInterface;
 use EmailSender\MessageStore\Infrastructure\Persistence\MessageStoreFieldList;
-use EmailSender\Recipients\Application\Service\RecipientsService;
+use EmailSender\Recipients\Application\Contract\RecipientsServiceInterface;
 
 /**
  * Class MessageStoreBuilder
@@ -23,20 +23,20 @@ class MessageStoreBuilder
     private $emailComposer;
 
     /**
-     * @var \EmailSender\Recipients\Application\Service\RecipientsService
+     * @var \EmailSender\Recipients\Application\Contract\RecipientsServiceInterface
      */
     private $recipientsService;
 
     /**
      * MessageStoreBuilder constructor.
      *
-     * @param \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface $emailComposer
-     * @param \EmailSender\Recipients\Application\Service\RecipientsService    $recipientsService
+     * @param \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface        $emailComposer
+     * @param \EmailSender\Recipients\Application\Contract\RecipientsServiceInterface $recipientsService
      */
-    public function __construct(EmailComposerInterface $emailComposer, RecipientsService $recipientsService)
+    public function __construct(EmailComposerInterface $emailComposer, RecipientsServiceInterface $recipientsService)
     {
-        $this->emailComposer          = $emailComposer;
-        $this->recipientsService      = $recipientsService;
+        $this->emailComposer     = $emailComposer;
+        $this->recipientsService = $recipientsService;
     }
 
     /**

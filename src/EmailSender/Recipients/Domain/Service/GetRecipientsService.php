@@ -2,7 +2,6 @@
 
 namespace EmailSender\Recipients\Domain\Service;
 
-use EmailSender\MailAddress\Application\Service\MailAddressService;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\Recipients\Domain\Aggregate\Recipients;
 use EmailSender\Recipients\Domain\Builder\RecipientsBuilder;
@@ -15,25 +14,28 @@ use EmailSender\Recipients\Domain\Builder\RecipientsBuilder;
 class GetRecipientsService
 {
     /**
-     * @var \EmailSender\MailAddress\Application\Service\MailAddressService
+     * @var \EmailSender\Recipients\Domain\Builder\RecipientsBuilder
      */
-    private $mailAddressService;
+    private $recipientsBuilder;
 
     /**
      * GetRecipientsService constructor.
      *
-     * @param \EmailSender\MailAddress\Application\Service\MailAddressService $mailAddressService
+     * @param \EmailSender\Recipients\Domain\Builder\RecipientsBuilder $recipientsBuilder
      */
-    public function __construct(MailAddressService $mailAddressService)
+    public function __construct(RecipientsBuilder $recipientsBuilder)
     {
-        $this->mailAddressService = $mailAddressService;
+        $this->recipientsBuilder = $recipientsBuilder;
     }
 
+    /**
+     * @param \EmailSender\Message\Domain\Aggregate\Message $message
+     *
+     * @return \EmailSender\Recipients\Domain\Aggregate\Recipients
+     */
     public function getRecipientsFromMessage(Message $message): Recipients
     {
-        $recipientsBuilder = new RecipientsBuilder($this->mailAddressService);
-
-        return $recipientsBuilder->buildRecipientsFromMessage($message);
+        return $this->recipientsBuilder->buildRecipientsFromMessage($message);
     }
 
     /**
@@ -43,8 +45,6 @@ class GetRecipientsService
      */
     public function getRecipientsFromJson(string $recipients): Recipients
     {
-        $recipientsBuilder = new RecipientsBuilder($this->mailAddressService);
-
-        return $recipientsBuilder->buildRecipientsFromArray(json_decode($recipients, true));
+        return $this->recipientsBuilder->buildRecipientsFromArray(json_decode($recipients, true));
     }
 }
