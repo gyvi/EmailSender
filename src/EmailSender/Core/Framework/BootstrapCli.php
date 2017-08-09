@@ -8,22 +8,18 @@ use EmailSender\Core\Services\MessageLogReaderService;
 use EmailSender\Core\Services\MessageLogWriterService;
 use EmailSender\Core\Services\QueueService;
 use Interop\Container\ContainerInterface;
-use Slim\App;
 use EmailSender\Core\Services\ServiceProvider;
 use EmailSender\Core\Services\ServiceList;
 use EmailSender\Core\Services\LoggerService;
 use EmailSender\Core\Services\ErrorHandler;
 use EmailSender\Core\Services\PhpErrorHandler;
-use EmailSender\Core\Route\Routing;
-use EmailSender\MessageLog\Application\Route\Route as MessageLogRoute;
-use EmailSender\MessageQueue\Application\Route\Route as MessageQueueRoute;
 
 /**
- * Class Bootstrap
+ * Class BootstrapCli
  *
- * @package EmailSender\Core
+ * @package EmailSender\Core\Framework
  */
-class Bootstrap
+class BootstrapCli
 {
     /**
      * @var \Interop\Container\ContainerInterface
@@ -42,18 +38,10 @@ class Bootstrap
 
     /**
      * Bootstrap init.
-     *
-     * @return App
      */
-    public function init(): App
+    public function init(): void
     {
         $this->initServices();
-
-        $app = new App($this->container);
-
-        $this->initRouting($app);
-
-        return $app;
     }
 
     /**
@@ -73,20 +61,5 @@ class Bootstrap
         $serviceProvider->addService(ServiceList::QUEUE,                new QueueService());
 
         $serviceProvider->init();
-    }
-
-    /**
-     * Init routing.
-     *
-     * @param \Slim\App $app
-     */
-    private function initRouting(App $app): void
-    {
-        $routing   = new Routing();
-
-        $routing->add(new MessageLogRoute($app));
-        $routing->add(new MessageQueueRoute($app));
-
-        $routing->init();
     }
 }

@@ -9,6 +9,7 @@ use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\MessageInterface;
+use EmailSender\MessageLog\Application\ValueObject\MessageLogStatus;
 
 /**
  * Interface MessageLogServiceInterface
@@ -37,6 +38,12 @@ interface MessageLogServiceInterface
      * @return \EmailSender\MessageLog\Domain\Aggregate\MessageLog
      */
     public function addMessageToMessageLog(Message $message, MessageStore $messageStore): MessageLog;
+
+    /**
+     * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageLogId
+     * @param \EmailSender\MessageLog\Application\ValueObject\MessageLogStatus         $messageLogStatus
+     */
+    public function setStatus(UnsignedInteger $messageLogId, MessageLogStatus $messageLogStatus): void;
 
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageLogId

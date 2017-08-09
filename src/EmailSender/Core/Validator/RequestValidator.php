@@ -31,18 +31,20 @@ abstract class RequestValidator
     public function validate($request): void
     {
         if (!is_array($request)) {
+
             throw new InvalidArgumentException('Empty or invalid request.');
         }
 
         foreach ($request as $propertyName => $property) {
             if (!in_array($propertyName, array_merge($this->requiredProperties, $this->optionalProperties), true)) {
+
                 throw new InvalidArgumentException('Not allowed property: ' . $propertyName);
             }
         }
 
-        foreach ($this->requiredProperties as $propertyName)
-        {
+        foreach ($this->requiredProperties as $propertyName) {
             if (!array_key_exists ($propertyName, $request)) {
+
                 throw new InvalidArgumentException('Missing required property: ' . $propertyName);
             }
         }

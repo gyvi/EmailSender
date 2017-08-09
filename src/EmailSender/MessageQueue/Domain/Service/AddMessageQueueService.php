@@ -3,7 +3,9 @@
 namespace EmailSender\MessageQueue\Domain\Service;
 
 use EmailSender\Message\Application\Contract\MessageServiceInterface;
+use EmailSender\MessageLog\Application\Catalog\MessageLogStatuses;
 use EmailSender\MessageLog\Application\Contract\MessageLogServiceInterface;
+use EmailSender\MessageLog\Application\ValueObject\MessageLogStatus;
 use EmailSender\MessageQueue\Domain\Aggregator\MessageQueue;
 use EmailSender\MessageQueue\Domain\Builder\MessageQueueBuilder;
 use EmailSender\MessageQueue\Domain\Contract\MessageQueueRepositoryWriterInterface;
@@ -79,7 +81,10 @@ class AddMessageQueueService
 
         $this->queueWriter->add($messageQueue);
 
-        /** TODO update MessageLog queued field in the repository */
+        $this->messageLogService->setStatus(
+            $messageQueue->getMessageId(),
+            new MessageLogStatus(MessageLogStatuses::STATUS_QUEUED)
+        );
 
         return $messageQueue;
     }

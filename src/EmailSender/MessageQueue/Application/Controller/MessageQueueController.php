@@ -31,9 +31,6 @@ class MessageQueueController extends AbstractController
         ResponseInterface $response,
         array $getRequest
     ): MessageInterface {
-        /** @var \EmailSender\MessageStore\Domain\Contract\EmailComposerInterface $emailComposer */
-        $emailComposer = $this->container->get(ServiceList::EMAIL_COMPOSER);
-
         /** @var \Psr\Log\LoggerInterface $logger */
         $logger = $this->container->get(ServiceList::LOGGER);
 
@@ -49,13 +46,16 @@ class MessageQueueController extends AbstractController
         /** @var Closure $messageLogWriter */
         $messageLogWriter = $this->container->get(ServiceList::MESSAGE_LOG_WRITER);
 
-        /** @var Closure $queue */
-        $queue = $this->container->get(ServiceList::QUEUE);
+        /** @var Closure $queueService */
+        $queueService = $this->container->get(ServiceList::QUEUE);
+
+        /** @var array $queueServiceSettings */
+        $queueServiceSettings = $this->container->get('settings')[ServiceList::QUEUE];
 
         $messageQueueService = new MessageQueueService(
-            $emailComposer,
             $logger,
-            $queue,
+            $queueService,
+            $queueServiceSettings,
             $messageStoreReader,
             $messageStoreWriter,
             $messageLogReader,

@@ -33,6 +33,8 @@ return [
             'port'     => '5672',
             'username' => 'username',
             'password' => 'password',
+            'exchange' => 'emailSender',
+            'queue'    => 'emailSendQueue',
         ],
     ],
 ];

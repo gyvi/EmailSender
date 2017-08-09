@@ -5,9 +5,11 @@ namespace EmailSender\MessageLog\Application\Service;
 use EmailSender\MailAddress\Application\Service\MailAddressService;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\MessageLog\Application\Contract\MessageLogServiceInterface;
+use EmailSender\MessageLog\Application\ValueObject\MessageLogStatus;
 use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
 use EmailSender\MessageLog\Domain\Service\AddMessageLogService;
 use EmailSender\MessageLog\Domain\Service\GetMessageLogService;
+use EmailSender\MessageLog\Domain\Service\UpdateMessageLogService;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
 use EmailSender\Recipients\Application\Service\RecipientsService;
 use Psr\Http\Message\ServerRequestInterface;
@@ -93,6 +95,16 @@ class MessageLogService implements MessageLogServiceInterface
         $addMessageLogService = new AddMessageLogService($this->repositoryWriter, $messageLogBuilder);
 
         return $addMessageLogService->add($message, $messageStore);
+    }
+
+    /**
+     * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageLogId
+     * @param \EmailSender\MessageLog\Application\ValueObject\MessageLogStatus         $messageLogStatus
+     */
+    public function setStatus(UnsignedInteger $messageLogId, MessageLogStatus $messageLogStatus): void
+    {
+        $updateMessageLogService = new UpdateMessageLogService($this->repositoryWriter);
+        $updateMessageLogService->setStatus($messageLogId, $messageLogStatus);
     }
 
     /**

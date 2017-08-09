@@ -2,12 +2,15 @@
 
 namespace EmailSender\MessageLog\Infrastructure\Persistence;
 
+use EmailSender\MessageLog\Application\Catalog\MessageLogStatuses;
 use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
 use EmailSender\MessageLog\Domain\Contract\MessageLogRepositoryWriterInterface;
 use Closure;
 use PDO;
 use PDOException;
 use Error;
+use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
+use EmailSender\MessageLog\Application\ValueObject\MessageLogStatus;
 
 /**
  * Class MessageLogRepositoryWriter
@@ -99,6 +102,77 @@ class MessageLogRepositoryWriter implements MessageLogRepositoryWriterInterface
         }
 
         return $messageLogId;
+    }
+
+    /**
+     * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageLogId
+     * @param \EmailSender\MessageLog\Application\ValueObject\MessageLogStatus         $messageLogStatus
+     *
+     * @throws \Error
+     */
+    public function setStatus(UnsignedInteger $messageLogId, MessageLogStatus $messageLogStatus): void
+    {
+        try {
+            $pdo = $this->getConnection();
+
+            $sql = '
+                UPDATE
+                    `messageLog`
+                SET
+                    `status` = :status' . $this->getSetStatusDateTimeUpdate($messageLogStatus) . '
+                WHERE
+                    `messageLogId` = :messageLogId
+            ';
+
+            $statement = $pdo->prepare($sql);
+
+            $statement->bindValue(
+                ':' . MessageLogFieldList::FIELD_STATUS,
+                $messageLogStatus->getValue(),
+                PDO::PARAM_STR
+            );
+
+            $statement->bindValue(
+                ':' . MessageLogFieldList::FIELD_MESSAGE_LOG_ID,
+                $messageLogId->getValue(),
+                PDO::PARAM_INT
+            );
+
+            if (!$statement->execute()) {
+                throw new PDOException('Unable to write to the database.');
+            }
+        } catch (PDOException $e) {
+
+            throw new Error($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * @param \EmailSender\MessageLog\Application\ValueObject\MessageLogStatus $messageLogStatus
+     *
+     * @return string
+     *
+     * @throws \Error
+     */
+    private function getSetStatusDateTimeUpdate(MessageLogStatus $messageLogStatus): string
+    {
+        $sqlDateTimeUpdate = '';
+
+        switch ($messageLogStatus->getValue()) {
+            case MessageLogStatuses::STATUS_QUEUED:
+                $sqlDateTimeUpdate = ',
+                    `queued` = NOW() 
+                ';
+                break;
+
+            case MessageLogStatuses::STATUS_SENT:
+                $sqlDateTimeUpdate = '
+                    `sent` = NOW()
+                ';
+                break;
+        }
+
+        return $sqlDateTimeUpdate;
     }
 
     /**

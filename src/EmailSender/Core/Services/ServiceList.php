@@ -31,13 +31,6 @@ class ServiceList
     const PHP_ERROR_HANDLER = 'phpErrorHandler';
 
     /**
-     * Email composer.
-     *
-     * @var string
-     */
-    const EMAIL_COMPOSER = 'emailComposer';
-
-    /**
      * Message store reader.
      *
      * @var string
