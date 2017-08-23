@@ -2,6 +2,7 @@
 
 namespace EmailSender\MessageLog\Domain\Contract;
 
+use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\MessageLog\Application\ValueObject\MessageLogStatus;
@@ -23,6 +24,11 @@ interface MessageLogRepositoryWriterInterface
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageLogId
      * @param \EmailSender\MessageLog\Application\ValueObject\MessageLogStatus         $messageLogStatus
+     * @param \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral    $errorMessage
      */
-    public function setStatus(UnsignedInteger $messageLogId, MessageLogStatus $messageLogStatus);
+    public function setStatus(
+        UnsignedInteger $messageLogId,
+        MessageLogStatus $messageLogStatus,
+        StringLiteral $errorMessage
+    ): void;
 }

@@ -42,13 +42,18 @@ interface MessageLogServiceInterface
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageLogId
      * @param \EmailSender\MessageLog\Application\ValueObject\MessageLogStatus         $messageLogStatus
+     * @param null|string                                                              $errorMessage
      */
-    public function setStatus(UnsignedInteger $messageLogId, MessageLogStatus $messageLogStatus): void;
+    public function setStatus(
+        UnsignedInteger $messageLogId,
+        MessageLogStatus $messageLogStatus,
+        ?string $errorMessage
+    ): void;
 
     /**
-     * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageLogId
+     * @param int $messageLogId
      *
      * @return \EmailSender\MessageLog\Domain\Aggregate\MessageLog
      */
-    public function getMessageLogFromRepository(UnsignedInteger $messageLogId): MessageLog;
+    public function getMessageLogFromRepository(int $messageLogId): MessageLog;
 }

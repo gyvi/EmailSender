@@ -25,4 +25,9 @@ interface MessageQueueServiceInterface
         ResponseInterface $response,
         array $getRequest
     ): MessageInterface;
+
+    /**
+     * @param string $messageQueue
+     */
+    public function sendMessageFromQueue(string $messageQueue): void;
 }

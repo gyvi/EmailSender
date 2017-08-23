@@ -23,7 +23,7 @@ class AMQPMessageBuilder
         $messageProperties = [
             'delivery_mode'       => AMQPMessage::DELIVERY_MODE_PERSISTENT,
             'application_headers' => new AMQPTable([
-                'x-delay' => $messageQueue->getDelay()->getValue()
+                'x-delay' => $messageQueue->getDelay()->getValue() * 1000 // milliseconds
             ]),
         ];
 

@@ -83,7 +83,8 @@ class AddMessageQueueService
 
         $this->messageLogService->setStatus(
             $messageQueue->getMessageId(),
-            new MessageLogStatus(MessageLogStatuses::STATUS_QUEUED)
+            new MessageLogStatus(MessageLogStatuses::STATUS_QUEUED),
+            ''
         );
 
         return $messageQueue;

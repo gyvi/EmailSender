@@ -64,4 +64,11 @@ class ServiceList
      * @var string
      */
     const QUEUE = 'queue';
+
+    /**
+     * PHPMailer's SMTP service.
+     *
+     * @var string
+     */
+    const SMTP = 'smtp';
 }

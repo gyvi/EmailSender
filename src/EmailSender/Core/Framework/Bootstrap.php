@@ -17,6 +17,7 @@ use EmailSender\Core\Services\PhpErrorHandler;
 use EmailSender\Core\Route\Routing;
 use EmailSender\MessageLog\Application\Route\Route as MessageLogRoute;
 use EmailSender\MessageQueue\Application\Route\Route as MessageQueueRoute;
+use EmailSender\Core\Services\SMTPService;
 
 /**
  * Class Bootstrap
@@ -71,6 +72,7 @@ class Bootstrap
         $serviceProvider->addService(ServiceList::MESSAGE_LOG_READER,   new MessageLogReaderService());
         $serviceProvider->addService(ServiceList::MESSAGE_LOG_WRITER,   new MessageLogWriterService());
         $serviceProvider->addService(ServiceList::QUEUE,                new QueueService());
+        $serviceProvider->addService(ServiceList::SMTP,                 new SMTPService());
 
         $serviceProvider->init();
     }

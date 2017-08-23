@@ -3,6 +3,7 @@
 namespace EmailSender\MessageLog\Domain\Builder;
 
 use EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime;
+use EmailSender\Core\Scalar\Application\ValueObject\Numeric\SignedInteger;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\Core\ValueObject\Subject;
@@ -76,8 +77,8 @@ class MessageLogBuilder
             new UnsignedInteger($messageLogArray[MessageLogFieldList::FIELD_DELAY])
         );
 
-        $messageLog->setMessageLogId($messageLogArray[MessageLogFieldList::FIELD_MESSAGE_LOG_ID]);
-        $messageLog->setStatus(new UnsignedInteger(MessageLogFieldList::FIELD_STATUS));
+        $messageLog->setMessageLogId(new UnsignedInteger($messageLogArray[MessageLogFieldList::FIELD_MESSAGE_LOG_ID]));
+        $messageLog->setStatus(new SignedInteger((int)MessageLogFieldList::FIELD_STATUS));
 
         if (!empty($messageLogArray[MessageLogFieldList::FIELD_QUEUED])) {
             $messageLog->setQueued(

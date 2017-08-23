@@ -2,6 +2,7 @@
 
 namespace EmailSender\MessageLog\Application\Service;
 
+use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\MailAddress\Application\Service\MailAddressService;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\MessageLog\Application\Contract\MessageLogServiceInterface;
@@ -100,20 +101,26 @@ class MessageLogService implements MessageLogServiceInterface
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageLogId
      * @param \EmailSender\MessageLog\Application\ValueObject\MessageLogStatus         $messageLogStatus
+     * @param null|string                                                              $errorMessageString
      */
-    public function setStatus(UnsignedInteger $messageLogId, MessageLogStatus $messageLogStatus): void
+    public function setStatus(
+        UnsignedInteger $messageLogId,
+        MessageLogStatus $messageLogStatus,
+        ?string $errorMessageString): void
     {
+        $errorMessage = new StringLiteral((string)$errorMessageString);
         $updateMessageLogService = new UpdateMessageLogService($this->repositoryWriter);
-        $updateMessageLogService->setStatus($messageLogId, $messageLogStatus);
+        $updateMessageLogService->setStatus($messageLogId, $messageLogStatus, $errorMessage);
     }
 
     /**
-     * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageLogId
+     * @param int $messageLogIdInt
      *
      * @return \EmailSender\MessageLog\Domain\Aggregate\MessageLog
      */
-    public function getMessageLogFromRepository(UnsignedInteger $messageLogId): MessageLog
+    public function getMessageLogFromRepository(int $messageLogIdInt): MessageLog
     {
+        $messageLogId       = new UnsignedInteger($messageLogIdInt);
         $recipientsService  = new RecipientsService();
         $mailAddressService = new MailAddressService();
         $messageLogBuilder  = new MessageLogBuilder($recipientsService, $mailAddressService);

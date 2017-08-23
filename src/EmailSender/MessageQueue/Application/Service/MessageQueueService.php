@@ -7,8 +7,10 @@ use EmailSender\MessageLog\Application\Service\MessageLogService;
 use EmailSender\MessageQueue\Application\Contract\MessageQueueServiceInterface;
 use EmailSender\MessageQueue\Application\Validator\MessageQueueAddRequestValidator;
 use EmailSender\MessageQueue\Domain\Service\AddMessageQueueService;
+use EmailSender\MessageQueue\Domain\Service\SendMessageService;
 use EmailSender\MessageQueue\Infrastructure\Builder\AMQPMessageBuilder;
 use EmailSender\MessageQueue\Infrastructure\Service\MessageQueueRepositoryWriter;
+use EmailSender\MessageQueue\Infrastructure\Service\SMTPSender;
 use EmailSender\MessageStore\Application\Service\MessageStoreService;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -60,6 +62,11 @@ class MessageQueueService implements MessageQueueServiceInterface
     private $messageLogWriterService;
 
     /**
+     * @var \Closure
+     */
+    private $SMTPService;
+
+    /**
      * MessageQueueService constructor.
      *
      * @param \Psr\Log\LoggerInterface $logger
@@ -69,6 +76,7 @@ class MessageQueueService implements MessageQueueServiceInterface
      * @param \Closure                 $messageStoreWriterService
      * @param \Closure                 $messageLogReaderService
      * @param \Closure                 $messageLogWriterService
+     * @param \Closure                 $SMTPService
      */
     public function __construct(
         LoggerInterface $logger,
@@ -77,7 +85,8 @@ class MessageQueueService implements MessageQueueServiceInterface
         Closure $messageStoreReaderService,
         Closure $messageStoreWriterService,
         Closure $messageLogReaderService,
-        Closure $messageLogWriterService
+        Closure $messageLogWriterService,
+        Closure $SMTPService
     ) {
         $this->logger                    = $logger;
         $this->queueService              = $queueService;
@@ -86,6 +95,7 @@ class MessageQueueService implements MessageQueueServiceInterface
         $this->messageStoreWriterService = $messageStoreWriterService;
         $this->messageLogReaderService   = $messageLogReaderService;
         $this->messageLogWriterService   = $messageLogWriterService;
+        $this->SMTPService               = $SMTPService;
     }
 
     /**
@@ -150,8 +160,29 @@ class MessageQueueService implements MessageQueueServiceInterface
         return $response;
     }
 
-    public function sendMessageFromQueue(string $messageQueue)
+    /**
+     * @param string $messageQueue
+     *
+     * @return void
+     */
+    public function sendMessageFromQueue(string $messageQueue): void
     {
-        $this->logger->info('Sent email: ' . $messageQueue);
+        $messageStoreService = new MessageStoreService(
+            $this->logger,
+            $this->messageStoreReaderService,
+            $this->messageStoreWriterService
+        );
+
+        $messageLogService = new MessageLogService(
+            $this->logger,
+            $this->messageLogReaderService,
+            $this->messageLogWriterService
+        );
+
+        $SMTPSender = new SMTPSender($this->SMTPService);
+
+        $sendMessageService = new SendMessageService($messageLogService, $messageStoreService, $SMTPSender);
+
+        $sendMessageService->send($messageQueue);
     }
 }

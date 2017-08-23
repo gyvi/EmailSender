@@ -7,6 +7,7 @@ use EmailSender\Core\Services\MessageStoreWriterService;
 use EmailSender\Core\Services\MessageLogReaderService;
 use EmailSender\Core\Services\MessageLogWriterService;
 use EmailSender\Core\Services\QueueService;
+use EmailSender\Core\Services\SMTPService;
 use Interop\Container\ContainerInterface;
 use EmailSender\Core\Services\ServiceProvider;
 use EmailSender\Core\Services\ServiceList;
@@ -59,6 +60,7 @@ class BootstrapCli
         $serviceProvider->addService(ServiceList::MESSAGE_LOG_READER,   new MessageLogReaderService());
         $serviceProvider->addService(ServiceList::MESSAGE_LOG_WRITER,   new MessageLogWriterService());
         $serviceProvider->addService(ServiceList::QUEUE,                new QueueService());
+        $serviceProvider->addService(ServiceList::SMTP,                 new SMTPService());
 
         $serviceProvider->init();
     }

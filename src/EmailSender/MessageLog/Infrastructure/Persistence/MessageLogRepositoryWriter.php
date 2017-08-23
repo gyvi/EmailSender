@@ -2,6 +2,7 @@
 
 namespace EmailSender\MessageLog\Infrastructure\Persistence;
 
+use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\MessageLog\Application\Catalog\MessageLogStatuses;
 use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
 use EmailSender\MessageLog\Domain\Contract\MessageLogRepositoryWriterInterface;
@@ -107,10 +108,15 @@ class MessageLogRepositoryWriter implements MessageLogRepositoryWriterInterface
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageLogId
      * @param \EmailSender\MessageLog\Application\ValueObject\MessageLogStatus         $messageLogStatus
+     * @param \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral    $errorMessage
      *
      * @throws \Error
      */
-    public function setStatus(UnsignedInteger $messageLogId, MessageLogStatus $messageLogStatus): void
+    public function setStatus(
+        UnsignedInteger $messageLogId,
+        MessageLogStatus $messageLogStatus,
+        StringLiteral $errorMessage
+    ): void
     {
         try {
             $pdo = $this->getConnection();
@@ -119,7 +125,10 @@ class MessageLogRepositoryWriter implements MessageLogRepositoryWriterInterface
                 UPDATE
                     `messageLog`
                 SET
-                    `status` = :status' . $this->getSetStatusDateTimeUpdate($messageLogStatus) . '
+                    `status` = :status'
+                . $this->getSetStatusDateTimeUpdate($messageLogStatus)
+                . $this->getSetStatusErrorMessageUpdate($messageLogStatus)
+                . '
                 WHERE
                     `messageLogId` = :messageLogId
             ';
@@ -138,6 +147,14 @@ class MessageLogRepositoryWriter implements MessageLogRepositoryWriterInterface
                 PDO::PARAM_INT
             );
 
+            if ($messageLogStatus->getValue() === MessageLogStatuses::STATUS_ERROR) {
+                $statement->bindValue(
+                    ':' . MessageLogFieldList::FIELD_ERROR_MESSAGE,
+                    $errorMessage->getValue(),
+                    PDO::PARAM_STR
+                );
+            }
+
             if (!$statement->execute()) {
                 throw new PDOException('Unable to write to the database.');
             }
@@ -151,13 +168,9 @@ class MessageLogRepositoryWriter implements MessageLogRepositoryWriterInterface
      * @param \EmailSender\MessageLog\Application\ValueObject\MessageLogStatus $messageLogStatus
      *
      * @return string
-     *
-     * @throws \Error
      */
     private function getSetStatusDateTimeUpdate(MessageLogStatus $messageLogStatus): string
     {
-        $sqlDateTimeUpdate = '';
-
         switch ($messageLogStatus->getValue()) {
             case MessageLogStatuses::STATUS_QUEUED:
                 $sqlDateTimeUpdate = ',
@@ -166,9 +179,35 @@ class MessageLogRepositoryWriter implements MessageLogRepositoryWriterInterface
                 break;
 
             case MessageLogStatuses::STATUS_SENT:
-                $sqlDateTimeUpdate = '
+                $sqlDateTimeUpdate = ',
                     `sent` = NOW()
                 ';
+                break;
+
+            default:
+                $sqlDateTimeUpdate = '';
+                break;
+        }
+
+        return $sqlDateTimeUpdate;
+    }
+
+    /**
+     * @param \EmailSender\MessageLog\Application\ValueObject\MessageLogStatus $messageLogStatus
+     *
+     * @return string
+     */
+    private function getSetStatusErrorMessageUpdate(MessageLogStatus $messageLogStatus): string
+    {
+        switch ($messageLogStatus->getValue()) {
+            case MessageLogStatuses::STATUS_ERROR:
+                $sqlDateTimeUpdate = ',
+                    `errorMessage` = :errorMessage
+                ';
+                break;
+
+            default:
+                $sqlDateTimeUpdate = '';
                 break;
         }
 

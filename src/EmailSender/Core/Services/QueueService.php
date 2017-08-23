@@ -19,7 +19,7 @@ class QueueService implements ServiceInterface
     public function getService(): Closure
     {
         return function (ContainerInterface $container): Closure {
-            return function () use (&$container): AMQPStreamConnection {
+            return function () use ($container): AMQPStreamConnection {
                 $settings = $container->get('settings')[ServiceList::QUEUE];
 
                 return new AMQPStreamConnection(
