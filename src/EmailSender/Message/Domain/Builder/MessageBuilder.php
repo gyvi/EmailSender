@@ -7,7 +7,7 @@ use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\MailAddress\Application\Collection\MailAddressCollection;
 use EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface;
 use EmailSender\MailAddress\Domain\Aggregate\MailAddress;
-use EmailSender\Message\Application\Catalog\MessagePropertyList;
+use EmailSender\Message\Application\Catalog\MessagePropertyNames;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\Core\ValueObject\Subject;
 use EmailSender\Message\Domain\ValueObject\Body;
@@ -62,10 +62,10 @@ class MessageBuilder
     private function getFromFromRequest(array $request): MailAddress
     {
         try {
-            $from = $this->mailAddressService->getMailAddress($request[MessagePropertyList::FROM]);
+            $from = $this->mailAddressService->getMailAddress($request[MessagePropertyNames::FROM]);
         } catch (ValueObjectException $e) {
 
-            throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyList::FROM . "'", 0, $e);
+            throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyNames::FROM . "'", 0, $e);
         }
 
         return $from;
@@ -81,16 +81,16 @@ class MessageBuilder
     private function getToFromRequest(array $request): MailAddressCollection
     {
         try {
-            $to = $this->mailAddressService->getMailAddressCollectionFromRequest($request[MessagePropertyList::TO]);
+            $to = $this->mailAddressService->getMailAddressCollectionFromRequest($request[MessagePropertyNames::TO]);
         } catch (ValueObjectException $e) {
 
-            throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyList::TO . "'", 0, $e);
+            throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyNames::TO . "'", 0, $e);
         }
 
         if ($to->isEmpty()) {
 
             throw new InvalidArgumentException(
-                "Wrong property: '"  . MessagePropertyList::TO
+                "Wrong property: '"  . MessagePropertyNames::TO
                 . "' Property requires minimum 1 valid email address."
             );
         }
@@ -107,11 +107,11 @@ class MessageBuilder
     {
         try {
             $cc = $this->mailAddressService->getMailAddressCollectionFromRequest(
-                isset($request[MessagePropertyList::CC]) ? $request[MessagePropertyList::CC] : ''
+                isset($request[MessagePropertyNames::CC]) ? $request[MessagePropertyNames::CC] : ''
             );
         } catch (ValueObjectException $e) {
 
-            throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyList::CC . "'", 0, $e);
+            throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyNames::CC . "'", 0, $e);
         }
 
         return $cc;
@@ -126,11 +126,11 @@ class MessageBuilder
     {
         try {
             $bcc = $this->mailAddressService->getMailAddressCollectionFromRequest(
-                isset($request[MessagePropertyList::BCC]) ? $request[MessagePropertyList::BCC] : ''
+                isset($request[MessagePropertyNames::BCC]) ? $request[MessagePropertyNames::BCC] : ''
             );
         } catch (ValueObjectException $e) {
 
-            throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyList::BCC . "'", 0, $e);
+            throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyNames::BCC . "'", 0, $e);
         }
 
         return $bcc;
@@ -144,10 +144,10 @@ class MessageBuilder
     private function getSubjectFromRequest(array $request): Subject
     {
         try {
-            $subject = new Subject($request[MessagePropertyList::SUBJECT]);
+            $subject = new Subject($request[MessagePropertyNames::SUBJECT]);
         } catch (ValueObjectException $e) {
 
-            throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyList::SUBJECT . "'", 0, $e);
+            throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyNames::SUBJECT . "'", 0, $e);
         }
 
         return $subject;
@@ -161,10 +161,10 @@ class MessageBuilder
     private function getBodyFromRequest(array $request): Body
     {
         try {
-            $body = new Body($request[MessagePropertyList::BODY]);
+            $body = new Body($request[MessagePropertyNames::BODY]);
         } catch (ValueObjectException $e) {
 
-            throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyList::BODY . "'", 0, $e);
+            throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyNames::BODY . "'", 0, $e);
         }
 
         return $body;
@@ -180,14 +180,14 @@ class MessageBuilder
         $replyTo = null;
 
         try {
-            if (isset($request[MessagePropertyList::REPLY_TO])
-                && !empty(trim($request[MessagePropertyList::REPLY_TO]))
+            if (isset($request[MessagePropertyNames::REPLY_TO])
+                && !empty(trim($request[MessagePropertyNames::REPLY_TO]))
             ) {
-                $replyTo = $this->mailAddressService->getMailAddress($request[MessagePropertyList::REPLY_TO]);
+                $replyTo = $this->mailAddressService->getMailAddress($request[MessagePropertyNames::REPLY_TO]);
             }
         } catch (ValueObjectException $e) {
 
-            throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyList::REPLY_TO . "'", 0, $e);
+            throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyNames::REPLY_TO . "'", 0, $e);
         }
 
         return $replyTo;
@@ -202,11 +202,11 @@ class MessageBuilder
     {
         try {
             $delay = new UnsignedInteger(
-                isset($request[MessagePropertyList::DELAY]) ? (int)$request[MessagePropertyList::DELAY] : 0
+                isset($request[MessagePropertyNames::DELAY]) ? (int)$request[MessagePropertyNames::DELAY] : 0
             );
         } catch (ValueObjectException $e) {
 
-            throw new InvalidArgumentException("Wrong property: '" . MessagePropertyList::DELAY . "'", 0, $e);
+            throw new InvalidArgumentException("Wrong property: '" . MessagePropertyNames::DELAY . "'", 0, $e);
         }
 
         return $delay;

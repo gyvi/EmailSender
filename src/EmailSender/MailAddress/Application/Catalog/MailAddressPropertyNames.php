@@ -3,19 +3,19 @@
 namespace EmailSender\MailAddress\Application\Catalog;
 
 /**
- * Class MailAddressPropertyList
+ * Class MailAddressPropertyNames
  *
  * @package EmailSender\MailAddress
  */
-class MailAddressPropertyList
+class MailAddressPropertyNames
 {
     /**
      * @var string
      */
-    const PROPERTY_DISPLAY_NAME = 'name';
+    const DISPLAY_NAME = 'name';
 
     /**
      * @var string
      */
-    const PROPERTY_ADDRESS     = 'address';
+    const ADDRESS      = 'address';
 }

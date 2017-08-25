@@ -26,7 +26,7 @@ class MessageLogController extends AbstractController
      *
      * @ignoreCodeCoverage
      */
-    public function listMessagesFromLog(
+    public function listMessageLogs(
         ServerRequestInterface $request,
         ResponseInterface $response,
         array $getRequest
@@ -47,6 +47,6 @@ class MessageLogController extends AbstractController
             $messageLogWriter
         );
 
-        return $messageQueueService->listMessagesFromLog($request, $response, $getRequest);
+        return $messageQueueService->listMessageLogs($request, $response, $getRequest);
     }
 }

@@ -4,7 +4,7 @@ namespace EmailSender\MailAddress\Domain\Aggregate;
 
 use EmailSender\Core\ValueObject\Address;
 use EmailSender\Core\ValueObject\DisplayName;
-use EmailSender\MailAddress\Application\Catalog\MailAddressPropertyList;
+use EmailSender\MailAddress\Application\Catalog\MailAddressPropertyNames;
 use JsonSerializable;
 
 /**
@@ -58,10 +58,10 @@ class MailAddress implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            MailAddressPropertyList::PROPERTY_DISPLAY_NAME => !empty($this->displayName)
+            MailAddressPropertyNames::DISPLAY_NAME => !empty($this->displayName)
                                                                   ? $this->displayName->getValue()
                                                                   : '',
-            MailAddressPropertyList::PROPERTY_ADDRESS      => $this->address->getValue(),
+            MailAddressPropertyNames::ADDRESS      => $this->address->getValue(),
         ];
     }
 

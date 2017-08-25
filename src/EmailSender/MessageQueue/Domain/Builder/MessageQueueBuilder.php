@@ -4,7 +4,7 @@ namespace EmailSender\MessageQueue\Domain\Builder;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
-use EmailSender\MessageQueue\Application\Catalog\MessageQueuePropertyList;
+use EmailSender\MessageQueue\Application\Catalog\MessageQueuePropertyNames;
 use EmailSender\MessageQueue\Domain\Aggregator\MessageQueue;
 
 /**
@@ -32,9 +32,9 @@ class MessageQueueBuilder
     public function buildMessageQueueFromArray(array $messageQueue): MessageQueue
     {
         return new MessageQueue(
-            new UnsignedInteger($messageQueue[MessageQueuePropertyList::MESSAGE_LOG_ID]),
-            new UnsignedInteger($messageQueue[MessageQueuePropertyList::MESSAGE_ID]),
-            new UnsignedInteger($messageQueue[MessageQueuePropertyList::DELAY])
+            new UnsignedInteger($messageQueue[MessageQueuePropertyNames::MESSAGE_LOG_ID]),
+            new UnsignedInteger($messageQueue[MessageQueuePropertyNames::MESSAGE_ID]),
+            new UnsignedInteger($messageQueue[MessageQueuePropertyNames::DELAY])
         );
     }
 }

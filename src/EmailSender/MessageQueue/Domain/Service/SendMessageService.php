@@ -4,7 +4,7 @@ namespace EmailSender\MessageQueue\Domain\Service;
 
 use EmailSender\MessageLog\Application\Contract\MessageLogServiceInterface;
 use EmailSender\MessageLog\Application\ValueObject\MessageLogStatus;
-use EmailSender\MessageQueue\Application\Catalog\MessageQueuePropertyList;
+use EmailSender\MessageQueue\Application\Catalog\MessageQueuePropertyNames;
 use EmailSender\MessageQueue\Domain\Contract\SMTPSenderInterface;
 use EmailSender\MessageQueue\Infrastructure\Service\SMTPException;
 use EmailSender\MessageStore\Application\Contract\MessageStoreServiceInterface;
@@ -60,7 +60,7 @@ class SendMessageService
         $messageQueue = json_decode($messageQueueJson, true);
 
         $messageLog = $this->messageLogService->getMessageLogFromRepository(
-            $messageQueue[MessageQueuePropertyList::MESSAGE_LOG_ID]
+            $messageQueue[MessageQueuePropertyNames::MESSAGE_LOG_ID]
         );
 
         $messageStore = $this->messageStoreService->getMessageStoreFromRepository($messageLog->getMessageId());

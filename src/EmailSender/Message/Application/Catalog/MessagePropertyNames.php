@@ -3,11 +3,11 @@
 namespace EmailSender\Message\Application\Catalog;
 
 /**
- * Class MessagePropertyList
+ * Class MessagePropertyNames
  *
  * @package EmailSender\Message
  */
-class MessagePropertyList
+class MessagePropertyNames
 {
     /**
      * Message From property name.

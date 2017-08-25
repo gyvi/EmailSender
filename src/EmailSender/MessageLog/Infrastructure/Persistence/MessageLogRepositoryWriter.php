@@ -62,31 +62,31 @@ class MessageLogRepositoryWriter implements MessageLogRepositoryWriterInterface
             $statement = $pdo->prepare($sql);
 
             $statement->bindValue(
-                ':' . MessageLogFieldList::FIELD_MESSAGE_ID,
+                ':' . MessageLogFieldList::MESSAGE_ID,
                 $messageLog->getMessageId()->getValue(),
                 PDO::PARAM_INT
             );
 
             $statement->bindValue(
-                ':' . MessageLogFieldList::FIELD_FROM,
+                ':' . MessageLogFieldList::FROM,
                 $messageLog->getFrom()->getAddress()->getValue(),
                 PDO::PARAM_STR
             );
 
             $statement->bindValue(
-                ':' . MessageLogFieldList::FIELD_RECIPIENTS,
+                ':' . MessageLogFieldList::RECIPIENTS,
                 json_encode($messageLog->getRecipients()),
                 PDO::PARAM_STR
             );
 
             $statement->bindValue(
-                ':' . MessageLogFieldList::FIELD_SUBJECT,
+                ':' . MessageLogFieldList::SUBJECT,
                 $messageLog->getSubject()->getValue(),
                 PDO::PARAM_STR
             );
 
             $statement->bindValue(
-                ':' . MessageLogFieldList::FIELD_DELAY,
+                ':' . MessageLogFieldList::DELAY,
                 $messageLog->getDelay()->getValue(),
                 PDO::PARAM_INT
             );
@@ -136,20 +136,20 @@ class MessageLogRepositoryWriter implements MessageLogRepositoryWriterInterface
             $statement = $pdo->prepare($sql);
 
             $statement->bindValue(
-                ':' . MessageLogFieldList::FIELD_STATUS,
+                ':' . MessageLogFieldList::STATUS,
                 $messageLogStatus->getValue(),
                 PDO::PARAM_STR
             );
 
             $statement->bindValue(
-                ':' . MessageLogFieldList::FIELD_MESSAGE_LOG_ID,
+                ':' . MessageLogFieldList::MESSAGE_LOG_ID,
                 $messageLogId->getValue(),
                 PDO::PARAM_INT
             );
 
             if ($messageLogStatus->getValue() === MessageLogStatuses::STATUS_ERROR) {
                 $statement->bindValue(
-                    ':' . MessageLogFieldList::FIELD_ERROR_MESSAGE,
+                    ':' . MessageLogFieldList::ERROR_MESSAGE,
                     $errorMessage->getValue(),
                     PDO::PARAM_STR
                 );

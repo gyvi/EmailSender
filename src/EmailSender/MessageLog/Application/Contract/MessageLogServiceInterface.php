@@ -19,19 +19,6 @@ use EmailSender\MessageLog\Application\ValueObject\MessageLogStatus;
 interface MessageLogServiceInterface
 {
     /**
-     * @param \Psr\Http\Message\ServerRequestInterface $request
-     * @param \Psr\Http\Message\ResponseInterface      $response
-     * @param array                                    $getRequest
-     *
-     * @return \Psr\Http\Message\MessageInterface
-     */
-    public function listMessagesFromLog(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        array $getRequest
-    ): MessageInterface;
-
-    /**
      * @param \EmailSender\Message\Domain\Aggregate\Message           $message
      * @param \EmailSender\MessageStore\Domain\Aggregate\MessageStore $messageStore
      *
@@ -56,4 +43,17 @@ interface MessageLogServiceInterface
      * @return \EmailSender\MessageLog\Domain\Aggregate\MessageLog
      */
     public function getMessageLogFromRepository(int $messageLogId): MessageLog;
+
+    /**
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @param \Psr\Http\Message\ResponseInterface      $response
+     * @param array                                    $getRequest
+     *
+     * @return \Psr\Http\Message\MessageInterface
+     */
+    public function listMessageLogs(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        array $getRequest
+    ): MessageInterface;
 }

@@ -70,34 +70,34 @@ class MessageLogBuilder
     public function buildMessageLogFromArray(array $messageLogArray): MessageLog
     {
         $messageLog = new MessageLog(
-            new UnsignedInteger($messageLogArray[MessageLogFieldList::FIELD_MESSAGE_ID]),
-            $this->mailAddressService->getMailAddress($messageLogArray[MessageLogFieldList::FIELD_FROM]),
-            $this->recipientsService->getRecipientsFromJson($messageLogArray[MessageLogFieldList::FIELD_RECIPIENTS]),
-            new Subject($messageLogArray[MessageLogFieldList::FIELD_SUBJECT]),
-            new UnsignedInteger($messageLogArray[MessageLogFieldList::FIELD_DELAY])
+            new UnsignedInteger($messageLogArray[MessageLogFieldList::MESSAGE_ID]),
+            $this->mailAddressService->getMailAddress($messageLogArray[MessageLogFieldList::FROM]),
+            $this->recipientsService->getRecipientsFromJson($messageLogArray[MessageLogFieldList::RECIPIENTS]),
+            new Subject($messageLogArray[MessageLogFieldList::SUBJECT]),
+            new UnsignedInteger($messageLogArray[MessageLogFieldList::DELAY])
         );
 
-        $messageLog->setMessageLogId(new UnsignedInteger($messageLogArray[MessageLogFieldList::FIELD_MESSAGE_LOG_ID]));
-        $messageLog->setStatus(new SignedInteger((int)MessageLogFieldList::FIELD_STATUS));
+        $messageLog->setMessageLogId(new UnsignedInteger($messageLogArray[MessageLogFieldList::MESSAGE_LOG_ID]));
+        $messageLog->setStatus(new SignedInteger((int)MessageLogFieldList::STATUS));
 
-        if (!empty($messageLogArray[MessageLogFieldList::FIELD_QUEUED])) {
+        if (!empty($messageLogArray[MessageLogFieldList::QUEUED])) {
             $messageLog->setQueued(
                 DateTime::buildFromDateTime(
-                    new \DateTime($messageLogArray[MessageLogFieldList::FIELD_QUEUED])
+                    new \DateTime($messageLogArray[MessageLogFieldList::QUEUED])
                 )
             );
         }
 
-        if (!empty($messageLogArray[MessageLogFieldList::FIELD_SENT])) {
+        if (!empty($messageLogArray[MessageLogFieldList::SENT])) {
             $messageLog->setSent(
                 DateTime::buildFromDateTime(
-                    new \DateTime($messageLogArray[MessageLogFieldList::FIELD_SENT])
+                    new \DateTime($messageLogArray[MessageLogFieldList::SENT])
                 )
             );
         }
 
-        if (!empty($messageLogArray[MessageLogFieldList::FIELD_ERROR_MESSAGE])) {
-            $messageLog->setErrorMessage(new StringLiteral($messageLogArray[MessageLogFieldList::FIELD_ERROR_MESSAGE]));
+        if (!empty($messageLogArray[MessageLogFieldList::ERROR_MESSAGE])) {
+            $messageLog->setErrorMessage(new StringLiteral($messageLogArray[MessageLogFieldList::ERROR_MESSAGE]));
         }
 
         return $messageLog;

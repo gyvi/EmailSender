@@ -1,22 +1,5 @@
 EmailSender
 
-MessageQueue->add
-- save to MessageStore, get messageId
-- save to MessageLog, get messageLogId
-- send to the MessageQueue
-
-MessageQueue->send
-- parse	input
-- load message from MessageStore
-- load message from MessageLog
-- send to SMTP
-- update message to the MessageLog
-
-MessageLog->list
-- parse post
-- load messages from MessageLog
-- send to the html
-
 MessageLog->view
 - create twig
 - send to html

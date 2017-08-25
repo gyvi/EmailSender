@@ -3,11 +3,11 @@
 namespace EmailSender\MessageQueue\Application\Catalog;
 
 /**
- * Class MessageQueuePropertyList
+ * Class MessageQueuePropertyNames
  *
  * @package EmailSender\MessageQueue
  */
-class MessageQueuePropertyList
+class MessageQueuePropertyNames
 {
     /**
      * MessageQueue messageLogId property name.

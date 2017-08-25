@@ -3,7 +3,7 @@
 namespace EmailSender\Recipients\Domain\Aggregate;
 
 use EmailSender\MailAddress\Application\Collection\MailAddressCollection;
-use EmailSender\Recipients\Application\Catalog\RecipientsPropertyList;
+use EmailSender\Recipients\Application\Catalog\RecipientsPropertyNames;
 use JsonSerializable;
 
 /**
@@ -72,9 +72,9 @@ class Recipients implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            RecipientsPropertyList::TO  => $this->to,
-            RecipientsPropertyList::CC  => $this->cc,
-            RecipientsPropertyList::BCC => $this->bcc,
+            RecipientsPropertyNames::TO  => $this->to,
+            RecipientsPropertyNames::CC  => $this->cc,
+            RecipientsPropertyNames::BCC => $this->bcc,
         ];
     }
 }

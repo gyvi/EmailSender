@@ -6,8 +6,11 @@ use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\MailAddress\Application\Service\MailAddressService;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\MessageLog\Application\Contract\MessageLogServiceInterface;
+use EmailSender\MessageLog\Application\Validator\MessageLogListRequestValidator;
 use EmailSender\MessageLog\Application\ValueObject\MessageLogStatus;
 use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
+use EmailSender\MessageLog\Domain\Builder\ListMessageLogsRequestBuilder;
+use EmailSender\MessageLog\Domain\Builder\MessageLogCollectionBuilder;
 use EmailSender\MessageLog\Domain\Service\AddMessageLogService;
 use EmailSender\MessageLog\Domain\Service\GetMessageLogService;
 use EmailSender\MessageLog\Domain\Service\UpdateMessageLogService;
@@ -63,25 +66,6 @@ class MessageLogService implements MessageLogServiceInterface
     }
 
     /**
-     * @param \Psr\Http\Message\ServerRequestInterface $request
-     * @param \Psr\Http\Message\ResponseInterface      $response
-     * @param array                                    $getRequest
-     *
-     * @return \Psr\Http\Message\MessageInterface
-     *
-     * @ignoreCodeCoverage
-     */
-    public function listMessagesFromLog(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        array $getRequest
-    ): MessageInterface {
-        $response->getBody()->write('listMessagesFromLog');
-
-        return $response;
-    }
-
-    /**
      * @param \EmailSender\Message\Domain\Aggregate\Message           $message
      * @param \EmailSender\MessageStore\Domain\Aggregate\MessageStore $messageStore
      *
@@ -108,8 +92,9 @@ class MessageLogService implements MessageLogServiceInterface
         MessageLogStatus $messageLogStatus,
         ?string $errorMessageString): void
     {
-        $errorMessage = new StringLiteral((string)$errorMessageString);
+        $errorMessage            = new StringLiteral((string)$errorMessageString);
         $updateMessageLogService = new UpdateMessageLogService($this->repositoryWriter);
+
         $updateMessageLogService->setStatus($messageLogId, $messageLogStatus, $errorMessage);
     }
 
@@ -120,13 +105,62 @@ class MessageLogService implements MessageLogServiceInterface
      */
     public function getMessageLogFromRepository(int $messageLogIdInt): MessageLog
     {
-        $messageLogId       = new UnsignedInteger($messageLogIdInt);
-        $recipientsService  = new RecipientsService();
-        $mailAddressService = new MailAddressService();
-        $messageLogBuilder  = new MessageLogBuilder($recipientsService, $mailAddressService);
+        $messageLogId                  = new UnsignedInteger($messageLogIdInt);
+        $recipientsService             = new RecipientsService();
+        $mailAddressService            = new MailAddressService();
+        $messageLogBuilder             = new MessageLogBuilder($recipientsService, $mailAddressService);
+        $messageLogCollectionBuilder   = new MessageLogCollectionBuilder($messageLogBuilder);
+        $listMessageLogsRequestBuilder = new ListMessageLogsRequestBuilder($mailAddressService);
 
-        $getMessageLogService = new GetMessageLogService($this->repositoryReader, $messageLogBuilder);
+        $getMessageLogService = new GetMessageLogService(
+            $this->repositoryReader,
+            $messageLogBuilder,
+            $messageLogCollectionBuilder,
+            $mailAddressService,
+            $listMessageLogsRequestBuilder
+        );
 
         return $getMessageLogService->readByMessageLogId($messageLogId);
+    }
+
+    /**
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @param \Psr\Http\Message\ResponseInterface      $response
+     * @param array                                    $getRequest
+     *
+     * @return \Psr\Http\Message\MessageInterface
+     */
+    public function listMessageLogs(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        array $getRequest
+    ): MessageInterface {
+        $getRequest = $request->getParsedBody();
+
+        (new MessageLogListRequestValidator())->validate($getRequest);
+
+        $recipientsService             = new RecipientsService();
+        $mailAddressService            = new MailAddressService();
+        $messageLogBuilder             = new MessageLogBuilder($recipientsService, $mailAddressService);
+        $messageLogCollectionBuilder   = new MessageLogCollectionBuilder($messageLogBuilder);
+        $listMessageLogsRequestBuilder = new ListMessageLogsRequestBuilder($mailAddressService);
+
+        $getMessageLogService = new GetMessageLogService(
+            $this->repositoryReader,
+            $messageLogBuilder,
+            $messageLogCollectionBuilder,
+            $mailAddressService,
+            $listMessageLogsRequestBuilder
+        );
+
+        $messageLogList = $getMessageLogService->listMessageLogs($getRequest);
+
+        /** @var \Slim\Http\Response $response */
+        $response = $response->withJson([
+            'status' => 0,
+            'messages' => $messageLogList,
+        ]);
+
+        return $response;
     }
 }

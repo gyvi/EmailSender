@@ -5,7 +5,7 @@ namespace EmailSender\Recipients\Domain\Builder;
 use EmailSender\MailAddress\Application\Collection\MailAddressCollection;
 use EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface;
 use EmailSender\Message\Domain\Aggregate\Message;
-use EmailSender\Recipients\Application\Catalog\RecipientsPropertyList;
+use EmailSender\Recipients\Application\Catalog\RecipientsPropertyNames;
 use EmailSender\Recipients\Domain\Aggregate\Recipients;
 use InvalidArgumentException;
 
@@ -79,24 +79,24 @@ class RecipientsBuilder
      */
     public function buildRecipientsFromArray(array $recipientsArray): Recipients
     {
-        if (!empty($recipientsArray[RecipientsPropertyList::TO])) {
+        if (!empty($recipientsArray[RecipientsPropertyNames::TO])) {
             $to = $this->mailAddressService
-                ->getMailAddressCollectionFromRepository($recipientsArray[RecipientsPropertyList::TO]);
+                ->getMailAddressCollectionFromRepository($recipientsArray[RecipientsPropertyNames::TO]);
         } else {
 
             throw new InvalidArgumentException('Empty recipients field!');
         }
 
-        if (!empty($recipientsArray[RecipientsPropertyList::CC])) {
+        if (!empty($recipientsArray[RecipientsPropertyNames::CC])) {
             $cc = $this->mailAddressService
-                ->getMailAddressCollectionFromRepository($recipientsArray[RecipientsPropertyList::CC]);
+                ->getMailAddressCollectionFromRepository($recipientsArray[RecipientsPropertyNames::CC]);
         } else {
             $cc = new MailAddressCollection();
         }
 
-        if (!empty($recipientsArray[RecipientsPropertyList::BCC])) {
+        if (!empty($recipientsArray[RecipientsPropertyNames::BCC])) {
             $bcc = $this->mailAddressService
-                ->getMailAddressCollectionFromRepository($recipientsArray[RecipientsPropertyList::BCC]);
+                ->getMailAddressCollectionFromRepository($recipientsArray[RecipientsPropertyNames::BCC]);
         } else {
             $bcc = new MailAddressCollection();
         }

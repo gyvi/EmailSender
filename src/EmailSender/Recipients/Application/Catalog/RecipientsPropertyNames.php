@@ -3,11 +3,11 @@
 namespace EmailSender\Recipients\Application\Catalog;
 
 /**
- * Class RecipientsPropertyList
+ * Class RecipientsPropertyNames
  *
  * @package EmailSender\Recipients
  */
-class RecipientsPropertyList
+class RecipientsPropertyNames
 {
     /**
      * Recipients To property name.

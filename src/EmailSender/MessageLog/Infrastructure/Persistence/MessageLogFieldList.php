@@ -12,50 +12,50 @@ class MessageLogFieldList
     /**
      * Primary key of the messageLog SQL table.
      */
-    const FIELD_MESSAGE_LOG_ID = 'messageLogId';
+    const MESSAGE_LOG_ID = 'messageLogId';
 
     /**
      * Primary key of the messageStore SQL table. Connected Message id.
      */
-    const FIELD_MESSAGE_ID = 'messageId';
+    const MESSAGE_ID = 'messageId';
 
     /**
      * From field of the messageLog SQL table.
      */
-    const FIELD_FROM = 'from';
+    const FROM = 'from';
 
     /**
      * Recipients field of the messageLog SQL table.
      */
-    const FIELD_RECIPIENTS = 'recipients';
+    const RECIPIENTS = 'recipients';
 
     /**
      * Subject field of the messageLog SQL table.
      */
-    const FIELD_SUBJECT = 'subject';
+    const SUBJECT = 'subject';
 
     /**
      * Queued field of the messageLog SQL table.
      */
-    const FIELD_QUEUED = 'queued';
+    const QUEUED = 'queued';
 
     /**
      * Sent field of the messageLog SQL table.
      */
-    const FIELD_SENT = 'sent';
+    const SENT = 'sent';
 
     /**
      * Delay field of the messageLog SQL table.
      */
-    const FIELD_DELAY = 'delay';
+    const DELAY = 'delay';
 
     /**
      * Status field of the messageLog SQL table.
      */
-    const FIELD_STATUS = 'status';
+    const STATUS = 'status';
 
     /**
      * Error message field of the messageLog SQL table.
      */
-    const FIELD_ERROR_MESSAGE = 'errorMessage';
+    const ERROR_MESSAGE = 'errorMessage';
 }

@@ -3,13 +3,14 @@
 namespace EmailSender\Core\Scalar\Application\ValueObject\DateTime;
 
 use EmailSender\Core\Scalar\Application\Contract\ValueObjectInterface;
+use JsonSerializable;
 
 /**
  * Class DateTime
  *
  * @package EmailSender\Core\Scalar
  */
-class DateTime implements ValueObjectInterface
+class DateTime implements ValueObjectInterface, JsonSerializable
 {
     /**
      * @var \EmailSender\Core\Scalar\Application\ValueObject\DateTime\Date
@@ -128,5 +129,13 @@ class DateTime implements ValueObjectInterface
             $this->date->__toString(),
             $this->time->__toString()
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function jsonSerialize()
+    {
+        return $this->__toString();
     }
 }
