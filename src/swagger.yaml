@@ -1,0 +1,242 @@
+swagger: '2.0'
+info:
+  description: EmailSender API
+  version: 1.0.0
+  title: EmailSender API
+  contact:
+    email: you@your-company.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+paths:
+  /queue:
+    post:
+      summary: Add new email to the queue
+      operationId: addMessageToQueue
+      description: |
+        Add a new email to the EmailSender's queue
+      consumes:
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      parameters:
+      - in: formData
+        name: from
+        description: Sender's email address
+        required: true
+        type: string
+      - in: formData
+        name: to
+        description: Email recipients separated by commas. Separated name and email adress format is also accepted.
+        required: true
+        type: string
+      - in: formData
+        name: cc
+        description: Carbon copy email recipients separated by commas. Separated name and email adress format is also accepted.
+        required: false
+        type: string
+      - in: formData
+        name: bcc
+        description: Blind carbon copy email recipients separated by commas. Separated name and email adress format is also accepted.
+        required: false
+        type: string
+      - in: formData
+        name: subject
+        description: Email's subject
+        required: true
+        type: string
+      - in: formData
+        name: body
+        description: Email's body
+        required: true
+        type: string
+      - in: formData
+        name: delay
+        description: Delay before send in seconds
+        required: false
+        type: integer
+      responses:
+        200:
+          description: Successful queue add
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/StatusResponse'
+        400:
+          description: Bad request
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/StatusResponseError'
+        500:
+          description: Errors happened during the queue insert (database, etc...).
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/StatusResponseError'
+  /log:
+    post:
+      summary: List logs
+      operationId: listLogs
+      description: |
+        List logs from the system
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Message log request (can be empty object)"
+        schema:
+          $ref: "#/definitions/ListMessageLogRequest"
+      responses:
+        200:
+          description: Return with the found message logs. (can be returned with empty array)
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/LogResponse'
+        400:
+          description: Bad request
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/StatusResponseError'
+        500:
+          description: Errors happened during the logs reading (database, etc...).
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/StatusResponseError'
+  /:
+    get:
+      summary: List logs html
+      operationId: listLogsHtml
+      description: User interface for log checking from the system
+      produces:
+      - text/html
+      responses:
+        200:
+          description: "Email log lister viewer."
+definitions:
+  StatusResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        format: int32
+        example: 0
+      statusMessage:
+        type: string
+        example: Queued.
+  StatusResponseError:
+    type: object
+    properties:
+      status:
+        type: integer
+        format: int32
+        example: -1
+      statusMessage:
+        type: string
+        example: An unexpected error occurred.
+  LogResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        format: int32
+        example: 0
+      messages:
+        type: array
+        items:
+          $ref: '#/definitions/MessageLog'
+  MessageLog:
+    type: object
+    properties:
+      messageLogId:
+        type: integer
+        format: int64
+        example: 123456
+      messageId:
+        type: integer
+        format: int64
+        example: 123456
+      from:
+        $ref: '#/definitions/Mailaddress'
+      recipients:
+        properties:
+          to:
+            type: array
+            items:
+              $ref: '#/definitions/Mailaddress'
+          cc:
+            type: array
+            items:
+              $ref: '#/definitions/Mailaddress'
+          bcc:
+            type: array
+            items:
+              $ref: '#/definitions/Mailaddress'
+      subject:
+        type: string
+        example: Email subject.
+      logged:
+        type: string
+        example: "2017-08-23 01:45:19"
+        format: "date-time"
+      queued:
+        type: string
+        example: "2017-08-23 01:45:19"
+        format: "date-time"
+      sent:
+        type: string
+        example: "2017-08-23 01:45:19"
+        format: "date-time"
+      delay:
+        type: integer
+        format: int32
+        example: 500
+      status:
+        type: integer
+        format: int32
+        description: "error: -1, logged: 0, queued: 1, sent: 2"
+        example: 2
+      errorMessage:
+        type: string
+        description: "if no error, it will be returned with null"
+        example: null
+  Mailaddress:
+    type: object
+    properties:
+      name:
+        type: string
+        example: John Doe
+      address:
+        type: string
+        example: john.doe@example.org
+  ListMessageLogRequest:
+    type: object
+    properties:
+      from:
+        type: string
+        example: john.doe@example.org
+      rows:
+        type: integer
+        format: int32
+        description: "Default value is 50."
+        example: 50
+      page:
+        type: integer
+        format: int32
+        description: "Page number."
+        example: 3
+      lastMessageId:
+        type: integer
+        format: int64
+        description: "last message id. Message id's with smaller id will be only listed."
+        example: 23432
+host: localhost
+basePath: /
+schemes:
+  - http

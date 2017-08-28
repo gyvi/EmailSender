@@ -27,6 +27,11 @@ use EmailSender\MessageQueue\Domain\Builder\MessageQueueBuilder;
 class MessageQueueService implements MessageQueueServiceInterface
 {
     /**
+     * @var \Closure
+     */
+    private $view;
+
+    /**
      * @var \Psr\Log\LoggerInterface
      */
     private $logger;
@@ -69,6 +74,7 @@ class MessageQueueService implements MessageQueueServiceInterface
     /**
      * MessageQueueService constructor.
      *
+     * @param \Closure                 $view
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Closure                 $queueService
      * @param array                    $queueServiceSettings
@@ -79,6 +85,7 @@ class MessageQueueService implements MessageQueueServiceInterface
      * @param \Closure                 $SMTPService
      */
     public function __construct(
+        Closure $view,
         LoggerInterface $logger,
         Closure $queueService,
         array $queueServiceSettings,
@@ -88,6 +95,7 @@ class MessageQueueService implements MessageQueueServiceInterface
         Closure $messageLogWriterService,
         Closure $SMTPService
     ) {
+        $this->view                      = $view;
         $this->logger                    = $logger;
         $this->queueService              = $queueService;
         $this->queueServiceSettings      = $queueServiceSettings;
@@ -125,6 +133,7 @@ class MessageQueueService implements MessageQueueServiceInterface
         );
 
         $messageLogService = new MessageLogService(
+            $this->view,
             $this->logger,
             $this->messageLogReaderService,
             $this->messageLogWriterService
@@ -154,7 +163,6 @@ class MessageQueueService implements MessageQueueServiceInterface
         $response = $response->withJson([
             'status' => 0,
             'statusMessage' => 'Queued.',
-            'messageQueue' => $messageQueue,
         ]);
 
         return $response;
@@ -174,6 +182,7 @@ class MessageQueueService implements MessageQueueServiceInterface
         );
 
         $messageLogService = new MessageLogService(
+            $this->view,
             $this->logger,
             $this->messageLogReaderService,
             $this->messageLogWriterService

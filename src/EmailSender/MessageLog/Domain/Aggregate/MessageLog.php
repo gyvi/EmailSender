@@ -46,6 +46,11 @@ class MessageLog implements JsonSerializable
     /**
      * @var \EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime
      */
+    private $logged;
+
+    /**
+     * @var \EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime
+     */
     private $queued;
 
     /**
@@ -137,6 +142,22 @@ class MessageLog implements JsonSerializable
     public function getSubject(): Subject
     {
         return $this->subject;
+    }
+
+    /**
+     * @return \EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime
+     */
+    public function getLogged(): DateTime
+    {
+        return $this->logged;
+    }
+
+    /**
+     * @param \EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime $logged
+     */
+    public function setLogged(DateTime $logged)
+    {
+        $this->logged = $logged;
     }
 
     /**

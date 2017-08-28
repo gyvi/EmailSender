@@ -14,6 +14,7 @@ use EmailSender\Core\Services\ServiceList;
 use EmailSender\Core\Services\LoggerService;
 use EmailSender\Core\Services\ErrorHandler;
 use EmailSender\Core\Services\PhpErrorHandler;
+use EmailSender\Core\Services\ViewService;
 
 /**
  * Class BootstrapCli
@@ -61,6 +62,7 @@ class BootstrapCli
         $serviceProvider->addService(ServiceList::MESSAGE_LOG_WRITER,   new MessageLogWriterService());
         $serviceProvider->addService(ServiceList::QUEUE,                new QueueService());
         $serviceProvider->addService(ServiceList::SMTP,                 new SMTPService());
+        $serviceProvider->addService(ServiceList::VIEW,                 new ViewService());
 
         $serviceProvider->init();
     }

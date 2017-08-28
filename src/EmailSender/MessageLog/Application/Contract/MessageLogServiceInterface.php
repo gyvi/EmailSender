@@ -56,4 +56,17 @@ interface MessageLogServiceInterface
         ResponseInterface $response,
         array $getRequest
     ): MessageInterface;
+
+    /**
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @param \Psr\Http\Message\ResponseInterface      $response
+     * @param array                                    $getRequest
+     *
+     * @return \Psr\Http\Message\MessageInterface
+     */
+    public function messageLogLister(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        array $getRequest
+    ): MessageInterface;
 }

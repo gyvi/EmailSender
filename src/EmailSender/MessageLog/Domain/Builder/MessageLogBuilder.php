@@ -78,7 +78,12 @@ class MessageLogBuilder
         );
 
         $messageLog->setMessageLogId(new UnsignedInteger($messageLogArray[MessageLogFieldList::MESSAGE_LOG_ID]));
-        $messageLog->setStatus(new SignedInteger((int)MessageLogFieldList::STATUS));
+        $messageLog->setStatus(new SignedInteger((int)$messageLogArray[MessageLogFieldList::STATUS]));
+        $messageLog->setLogged(
+            DateTime::buildFromDateTime(
+                new \DateTime($messageLogArray[MessageLogFieldList::LOGGED])
+            )
+        );
 
         if (!empty($messageLogArray[MessageLogFieldList::QUEUED])) {
             $messageLog->setQueued(

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Email message log lister</title>
+    <link type="text/css" rel="stylesheet" href="/css/styles.css"/>
+    <script type="text/javascript" src="/scripts/scripts.js"></script>
+</head>
+<body>
+<div id="content">
+    <h2>Email message log lister</h2>
+
+    <div id="filter_wrapper">
+        <label for="from">From</label>
+        <input id="from" type="text" />
+        <button id="listButton">List</button>
+    </div>
+
+    <table id="messageLog">
+        <thead>
+            <tr>
+                <th>Log ID</th>
+                <th>Message ID</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Subject</th>
+                <th>Logged</th>
+                <th>Queued</th>
+                <th>Sent</th>
+                <th>Delay</th>
+                <th>Error</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

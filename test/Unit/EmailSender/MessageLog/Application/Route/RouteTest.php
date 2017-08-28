@@ -41,6 +41,9 @@ class RouteTest extends TestCase
         $application->expects($this->exactly(1))
             ->method('get');
 
+        $application->expects($this->exactly(1))
+            ->method('post');
+
         $route = new Route($application);
         $route->init();
     }

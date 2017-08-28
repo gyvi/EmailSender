@@ -27,7 +27,11 @@ class MessageQueueServiceTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var Closure $view */
+        $view = function () {};
+
         $messageQueueService = new MessageQueueService(
+            $view,
             $logger,
             $repositoryService,
             [],

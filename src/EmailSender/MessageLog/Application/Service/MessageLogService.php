@@ -34,6 +34,11 @@ use EmailSender\MessageLog\Domain\Builder\MessageLogBuilder;
 class MessageLogService implements MessageLogServiceInterface
 {
     /**
+     * @var \Slim\Views\Twig
+     */
+    private $view;
+
+    /**
      * @var \Psr\Log\LoggerInterface
      */
     private $logger;
@@ -51,15 +56,18 @@ class MessageLogService implements MessageLogServiceInterface
     /**
      * MessageLogService constructor.
      *
+     * @param \Closure                 $view
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Closure                 $messageLogReaderService
      * @param \Closure                 $messageLogWriterService
      */
     public function __construct(
+        Closure $view,
         LoggerInterface $logger,
         Closure $messageLogReaderService,
         Closure $messageLogWriterService
     ) {
+        $this->view             = $view;
         $this->logger           = $logger;
         $this->repositoryReader = new MessageLogRepositoryReader($messageLogReaderService);
         $this->repositoryWriter = new MessageLogRepositoryWriter($messageLogWriterService);
@@ -162,5 +170,24 @@ class MessageLogService implements MessageLogServiceInterface
         ]);
 
         return $response;
+    }
+
+    /**
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @param \Psr\Http\Message\ResponseInterface      $response
+     * @param array                                    $getRequest
+     *
+     * @return \Psr\Http\Message\MessageInterface
+     */
+    public function messageLogLister(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        array $getRequest
+    ): MessageInterface
+    {
+        /** @var \Slim\Views\Twig $twig */
+        $twig = ($this->view)();
+
+        return $twig->render($response, 'MessageLog/Application/View/messageLogLister.twig', []);
     }
 }

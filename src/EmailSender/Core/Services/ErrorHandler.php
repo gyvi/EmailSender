@@ -3,6 +3,7 @@
 namespace EmailSender\Core\Services;
 
 use Closure;
+use InvalidArgumentException;
 use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -26,16 +27,22 @@ class ErrorHandler implements ServiceInterface
             return function (
                 ServerRequestInterface $request,
                 ResponseInterface $response,
-                Throwable $exception
+                Throwable $throwable
             ) use ($container) {
+                $httpResponseCode = 500;
+
                 /** @var \Monolog\Logger $logger */
                 $logger = $container->get(ServiceList::LOGGER);
-                $logger->notice($exception->getMessage(), $exception->getTrace());
+                $logger->notice($throwable->getMessage(), $throwable->getTrace());
 
-                $errorMessage = $exception->getMessage();
+                $errorMessage = $throwable->getMessage();
 
-                while ($exception = $exception->getPrevious()) {
-                    $errorMessage .= ' - ' . $exception->getMessage();
+                if ($throwable instanceof InvalidArgumentException) {
+                    $httpResponseCode = 400;
+                }
+
+                while ($throwable = $throwable->getPrevious()) {
+                    $errorMessage .= ' - ' . $throwable->getMessage();
                 }
 
                 /** @var \Slim\Http\Response $response */
@@ -43,8 +50,9 @@ class ErrorHandler implements ServiceInterface
                     ->withJson(
                         [
                             'status' => -1,
-                            'statusMessage' => $errorMessage,
-                        ]
+                            'statusMessage' => $errorMessage
+                        ],
+                        $httpResponseCode
                     );
             };
         };

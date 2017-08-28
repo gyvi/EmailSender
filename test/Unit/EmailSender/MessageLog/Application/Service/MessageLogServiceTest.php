@@ -27,7 +27,11 @@ class MessageLogServiceTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var Closure $view */
+        $view = function () {};
+
         $messageLogService = new MessageLogService(
+            $view,
             $logger,
             $repositoryService,
             $repositoryService

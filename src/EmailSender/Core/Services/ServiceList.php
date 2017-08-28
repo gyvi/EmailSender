@@ -71,4 +71,11 @@ class ServiceList
      * @var string
      */
     const SMTP = 'smtp';
+
+    /**
+     * View service - Twig.
+     *
+     * @var string
+     */
+    const VIEW = 'view';
 }

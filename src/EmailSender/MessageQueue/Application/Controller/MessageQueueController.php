@@ -31,6 +31,9 @@ class MessageQueueController extends AbstractController
         ResponseInterface $response,
         array $getRequest
     ): MessageInterface {
+        /** @var Closure $view */
+        $view = $this->container->get(ServiceList::VIEW);
+
         /** @var \Psr\Log\LoggerInterface $logger */
         $logger = $this->container->get(ServiceList::LOGGER);
 
@@ -56,6 +59,7 @@ class MessageQueueController extends AbstractController
         $SMTPService = $this->container->get(ServiceList::SMTP);
 
         $messageQueueService = new MessageQueueService(
+            $view,
             $logger,
             $queueService,
             $queueServiceSettings,

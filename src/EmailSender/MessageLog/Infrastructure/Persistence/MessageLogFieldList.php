@@ -35,6 +35,11 @@ class MessageLogFieldList
     const SUBJECT = 'subject';
 
     /**
+     * Logged field of the messageLog SQL table.
+     */
+    const LOGGED = 'logged';
+
+    /**
      * Queued field of the messageLog SQL table.
      */
     const QUEUED = 'queued';

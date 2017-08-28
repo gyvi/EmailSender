@@ -18,6 +18,7 @@ $container = new Container($settings);
 /** @var \Psr\Log\LoggerInterface $logger */
 $logger        = $container->get(ServiceList::LOGGER);
 $queueSettings = $container->get('settings')[ServiceList::QUEUE];
+$view          = $container->get('view');
 
 /** @var \PhpAmqpLib\Connection\AMQPStreamConnection $connection */
 $connection = $container->get(ServiceList::QUEUE)();
@@ -28,10 +29,11 @@ $channel = $connection->channel();
 /** @var array $queueName */
 $queueName = $queueSettings['queue'];
 
-$callback = function ($message) use ($container, $queueSettings, $logger) {
+$callback = function ($message) use ($container, $queueSettings, $logger, $view) {
     /** @var \PhpAmqpLib\Message\AMQPMessage $message */
     try {
         $messageQueueService = new MessageQueueService(
+            $view,
             $logger,
             $container->get(ServiceList::QUEUE),
             $queueSettings,
