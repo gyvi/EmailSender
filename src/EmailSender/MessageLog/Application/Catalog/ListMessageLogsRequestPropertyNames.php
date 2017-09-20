@@ -25,7 +25,8 @@ class ListMessageLogsRequestPropertyNames
     const PAGE            = 'page';
 
     /**
-     * Last message id. Responsed messages will be smaller messageId's than this property. (Used for FB like 'more' button).
+     * Last message id. Responsed messages will be smaller messageId's than this property.
+     * (Used for FB like 'more' button).
      */
     const LAST_MESSAGE_ID = 'lastMessageId';
 }

@@ -61,13 +61,14 @@ class ListMessageLogsRequestBuilder
         try {
             if (!empty($listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::FROM])) {
                 $from = $this->mailAddressService->getMailAddress(
-                            $listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::FROM]
-                        );
+                    $listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::FROM]
+                );
             }
         } catch (Throwable $e) {
-
             throw new InvalidArgumentException(
-                "Wrong property: '"  . ListMessageLogsRequestPropertyNames::FROM . "'", 0, $e
+                "Wrong property: '"  . ListMessageLogsRequestPropertyNames::FROM . "'",
+                0,
+                $e
             );
         }
 
@@ -88,13 +89,14 @@ class ListMessageLogsRequestBuilder
                 && intval($listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::ROWS]) > 0
             ) {
                 $rows = new UnsignedInteger(
-                            (int)$listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::ROWS]
-                        );
+                    (int)$listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::ROWS]
+                );
             }
         } catch (Throwable $e) {
-
             throw new InvalidArgumentException(
-                "Wrong property: '"  . ListMessageLogsRequestPropertyNames::ROWS . "'", 0, $e
+                "Wrong property: '"  . ListMessageLogsRequestPropertyNames::ROWS . "'",
+                0,
+                $e
             );
         }
 
@@ -115,14 +117,14 @@ class ListMessageLogsRequestBuilder
                 && intval($listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::PAGE]) > 0
             ) {
                 $page = new UnsignedInteger(
-                            (int)$listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::PAGE]
-                        );
+                    (int)$listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::PAGE]
+                );
             }
-
         } catch (Throwable $e) {
-
             throw new InvalidArgumentException(
-                "Wrong property: '"  . ListMessageLogsRequestPropertyNames::PAGE . "'", 0, $e
+                "Wrong property: '"  . ListMessageLogsRequestPropertyNames::PAGE . "'",
+                0,
+                $e
             );
         }
 
@@ -143,15 +145,16 @@ class ListMessageLogsRequestBuilder
                 && intval($listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::LAST_MESSAGE_ID]) > 0
             ) {
                 $lastMessageId = new UnsignedInteger(
-                                    (int)$listMessageLogsRequestArray[
-                                        ListMessageLogsRequestPropertyNames::LAST_MESSAGE_ID
-                                    ]
-                                 );
+                    (int)$listMessageLogsRequestArray[
+                        ListMessageLogsRequestPropertyNames::LAST_MESSAGE_ID
+                    ]
+                );
             }
         } catch (Throwable $e) {
-
             throw new InvalidArgumentException(
-                "Wrong property: '"  . ListMessageLogsRequestPropertyNames::LAST_MESSAGE_ID . "'", 0, $e
+                "Wrong property: '"  . ListMessageLogsRequestPropertyNames::LAST_MESSAGE_ID . "'",
+                0,
+                $e
             );
         }
 

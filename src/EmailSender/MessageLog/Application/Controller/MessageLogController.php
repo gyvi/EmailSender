@@ -64,8 +64,7 @@ class MessageLogController extends AbstractController
         ServerRequestInterface $request,
         ResponseInterface $response,
         array $getRequest
-    ): MessageInterface
-    {
+    ): MessageInterface {
         /** @var Closure $view */
         $view = $this->container->get(ServiceList::VIEW);
 

@@ -96,9 +96,7 @@ class MessageLogRepositoryWriter implements MessageLogRepositoryWriterInterface
             }
 
             $messageLogId = (int)$pdo->lastInsertId();
-
         } catch (PDOException $e) {
-
             throw new Error($e->getMessage(), $e->getCode(), $e);
         }
 
@@ -116,8 +114,7 @@ class MessageLogRepositoryWriter implements MessageLogRepositoryWriterInterface
         UnsignedInteger $messageLogId,
         MessageLogStatus $messageLogStatus,
         StringLiteral $errorMessage
-    ): void
-    {
+    ): void {
         try {
             $pdo = $this->getConnection();
 
@@ -159,7 +156,6 @@ class MessageLogRepositoryWriter implements MessageLogRepositoryWriterInterface
                 throw new PDOException('Unable to write to the database.');
             }
         } catch (PDOException $e) {
-
             throw new Error($e->getMessage(), $e->getCode(), $e);
         }
     }

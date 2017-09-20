@@ -83,7 +83,6 @@ class RecipientsBuilder
             $to = $this->mailAddressService
                 ->getMailAddressCollectionFromRepository($recipientsArray[RecipientsPropertyNames::TO]);
         } else {
-
             throw new InvalidArgumentException('Empty recipients field!');
         }
 

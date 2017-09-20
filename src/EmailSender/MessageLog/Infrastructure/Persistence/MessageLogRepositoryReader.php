@@ -87,9 +87,7 @@ class MessageLogRepositoryReader implements MessageLogRepositoryReaderInterface
             }
 
             $messageLogArray = $statement->fetch(PDO::FETCH_ASSOC);
-
         } catch (PDOException $e) {
-
             throw new Error($e->getMessage(), $e->getCode(), $e);
         }
 
@@ -171,9 +169,7 @@ class MessageLogRepositoryReader implements MessageLogRepositoryReaderInterface
             }
 
             $messageLogCollectionArray = $statement->fetchAll(PDO::FETCH_ASSOC);
-
         } catch (PDOException $e) {
-
             throw new Error($e->getMessage(), $e->getCode(), $e);
         }
 

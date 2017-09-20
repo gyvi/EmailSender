@@ -77,7 +77,7 @@ class Date implements ValueObjectInterface
     /**
      * @return \EmailSender\Core\Scalar\Application\ValueObject\DateTime\Date
      */
-     public static function buildFromDefault(): Date
+    public static function buildFromDefault(): Date
     {
         return new static(
             Year::buildFromDefault(),

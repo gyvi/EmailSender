@@ -38,8 +38,7 @@ class UpdateMessageLogService
         UnsignedInteger $messageLogId,
         MessageLogStatus $messageLogStatus,
         StringLiteral $errorMessage
-    ): void
-    {
+    ): void {
         $this->repositoryWriter->setStatus($messageLogId, $messageLogStatus, $errorMessage);
     }
 }

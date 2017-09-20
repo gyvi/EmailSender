@@ -42,20 +42,17 @@ class MailAddressCollectionBuilder
         $mailAddressCollection = new MailAddressCollection();
 
         if (!empty(trim($mailAddressCollectionString))) {
-
             $mailAddressCollectionArray = imap_rfc822_parse_adrlist($mailAddressCollectionString, '');
 
             /** @var \stdClass $mailAddressObject */
             foreach ($mailAddressCollectionArray as $mailAddressObject) {
-
                 $mailAddressString = imap_rfc822_write_address(
                     isset($mailAddressObject->mailbox)  ? $mailAddressObject->mailbox  : '',
                     isset($mailAddressObject->host)     ? $mailAddressObject->host     : '',
                     isset($mailAddressObject->personal) ? $mailAddressObject->personal : ''
                 );
 
-                if (!empty(trim($mailAddressString)))
-                {
+                if (!empty(trim($mailAddressString))) {
                     $mailAddressCollection->add(
                         $this->mailAddressBuilder->buildMailAddressFromString($mailAddressString)
                     );

@@ -74,9 +74,7 @@ class MessageStoreRepositoryWriter implements MessageStoreRepositoryWriterInterf
             }
 
             $messageId = (int)$pdo->lastInsertId();
-
         } catch (PDOException $e) {
-
             throw new Error($e->getMessage(), $e->getCode(), $e);
         }
 

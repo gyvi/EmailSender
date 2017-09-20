@@ -53,8 +53,9 @@ $callback = function ($message) use ($container, $queueSettings, $logger, $view)
         $message->delivery_info['channel']->basic_nack($message->delivery_info['delivery_tag'], false, false);
 
         $logger->warning(
-            'Unable to sent email: ' . $message->body . PHP_EOL
-            . ' Error: ' . $e->getMessage() . $e->getTraceAsString());
+            'Unable to sent email: ' . $message->body . PHP_EOL . ' Error: ' .
+            $e->getMessage() . $e->getTraceAsString()
+        );
     }
 };
 

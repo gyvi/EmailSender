@@ -20,7 +20,7 @@ class ViewService implements ServiceInterface
     public function getService(): Closure
     {
         return function (ContainerInterface $container): Closure {
-            return function() use ($container) {
+            return function () use ($container) {
                 $view = new Twig('../EmailSender');
 
                 /** @var \Psr\Http\Message\ServerRequestInterface $request */

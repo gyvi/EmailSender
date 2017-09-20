@@ -30,5 +30,5 @@ class DisplayName extends StringLiteralMatch
      *
      * @var string
      */
-    protected const PATTERN = "/^[\!\#\$\%\&\'\*\+\-\/\=\?\^\_\`\{\|\}\~\.\\" . '"' . "\(\)\,\:\;\<\>\@\[\\ \]\p{L}]+$/u";
+    protected const PATTERN = "/^[\!\#\$\%\&\'\*\+\-\/\=\?\^\_\`\{\|\}\~\.\\" . '"\(\)\,\:\;\<\>\@\[\\ \]\p{L}]+$/u';
 }

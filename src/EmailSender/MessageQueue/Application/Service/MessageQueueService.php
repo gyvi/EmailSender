@@ -155,7 +155,7 @@ class MessageQueueService implements MessageQueueServiceInterface
             $messageStoreService,
             $messageLogService,
             $messageQueueBuilder
-         );
+        );
 
         $messageQueue = $addMessageQueueService->add($getRequest);
 

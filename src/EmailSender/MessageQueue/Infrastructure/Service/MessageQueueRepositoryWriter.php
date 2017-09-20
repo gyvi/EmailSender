@@ -102,7 +102,6 @@ class MessageQueueRepositoryWriter implements MessageQueueRepositoryWriterInterf
             $channel->close();
             $connection->close();
         } catch (Throwable $e) {
-
             throw new Error($e->getMessage(), $e->getCode(), $e);
         }
 

@@ -72,9 +72,7 @@ class MessageStoreRepositoryReader implements MessageStoreRepositoryReaderInterf
             }
 
             $messageStoreArray = $statement->fetch(PDO::FETCH_ASSOC);
-
         } catch (PDOException $e) {
-
             throw new Error($e->getMessage(), $e->getCode(), $e);
         }
 

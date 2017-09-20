@@ -98,8 +98,8 @@ class MessageLogService implements MessageLogServiceInterface
     public function setStatus(
         UnsignedInteger $messageLogId,
         MessageLogStatus $messageLogStatus,
-        ?string $errorMessageString): void
-    {
+        ?string $errorMessageString
+    ): void {
         $errorMessage            = new StringLiteral((string)$errorMessageString);
         $updateMessageLogService = new UpdateMessageLogService($this->repositoryWriter);
 
@@ -183,8 +183,7 @@ class MessageLogService implements MessageLogServiceInterface
         ServerRequestInterface $request,
         ResponseInterface $response,
         array $getRequest
-    ): MessageInterface
-    {
+    ): MessageInterface {
         /** @var \Slim\Views\Twig $twig */
         $twig = ($this->view)();
 

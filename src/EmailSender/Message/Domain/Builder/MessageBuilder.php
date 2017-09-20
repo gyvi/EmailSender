@@ -64,7 +64,6 @@ class MessageBuilder
         try {
             $from = $this->mailAddressService->getMailAddress($request[MessagePropertyNames::FROM]);
         } catch (ValueObjectException $e) {
-
             throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyNames::FROM . "'", 0, $e);
         }
 
@@ -83,12 +82,10 @@ class MessageBuilder
         try {
             $to = $this->mailAddressService->getMailAddressCollectionFromRequest($request[MessagePropertyNames::TO]);
         } catch (ValueObjectException $e) {
-
             throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyNames::TO . "'", 0, $e);
         }
 
         if ($to->isEmpty()) {
-
             throw new InvalidArgumentException(
                 "Wrong property: '"  . MessagePropertyNames::TO
                 . "' Property requires minimum 1 valid email address."
@@ -110,7 +107,6 @@ class MessageBuilder
                 isset($request[MessagePropertyNames::CC]) ? $request[MessagePropertyNames::CC] : ''
             );
         } catch (ValueObjectException $e) {
-
             throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyNames::CC . "'", 0, $e);
         }
 
@@ -129,7 +125,6 @@ class MessageBuilder
                 isset($request[MessagePropertyNames::BCC]) ? $request[MessagePropertyNames::BCC] : ''
             );
         } catch (ValueObjectException $e) {
-
             throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyNames::BCC . "'", 0, $e);
         }
 
@@ -146,7 +141,6 @@ class MessageBuilder
         try {
             $subject = new Subject($request[MessagePropertyNames::SUBJECT]);
         } catch (ValueObjectException $e) {
-
             throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyNames::SUBJECT . "'", 0, $e);
         }
 
@@ -163,7 +157,6 @@ class MessageBuilder
         try {
             $body = new Body($request[MessagePropertyNames::BODY]);
         } catch (ValueObjectException $e) {
-
             throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyNames::BODY . "'", 0, $e);
         }
 
@@ -186,7 +179,6 @@ class MessageBuilder
                 $replyTo = $this->mailAddressService->getMailAddress($request[MessagePropertyNames::REPLY_TO]);
             }
         } catch (ValueObjectException $e) {
-
             throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyNames::REPLY_TO . "'", 0, $e);
         }
 
@@ -205,7 +197,6 @@ class MessageBuilder
                 isset($request[MessagePropertyNames::DELAY]) ? (int)$request[MessagePropertyNames::DELAY] : 0
             );
         } catch (ValueObjectException $e) {
-
             throw new InvalidArgumentException("Wrong property: '" . MessagePropertyNames::DELAY . "'", 0, $e);
         }
 

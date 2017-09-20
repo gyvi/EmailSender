@@ -28,8 +28,7 @@ class Routing
     public function init(): void
     {
         /** @var \EmailSender\Core\Route\RouteInterface $route */
-        foreach ($this->routes as $route)
-        {
+        foreach ($this->routes as $route) {
             $route->init();
         }
     }
