@@ -16,14 +16,26 @@ abstract class StringLiteralLimit extends StringLiteral
      *
      * @var int
      */
-    protected const MAX_LENGTH = PHP_INT_MAX;
+    const MAX_LENGTH = PHP_INT_MAX;
 
     /**
      * Min length of the StringLiteralLimit.
      *
      * @var int
      */
-    protected const MIN_LENGTH = 0;
+    const MIN_LENGTH = 0;
+
+    /**
+     * StringLiteralLimit constructor.
+     *
+     * @param string $value
+     */
+    public function __construct(string $value)
+    {
+        $this->validate($value);
+
+        parent::__construct($value);
+    }
 
     /**
      * @param string $value
@@ -32,8 +44,6 @@ abstract class StringLiteralLimit extends StringLiteral
      */
     protected function validate(string $value): void
     {
-        parent::validate($value);
-
         $this->validateMinLength($value);
         $this->validateMaxLength($value);
     }

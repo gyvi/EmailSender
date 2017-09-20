@@ -34,7 +34,7 @@ abstract class RequestValidator
             throw new InvalidArgumentException('Empty or invalid request.');
         }
 
-        foreach ($request as $propertyName => $property) {
+        foreach (array_keys($request) as $propertyName) {
             if (!in_array($propertyName, array_merge($this->requiredProperties, $this->optionalProperties), true)) {
                 throw new InvalidArgumentException('Not allowed property: ' . $propertyName);
             }

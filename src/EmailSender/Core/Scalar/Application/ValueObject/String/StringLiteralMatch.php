@@ -16,7 +16,7 @@ abstract class StringLiteralMatch extends StringLiteralLimit
      *
      * @var string
      */
-    protected const PATTERN = '/*./';
+    const PATTERN = '/*./';
 
     /**
      * @param string $value

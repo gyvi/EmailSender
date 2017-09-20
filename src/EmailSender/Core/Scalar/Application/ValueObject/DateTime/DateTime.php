@@ -35,48 +35,6 @@ class DateTime implements ValueObjectInterface, JsonSerializable
     }
 
     /**
-     * @param $year
-     * @param $month
-     * @param $day
-     * @param $hour
-     * @param $minute
-     * @param $second
-     *
-     * @return \EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime
-     */
-    public static function buildFromNative($year, $month, $day, $hour, $minute, $second): DateTime
-    {
-        return new static(
-            Date::buildFromNative($year, $month, $day),
-            Time::buildFromNative($hour, $minute, $second)
-        );
-    }
-
-    /**
-     * @param \DateTime $dateTime
-     *
-     * @return \EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime
-     */
-    public static function buildFromDateTime(\DateTime $dateTime): DateTime
-    {
-        return new static(
-            Date::buildFromDateTime($dateTime),
-            Time::buildFromDateTime($dateTime)
-        );
-    }
-
-    /**
-     * @return \EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime
-     */
-    public static function buildFromDefault(): DateTime
-    {
-        return new static(
-            Date::buildFromDefault(),
-            Time::buildFromDefault()
-        );
-    }
-
-    /**
      * @return \EmailSender\Core\Scalar\Application\ValueObject\DateTime\Date
      */
     public function getDate(): Date
@@ -97,7 +55,7 @@ class DateTime implements ValueObjectInterface, JsonSerializable
      */
     public function getDateTime(): \DateTime
     {
-        return \DateTime::createFromFormat(
+        return date_create_from_format(
             'Y-m-d H:i:s',
             sprintf('%s %s', $this->date->__toString(), $this->time->getValue())
         );

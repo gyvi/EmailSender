@@ -16,12 +16,12 @@ class Subject extends StringLiteralLimit
      *
      * @var int
      */
-    protected const MAX_LENGTH = 77;
+    const MAX_LENGTH = 77;
 
     /**
      * Min length of the Subject.
      *
      * @var int
      */
-    protected const MIN_LENGTH = 0;
+    const MIN_LENGTH = 0;
 }

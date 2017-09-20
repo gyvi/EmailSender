@@ -56,7 +56,7 @@ class MessageQueueController extends AbstractController
         $queueServiceSettings = $this->container->get('settings')[ServiceList::QUEUE];
 
         /** @var array $queueServiceSettings */
-        $SMTPService = $this->container->get(ServiceList::SMTP);
+        $smtpService = $this->container->get(ServiceList::SMTP);
 
         $messageQueueService = new MessageQueueService(
             $view,
@@ -67,7 +67,7 @@ class MessageQueueController extends AbstractController
             $messageStoreWriter,
             $messageLogReader,
             $messageLogWriter,
-            $SMTPService
+            $smtpService
         );
 
         return $messageQueueService->addMessageToQueue($request, $response, $getRequest);

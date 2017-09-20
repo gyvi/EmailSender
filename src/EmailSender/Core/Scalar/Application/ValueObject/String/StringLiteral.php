@@ -24,8 +24,6 @@ class StringLiteral implements ValueObjectInterface, JsonSerializable
      */
     public function __construct(string $value)
     {
-        $this->validate($value);
-
         $this->value = $value;
     }
 
@@ -35,15 +33,6 @@ class StringLiteral implements ValueObjectInterface, JsonSerializable
     public function getValue(): string
     {
         return $this->value;
-    }
-
-    /**
-     * Validates value.
-     *
-     * @param string $value
-     */
-    protected function validate(string $value): void
-    {
     }
 
     /**

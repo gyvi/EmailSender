@@ -2,7 +2,7 @@
 
 namespace EmailSender\MessageLog\Domain\Builder;
 
-use EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime;
+use EmailSender\Core\Scalar\Application\Factory\DateTimeFactory;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\SignedInteger;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
@@ -32,17 +32,25 @@ class MessageLogBuilder
     private $mailAddressService;
 
     /**
+     * @var \EmailSender\Core\Scalar\Application\Factory\DateTimeFactory
+     */
+    private $dateTimeFactory;
+
+    /**
      * MessageLogBuilder constructor.
      *
      * @param \EmailSender\Recipients\Application\Contract\RecipientsServiceInterface   $recipientsService
      * @param \EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface $mailAddressService
+     * @param \EmailSender\Core\Scalar\Application\Factory\DateTimeFactory              $dateTimeFactory
      */
     public function __construct(
         RecipientsServiceInterface $recipientsService,
-        MailAddressServiceInterface $mailAddressService
+        MailAddressServiceInterface $mailAddressService,
+        DateTimeFactory $dateTimeFactory
     ) {
         $this->recipientsService  = $recipientsService;
         $this->mailAddressService = $mailAddressService;
+        $this->dateTimeFactory = $dateTimeFactory;
     }
 
     /**
@@ -80,24 +88,18 @@ class MessageLogBuilder
         $messageLog->setMessageLogId(new UnsignedInteger($messageLogArray[MessageLogFieldList::MESSAGE_LOG_ID]));
         $messageLog->setStatus(new SignedInteger((int)$messageLogArray[MessageLogFieldList::STATUS]));
         $messageLog->setLogged(
-            DateTime::buildFromDateTime(
-                new \DateTime($messageLogArray[MessageLogFieldList::LOGGED])
-            )
+            $this->dateTimeFactory->buildFromDateTime(new \DateTime($messageLogArray[MessageLogFieldList::LOGGED]))
         );
 
         if (!empty($messageLogArray[MessageLogFieldList::QUEUED])) {
             $messageLog->setQueued(
-                DateTime::buildFromDateTime(
-                    new \DateTime($messageLogArray[MessageLogFieldList::QUEUED])
-                )
+                $this->dateTimeFactory->buildFromDateTime(new \DateTime($messageLogArray[MessageLogFieldList::QUEUED]))
             );
         }
 
         if (!empty($messageLogArray[MessageLogFieldList::SENT])) {
             $messageLog->setSent(
-                DateTime::buildFromDateTime(
-                    new \DateTime($messageLogArray[MessageLogFieldList::SENT])
-                )
+                $this->dateTimeFactory->buildFromDateTime(new \DateTime($messageLogArray[MessageLogFieldList::SENT]))
             );
         }
 

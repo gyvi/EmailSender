@@ -211,10 +211,10 @@ class MessageLogRepositoryReader implements MessageLogRepositoryReaderInterface
      */
     private function getListMessagesLogLimitSQL(ListMessageLogsRequest $listMessageLogsRequest): string
     {
+        $listMessagesLogLimitSQL = 'LIMIT :rows';
+
         if ($listMessageLogsRequest->getPage()) {
             $listMessagesLogLimitSQL = 'LIMIT :page, :rows';
-        } else {
-            $listMessagesLogLimitSQL = 'LIMIT :rows';
         }
 
         return $listMessagesLogLimitSQL;
@@ -227,10 +227,10 @@ class MessageLogRepositoryReader implements MessageLogRepositoryReaderInterface
      */
     private function getListMessagesLogLimitValue(ListMessageLogsRequest $listMessageLogsRequest): int
     {
+        $listMessagesLogLimit = ListMessageLogsRequest::DEFAULT_ROWS;
+
         if ($listMessageLogsRequest->getRows()) {
             $listMessagesLogLimit = $listMessageLogsRequest->getRows()->getValue();
-        } else {
-            $listMessagesLogLimit = ListMessageLogsRequest::DEFAULT_ROWS;
         }
 
         return $listMessagesLogLimit;

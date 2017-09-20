@@ -17,14 +17,14 @@ class Address extends StringLiteralLimit
      *
      * @var int
      */
-    protected const MIN_LENGTH = 1;
+    const MIN_LENGTH = 1;
 
     /**
      * Max length of the Address.
      *
      * @var int
      */
-    protected const MAX_LENGTH = 254;
+    const MAX_LENGTH = 254;
 
     /**
      * @param string $value

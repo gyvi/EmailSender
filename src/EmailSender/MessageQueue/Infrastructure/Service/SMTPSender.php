@@ -18,16 +18,16 @@ class SMTPSender implements SMTPSenderInterface
     /**
      * @var \Closure
      */
-    private $SMTPService;
+    private $smtpService;
 
     /**
      * SMTPSender constructor.
      *
-     * @param \Closure $SMTPService
+     * @param \Closure $smtpService
      */
-    public function __construct(Closure $SMTPService)
+    public function __construct(Closure $smtpService)
     {
-        $this->SMTPService = $SMTPService;
+        $this->smtpService = $smtpService;
     }
 
     /**
@@ -38,54 +38,54 @@ class SMTPSender implements SMTPSenderInterface
      */
     public function send(MessageLog $messageLog, MessageStore $messageStore): void
     {
-        /** @var SMTP $SMTP */
-        $SMTP = ($this->SMTPService)();
+        /** @var SMTP $smtp */
+        $smtp = ($this->smtpService)();
 
-        if (!$SMTP->mail($messageLog->getFrom()->getAddress()->getValue())) {
+        if (!$smtp->mail($messageLog->getFrom()->getAddress()->getValue())) {
             throw new SMTPException('Unable to set SMTP From: ' . $messageLog->getFrom()->getAddress()->getValue());
         }
 
-        $this->setRecipients($messageStore, $SMTP);
+        $this->setRecipients($messageStore, $smtp);
 
-        if (!$SMTP->data($messageStore->getMessage()->getValue())) {
+        if (!$smtp->data($messageStore->getMessage()->getValue())) {
             throw new SMTPException('Unable to set SMTP body.');
         }
 
-        $SMTP->quit();
-        $SMTP->close();
+        $smtp->quit();
+        $smtp->close();
     }
 
     /**
      * @param \EmailSender\MessageStore\Domain\Aggregate\MessageStore $messageStore
-     * @param \SMTP                                                   $SMTP
+     * @param \SMTP                                                   $smtp
      */
-    private function setRecipients(MessageStore $messageStore, SMTP $SMTP): void
+    private function setRecipients(MessageStore $messageStore, SMTP $smtp): void
     {
         /** @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress $to */
         foreach ($messageStore->getRecipients()->getTo() as $to) {
-            $this->addRecipient($SMTP, $to->getAddress()->getValue());
+            $this->addRecipient($smtp, $to->getAddress()->getValue());
         }
 
         /** @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress $cc */
         foreach ($messageStore->getRecipients()->getCc() as $cc) {
-            $this->addRecipient($SMTP, $cc->getAddress()->getValue());
+            $this->addRecipient($smtp, $cc->getAddress()->getValue());
         }
 
         /** @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress $bcc */
         foreach ($messageStore->getRecipients()->getBcc() as $bcc) {
-            $this->addRecipient($SMTP, $bcc->getAddress()->getValue());
+            $this->addRecipient($smtp, $bcc->getAddress()->getValue());
         }
     }
 
     /**
-     * @param \SMTP  $SMTP
+     * @param \SMTP  $smtp
      * @param string $recipient
      *
      * @throws \Exception
      */
-    private function addRecipient(SMTP $SMTP, string $recipient)
+    private function addRecipient(SMTP $smtp, string $recipient)
     {
-        if (!$SMTP->recipient($recipient)) {
+        if (!$smtp->recipient($recipient)) {
             throw new SMTPException('Unable to set SMTP recipient: ' . $recipient);
         }
     }

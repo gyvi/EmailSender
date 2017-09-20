@@ -14,5 +14,5 @@ class Body extends StringLiteralLimit
     /**
      * @var int
      */
-    protected const MIN_LENGTH = 1;
+    const MIN_LENGTH = 1;
 }

@@ -4,7 +4,6 @@ namespace EmailSender\Core\Scalar\Application\ValueObject\DateTime;
 
 use EmailSender\Core\Scalar\Application\Contract\ValueObjectInterface;
 use EmailSender\Core\Scalar\Application\Exception\ValueObjectException;
-use DateTime;
 
 /**
  * Class Date
@@ -42,48 +41,6 @@ class Date implements ValueObjectInterface
         $this->year  = $year;
         $this->month = $month;
         $this->day   = $day;
-    }
-
-    /**
-     * @param $year
-     * @param $month
-     * @param $day
-     *
-     * @return \EmailSender\Core\Scalar\Application\ValueObject\DateTime\Date
-     */
-    public static function buildFromNative($year, $month, $day): Date
-    {
-        return new static(
-            new Year($year),
-            new Month($month),
-            new Day($day)
-        );
-    }
-
-    /**
-     * @param \DateTime $dateTime
-     *
-     * @return \EmailSender\Core\Scalar\Application\ValueObject\DateTime\Date
-     */
-    public static function buildFromDateTime(DateTime $dateTime): Date
-    {
-        return new static(
-            Year::buildFromDateTime($dateTime),
-            Month::buildFromDateTime($dateTime),
-            Day::buildFromDateTime($dateTime)
-        );
-    }
-
-    /**
-     * @return \EmailSender\Core\Scalar\Application\ValueObject\DateTime\Date
-     */
-    public static function buildFromDefault(): Date
-    {
-        return new static(
-            Year::buildFromDefault(),
-            Month::buildFromDefault(),
-            Day::buildFromDefault()
-        );
     }
 
     /**
@@ -145,9 +102,9 @@ class Date implements ValueObjectInterface
     private function validate(Year $year, Month $month, Day $day): void
     {
         $date = sprintf('%d-%d-%d', $year->getValue(), $month->getValue(), $day->getValue());
-        DateTime::createFromFormat('Y-n-j', $date);
+        date_create_from_format('Y-n-j', $date);
 
-        $nativeDateErrors = DateTime::getLastErrors();
+        $nativeDateErrors = date_get_last_errors();
         if ($nativeDateErrors['warning_count'] > 0 || $nativeDateErrors['error_count'] > 0) {
             throw new ValueObjectException('Invalid date!');
         }

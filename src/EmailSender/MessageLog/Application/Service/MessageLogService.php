@@ -2,6 +2,7 @@
 
 namespace EmailSender\MessageLog\Application\Service;
 
+use EmailSender\Core\Scalar\Application\Factory\DateTimeFactory;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\MailAddress\Application\Service\MailAddressService;
 use EmailSender\Message\Domain\Aggregate\Message;
@@ -83,7 +84,13 @@ class MessageLogService implements MessageLogServiceInterface
     {
         $recipientsService  = new RecipientsService();
         $mailAddressService = new MailAddressService();
-        $messageLogBuilder  = new MessageLogBuilder($recipientsService, $mailAddressService);
+
+        $dateTimeFactory    = new DateTimeFactory();
+        $messageLogBuilder  = new MessageLogBuilder(
+            $recipientsService,
+            $mailAddressService,
+            $dateTimeFactory
+        );
 
         $addMessageLogService = new AddMessageLogService($this->repositoryWriter, $messageLogBuilder);
 
@@ -116,7 +123,14 @@ class MessageLogService implements MessageLogServiceInterface
         $messageLogId                  = new UnsignedInteger($messageLogIdInt);
         $recipientsService             = new RecipientsService();
         $mailAddressService            = new MailAddressService();
-        $messageLogBuilder             = new MessageLogBuilder($recipientsService, $mailAddressService);
+
+        $dateTimeFactory               = new DateTimeFactory();
+        $messageLogBuilder             = new MessageLogBuilder(
+            $recipientsService,
+            $mailAddressService,
+            $dateTimeFactory
+        );
+
         $messageLogCollectionBuilder   = new MessageLogCollectionBuilder($messageLogBuilder);
         $listMessageLogsRequestBuilder = new ListMessageLogsRequestBuilder($mailAddressService);
 
@@ -149,7 +163,14 @@ class MessageLogService implements MessageLogServiceInterface
 
         $recipientsService             = new RecipientsService();
         $mailAddressService            = new MailAddressService();
-        $messageLogBuilder             = new MessageLogBuilder($recipientsService, $mailAddressService);
+
+        $dateTimeFactory               = new DateTimeFactory();
+        $messageLogBuilder             = new MessageLogBuilder(
+            $recipientsService,
+            $mailAddressService,
+            $dateTimeFactory
+        );
+
         $messageLogCollectionBuilder   = new MessageLogCollectionBuilder($messageLogBuilder);
         $listMessageLogsRequestBuilder = new ListMessageLogsRequestBuilder($mailAddressService);
 

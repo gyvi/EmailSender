@@ -69,7 +69,7 @@ class MessageQueueService implements MessageQueueServiceInterface
     /**
      * @var \Closure
      */
-    private $SMTPService;
+    private $smtpService;
 
     /**
      * MessageQueueService constructor.
@@ -82,7 +82,7 @@ class MessageQueueService implements MessageQueueServiceInterface
      * @param \Closure                 $messageStoreWriterService
      * @param \Closure                 $messageLogReaderService
      * @param \Closure                 $messageLogWriterService
-     * @param \Closure                 $SMTPService
+     * @param \Closure                 $smtpService
      */
     public function __construct(
         Closure $view,
@@ -93,7 +93,7 @@ class MessageQueueService implements MessageQueueServiceInterface
         Closure $messageStoreWriterService,
         Closure $messageLogReaderService,
         Closure $messageLogWriterService,
-        Closure $SMTPService
+        Closure $smtpService
     ) {
         $this->view                      = $view;
         $this->logger                    = $logger;
@@ -103,7 +103,7 @@ class MessageQueueService implements MessageQueueServiceInterface
         $this->messageStoreWriterService = $messageStoreWriterService;
         $this->messageLogReaderService   = $messageLogReaderService;
         $this->messageLogWriterService   = $messageLogWriterService;
-        $this->SMTPService               = $SMTPService;
+        $this->smtpService               = $smtpService;
     }
 
     /**
@@ -157,7 +157,7 @@ class MessageQueueService implements MessageQueueServiceInterface
             $messageQueueBuilder
         );
 
-        $messageQueue = $addMessageQueueService->add($getRequest);
+        $addMessageQueueService->add($getRequest);
 
         /** @var \Slim\Http\Response $response */
         $response = $response->withJson([
@@ -188,9 +188,9 @@ class MessageQueueService implements MessageQueueServiceInterface
             $this->messageLogWriterService
         );
 
-        $SMTPSender = new SMTPSender($this->SMTPService);
+        $smtpSender = new SMTPSender($this->smtpService);
 
-        $sendMessageService = new SendMessageService($messageLogService, $messageStoreService, $SMTPSender);
+        $sendMessageService = new SendMessageService($messageLogService, $messageStoreService, $smtpSender);
 
         $sendMessageService->send($messageQueue);
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace EmailSender\Core\Factory;
+namespace EmailSender\Core\Scalar\Application\Factory;
 
 use EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime;
 use EmailSender\Core\Scalar\Application\ValueObject\DateTime\Date;

@@ -7,7 +7,6 @@ use EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\Recipients\Application\Catalog\RecipientsPropertyNames;
 use EmailSender\Recipients\Domain\Aggregate\Recipients;
-use InvalidArgumentException;
 
 /**
  * Class RecipientsBuilder
@@ -79,25 +78,21 @@ class RecipientsBuilder
      */
     public function buildRecipientsFromArray(array $recipientsArray): Recipients
     {
-        if (!empty($recipientsArray[RecipientsPropertyNames::TO])) {
-            $to = $this->mailAddressService
-                ->getMailAddressCollectionFromRepository($recipientsArray[RecipientsPropertyNames::TO]);
-        } else {
-            throw new InvalidArgumentException('Empty recipients field!');
-        }
+        $to = $this->mailAddressService
+            ->getMailAddressCollectionFromRepository($recipientsArray[RecipientsPropertyNames::TO]);
+
+        $cc = new MailAddressCollection();
 
         if (!empty($recipientsArray[RecipientsPropertyNames::CC])) {
             $cc = $this->mailAddressService
                 ->getMailAddressCollectionFromRepository($recipientsArray[RecipientsPropertyNames::CC]);
-        } else {
-            $cc = new MailAddressCollection();
         }
+
+        $bcc = new MailAddressCollection();
 
         if (!empty($recipientsArray[RecipientsPropertyNames::BCC])) {
             $bcc = $this->mailAddressService
                 ->getMailAddressCollectionFromRepository($recipientsArray[RecipientsPropertyNames::BCC]);
-        } else {
-            $bcc = new MailAddressCollection();
         }
 
         return new Recipients($to, $cc, $bcc);

@@ -31,23 +31,23 @@ class SendMessageService
     /**
      * @var \EmailSender\MessageQueue\Domain\Contract\SMTPSenderInterface
      */
-    private $SMTPSender;
+    private $smtpSender;
 
     /**
      * SendMessageService constructor.
      *
      * @param \EmailSender\MessageLog\Application\Contract\MessageLogServiceInterface     $messageLogService
      * @param \EmailSender\MessageStore\Application\Contract\MessageStoreServiceInterface $messageStoreService
-     * @param \EmailSender\MessageQueue\Domain\Contract\SMTPSenderInterface               $SMTPSender
+     * @param \EmailSender\MessageQueue\Domain\Contract\SMTPSenderInterface               $smtpSender
      */
     public function __construct(
         MessageLogServiceInterface $messageLogService,
         MessageStoreServiceInterface $messageStoreService,
-        SMTPSenderInterface $SMTPSender
+        SMTPSenderInterface $smtpSender
     ) {
         $this->messageLogService   = $messageLogService;
         $this->messageStoreService = $messageStoreService;
-        $this->SMTPSender          = $SMTPSender;
+        $this->smtpSender          = $smtpSender;
     }
 
     /**
@@ -66,7 +66,7 @@ class SendMessageService
         $messageStore = $this->messageStoreService->getMessageStoreFromRepository($messageLog->getMessageId());
 
         try {
-            $this->SMTPSender->send($messageLog, $messageStore);
+            $this->smtpSender->send($messageLog, $messageStore);
 
             $this->messageLogService->setStatus(
                 $messageLog->getMessageLogId(),

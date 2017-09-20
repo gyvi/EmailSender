@@ -3,7 +3,6 @@
 namespace EmailSender\Core\Scalar\Application\ValueObject\DateTime;
 
 use EmailSender\Core\Scalar\Application\Contract\ValueObjectInterface;
-use DateTime;
 
 /**
  * Class Time
@@ -39,48 +38,6 @@ class Time implements ValueObjectInterface
         $this->hour   = $hour;
         $this->minute = $minute;
         $this->second = $second;
-    }
-
-    /**
-     * @param $hour
-     * @param $minute
-     * @param $second
-     *
-     * @return \EmailSender\Core\Scalar\Application\ValueObject\DateTime\Time
-     */
-    public static function buildFromNative($hour, $minute, $second): Time
-    {
-        return new static(
-            new Hour($hour),
-            new Minute($minute),
-            new Second($second)
-        );
-    }
-
-    /**
-     * @param \DateTime $dateTime
-     *
-     * @return \EmailSender\Core\Scalar\Application\ValueObject\DateTime\Time
-     */
-    public static function buildFromDateTime(DateTime $dateTime): Time
-    {
-        return new static(
-            Hour::buildFromDateTime($dateTime),
-            Minute::buildFromDateTime($dateTime),
-            Second::buildFromDateTime($dateTime)
-        );
-    }
-
-    /**
-     * @return \EmailSender\Core\Scalar\Application\ValueObject\DateTime\Time
-     */
-    public static function buildFromDefault(): Time
-    {
-        return new static(
-            Hour::buildFromDefault(),
-            Minute::buildFromDefault(),
-            Second::buildFromDefault()
-        );
     }
 
     /**

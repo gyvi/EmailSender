@@ -22,21 +22,21 @@ class SMTPService implements ServiceInterface
         return function (ContainerInterface $container): Closure {
             return function () use ($container): SMTP {
                 $settings = $container->get('settings')[ServiceList::SMTP];
-                $SMTP     = new SMTP();
+                $smtp     = new SMTP();
 
-                $SMTP->connect($settings['host'], $settings['port']);
+                $smtp->connect($settings['host'], $settings['port']);
 
-                if (!$SMTP->connected()) {
+                if (!$smtp->connected()) {
                     throw new SMTPException(
                         'Unable to connect to the SMTP server: ' . $settings['host'] . ':' . $settings['port']
                     );
                 }
 
-                $SMTP->hello();
+                $smtp->hello();
 
-                $SMTP->authenticate($settings['username'], $settings['password']);
+                $smtp->authenticate($settings['username'], $settings['password']);
 
-                return $SMTP;
+                return $smtp;
             };
         };
     }

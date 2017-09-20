@@ -16,19 +16,19 @@ class DisplayName extends StringLiteralMatch
      *
      * @var int
      */
-    protected const MIN_LENGTH = 1;
+    const MIN_LENGTH = 1;
 
     /**
      * Max length of the DisplayName.
      *
      * @var int
      */
-    protected const MAX_LENGTH = 64;
+    const MAX_LENGTH = 64;
 
     /**
      * Regex pattern of the StringLiteralMatch.
      *
      * @var string
      */
-    protected const PATTERN = "/^[\!\#\$\%\&\'\*\+\-\/\=\?\^\_\`\{\|\}\~\.\\" . '"\(\)\,\:\;\<\>\@\[\\ \]\p{L}]+$/u';
+    const PATTERN = "/^[\!\#\$\%\&\'\*\+\-\/\=\?\^\_\`\{\|\}\~\.\\" . '"' . "\(\)\,\:\;\<\>\@\[\\ \]\p{L}]+$/u";
 }
