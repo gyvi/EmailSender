@@ -53,7 +53,10 @@ class SendMessageService
     /**
      * @param string $messageQueueJson
      *
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
      * @throws \EmailSender\MessageQueue\Infrastructure\Service\SMTPException
+     * @throws \Error
+     * @throws \InvalidArgumentException
      */
     public function send(string $messageQueueJson): void
     {

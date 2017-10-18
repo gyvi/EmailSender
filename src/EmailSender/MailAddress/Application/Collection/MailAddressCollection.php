@@ -14,6 +14,8 @@ class MailAddressCollection extends Collection
 {
     /**
      * @param \EmailSender\MailAddress\Domain\Aggregate\MailAddress $item
+     *
+     * @throws \InvalidArgumentException
      */
     public function add($item): void
     {

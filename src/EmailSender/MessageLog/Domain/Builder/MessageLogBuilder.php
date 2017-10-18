@@ -74,6 +74,8 @@ class MessageLogBuilder
      * @param array $messageLogArray
      *
      * @return \EmailSender\MessageLog\Domain\Aggregate\MessageLog
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     * @throws \InvalidArgumentException
      */
     public function buildMessageLogFromArray(array $messageLogArray): MessageLog
     {

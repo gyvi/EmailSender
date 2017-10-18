@@ -32,6 +32,7 @@ class GetRecipientsService
      * @param \EmailSender\Message\Domain\Aggregate\Message $message
      *
      * @return \EmailSender\Recipients\Domain\Aggregate\Recipients
+     * @throws \InvalidArgumentException
      */
     public function getRecipientsFromMessage(Message $message): Recipients
     {
@@ -42,6 +43,7 @@ class GetRecipientsService
      * @param string $recipients
      *
      * @return \EmailSender\Recipients\Domain\Aggregate\Recipients
+     * @throws \InvalidArgumentException
      */
     public function getRecipientsFromJson(string $recipients): Recipients
     {

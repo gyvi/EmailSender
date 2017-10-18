@@ -15,9 +15,9 @@ class ListMessageLogsRequestPropertyNames
     const FROM            = 'from';
 
     /**
-     * Rows count.
+     * Count per page.
      */
-    const ROWS            = 'rows';
+    const PER_PAGE        = 'perPage';
 
     /**
      * Requested page number.
@@ -25,7 +25,7 @@ class ListMessageLogsRequestPropertyNames
     const PAGE            = 'page';
 
     /**
-     * Last message id. Responsed messages will be smaller messageId's than this property.
+     * Last message id. Responded messages will be smaller messageId's than this property.
      * (Used for FB like 'more' button).
      */
     const LAST_MESSAGE_ID = 'lastMessageId';

@@ -15,6 +15,9 @@ interface SMTPSenderInterface
     /**
      * @param \EmailSender\MessageLog\Domain\Aggregate\MessageLog     $messageLog
      * @param \EmailSender\MessageStore\Domain\Aggregate\MessageStore $messageStore
+     *
+     * @throws \EmailSender\MessageQueue\Infrastructure\Service\SMTPException
+     * @throws \Exception
      */
     public function send(MessageLog $messageLog, MessageStore $messageStore): void;
 }

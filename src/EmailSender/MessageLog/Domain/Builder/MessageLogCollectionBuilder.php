@@ -30,6 +30,8 @@ class MessageLogCollectionBuilder
      * @param array $messageLogCollectionArray
      *
      * @return \EmailSender\MessageLog\Application\Collection\MessageLogCollection
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     * @throws \InvalidArgumentException
      */
     public function buildMessageLogCollectionFromArray(array $messageLogCollectionArray): MessageLogCollection
     {

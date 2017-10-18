@@ -16,6 +16,7 @@ interface MailAddressServiceInterface
      * @param string $mailAddressString
      *
      * @return \EmailSender\MailAddress\Domain\Aggregate\MailAddress
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
      */
     public function getMailAddress(string $mailAddressString): MailAddress;
 
@@ -23,6 +24,8 @@ interface MailAddressServiceInterface
      * @param string $mailAddressCollectionString
      *
      * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     * @throws \InvalidArgumentException
      */
     public function getMailAddressCollectionFromRequest(string $mailAddressCollectionString): MailAddressCollection;
 
@@ -30,6 +33,7 @@ interface MailAddressServiceInterface
      * @param array $mailAddressCollectionArray
      *
      * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     * @throws \InvalidArgumentException
      */
     public function getMailAddressCollectionFromRepository(array $mailAddressCollectionArray): MailAddressCollection;
 }

@@ -106,7 +106,7 @@ class MessageLogRepositoryReader implements MessageLogRepositoryReaderInterface
         try {
             $pdo = $this->getConnection();
 
-            $rows = $this->getListMessagesLogLimitValue($listMessageLogsRequest);
+            $perPage = $this->getListMessagesLogLimitValue($listMessageLogsRequest);
 
             $sql = '
                 SELECT
@@ -140,8 +140,8 @@ class MessageLogRepositoryReader implements MessageLogRepositoryReaderInterface
             }
 
             $statement->bindValue(
-                ':' . ListMessageLogsRequestPropertyNames::ROWS,
-                $rows,
+                ':' . ListMessageLogsRequestPropertyNames::PER_PAGE,
+                $perPage,
                 PDO::PARAM_INT
             );
 
@@ -159,7 +159,7 @@ class MessageLogRepositoryReader implements MessageLogRepositoryReaderInterface
                     ($listMessageLogsRequest->getPage()->getValue() > 0
                         ? $listMessageLogsRequest->getPage()->getValue() - 1
                         : 0
-                    ) * $rows,
+                    ) * $perPage,
                     PDO::PARAM_INT
                 );
             }
@@ -211,10 +211,10 @@ class MessageLogRepositoryReader implements MessageLogRepositoryReaderInterface
      */
     private function getListMessagesLogLimitSQL(ListMessageLogsRequest $listMessageLogsRequest): string
     {
-        $listMessagesLogLimitSQL = 'LIMIT :rows';
+        $listMessagesLogLimitSQL = 'LIMIT :perPage';
 
         if ($listMessageLogsRequest->getPage()) {
-            $listMessagesLogLimitSQL = 'LIMIT :page, :rows';
+            $listMessagesLogLimitSQL = 'LIMIT :page, :perPage';
         }
 
         return $listMessagesLogLimitSQL;
@@ -227,10 +227,10 @@ class MessageLogRepositoryReader implements MessageLogRepositoryReaderInterface
      */
     private function getListMessagesLogLimitValue(ListMessageLogsRequest $listMessageLogsRequest): int
     {
-        $listMessagesLogLimit = ListMessageLogsRequest::DEFAULT_ROWS;
+        $listMessagesLogLimit = ListMessageLogsRequest::DEFAULT_PER_PAGE;
 
-        if ($listMessageLogsRequest->getRows()) {
-            $listMessagesLogLimit = $listMessageLogsRequest->getRows()->getValue();
+        if ($listMessageLogsRequest->getPerPage()) {
+            $listMessagesLogLimit = $listMessageLogsRequest->getPerPage()->getValue();
         }
 
         return $listMessagesLogLimit;

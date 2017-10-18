@@ -12,8 +12,8 @@ use EmailSender\MailAddress\Domain\Aggregate\MailAddress;
  */
 class ListMessageLogsRequest
 {
-    /** Default value for rows property. */
-    const DEFAULT_ROWS = 50;
+    /** Default value for perPage property. */
+    const DEFAULT_PER_PAGE = 50;
 
     /**
      * @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress|null
@@ -23,7 +23,7 @@ class ListMessageLogsRequest
     /**
      * @var \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger|null
      */
-    private $rows;
+    private $perPage;
 
     /**
      * @var \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger|null
@@ -46,7 +46,7 @@ class ListMessageLogsRequest
     /**
      * @param \EmailSender\MailAddress\Domain\Aggregate\MailAddress $from
      */
-    public function setFrom(?MailAddress $from)
+    public function setFrom(?MailAddress $from): void
     {
         $this->from = $from;
     }
@@ -54,17 +54,17 @@ class ListMessageLogsRequest
     /**
      * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger|null
      */
-    public function getRows(): ?UnsignedInteger
+    public function getPerPage(): ?UnsignedInteger
     {
-        return $this->rows;
+        return $this->perPage;
     }
 
     /**
-     * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger|null $rows
+     * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger|null $perPage
      */
-    public function setRows(?UnsignedInteger $rows)
+    public function setPerPage(?UnsignedInteger $perPage): void
     {
-        $this->rows = $rows;
+        $this->perPage = $perPage;
     }
 
     /**
@@ -78,7 +78,7 @@ class ListMessageLogsRequest
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger|null $page
      */
-    public function setPage(?UnsignedInteger $page)
+    public function setPage(?UnsignedInteger $page): void
     {
         $this->page = $page;
     }
@@ -94,7 +94,7 @@ class ListMessageLogsRequest
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger|null $lastMessageId
      */
-    public function setLastMessageId(?UnsignedInteger $lastMessageId)
+    public function setLastMessageId(?UnsignedInteger $lastMessageId): void
     {
         $this->lastMessageId = $lastMessageId;
     }

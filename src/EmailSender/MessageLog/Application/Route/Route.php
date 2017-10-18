@@ -18,8 +18,8 @@ class Route extends RouteAbstract implements RouteInterface
      */
     public function init(): void
     {
-        $this->application->post('/log', MessageLogController::class . ':listMessageLogs');
+        $this->application->get('/api/v1/emails/logs', MessageLogController::class . ':listMessageLogs');
 
-        $this->application->get('/', MessageLogController::class . ':messageLogLister');
+        $this->application->get('/emails/list', MessageLogController::class . ':messageLogLister');
     }
 }

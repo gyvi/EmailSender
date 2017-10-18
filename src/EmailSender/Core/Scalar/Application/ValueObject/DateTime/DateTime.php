@@ -92,7 +92,7 @@ class DateTime implements ValueObjectInterface, JsonSerializable
     /**
      * @return string
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): string
     {
         return $this->__toString();
     }

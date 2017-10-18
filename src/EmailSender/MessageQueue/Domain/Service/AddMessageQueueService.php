@@ -70,6 +70,9 @@ class AddMessageQueueService
      * @param array $request
      *
      * @return \EmailSender\MessageQueue\Domain\Aggregator\MessageQueue
+     * @throws \Error
+     * @throws \InvalidArgumentException
+     * @throws \phpmailerException
      */
     public function add(array $request): MessageQueue
     {

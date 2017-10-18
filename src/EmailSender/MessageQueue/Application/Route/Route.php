@@ -18,6 +18,6 @@ class Route extends RouteAbstract implements RouteInterface
      */
     public function init(): void
     {
-        $this->application->post('/queue', MessageQueueController::class . ':addMessageToQueue');
+        $this->application->post('/api/v1/emails', MessageQueueController::class . ':addMessageToQueue');
     }
 }

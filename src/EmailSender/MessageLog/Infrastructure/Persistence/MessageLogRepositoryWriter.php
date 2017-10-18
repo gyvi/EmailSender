@@ -44,7 +44,6 @@ class MessageLogRepositoryWriter implements MessageLogRepositoryWriterInterface
      * @param \EmailSender\MessageLog\Domain\Aggregate\MessageLog $messageLog
      *
      * @return int
-     *
      * @throws \Error
      */
     public function add(MessageLog $messageLog): int
@@ -195,16 +194,12 @@ class MessageLogRepositoryWriter implements MessageLogRepositoryWriterInterface
      */
     private function getSetStatusErrorMessageUpdate(MessageLogStatus $messageLogStatus): string
     {
-        switch ($messageLogStatus->getValue()) {
-            case MessageLogStatuses::STATUS_ERROR:
-                $sqlDateTimeUpdate = ',
+        $sqlDateTimeUpdate = '';
+
+        if ($messageLogStatus->getValue() === MessageLogStatuses::STATUS_ERROR) {
+            $sqlDateTimeUpdate = ',
                     `errorMessage` = :errorMessage
                 ';
-                break;
-
-            default:
-                $sqlDateTimeUpdate = '';
-                break;
         }
 
         return $sqlDateTimeUpdate;

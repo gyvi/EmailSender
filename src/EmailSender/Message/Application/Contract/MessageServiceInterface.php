@@ -15,6 +15,7 @@ interface MessageServiceInterface
      * @param array $request
      *
      * @return \EmailSender\Message\Domain\Aggregate\Message
+     * @throws \InvalidArgumentException
      */
     public function getMessageFromRequest(array $request): Message;
 }

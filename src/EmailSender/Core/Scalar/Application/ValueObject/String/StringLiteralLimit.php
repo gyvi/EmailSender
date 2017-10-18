@@ -29,6 +29,8 @@ abstract class StringLiteralLimit extends StringLiteral
      * StringLiteralLimit constructor.
      *
      * @param string $value
+     *
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
      */
     public function __construct(string $value)
     {

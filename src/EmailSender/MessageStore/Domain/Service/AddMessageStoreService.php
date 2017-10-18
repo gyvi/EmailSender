@@ -43,6 +43,9 @@ class AddMessageStoreService
      * @param \EmailSender\Message\Domain\Aggregate\Message $message
      *
      * @return \EmailSender\MessageStore\Domain\Aggregate\MessageStore
+     * @throws \Error
+     * @throws \InvalidArgumentException
+     * @throws \phpmailerException
      */
     public function add(Message $message): MessageStore
     {

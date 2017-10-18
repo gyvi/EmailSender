@@ -35,6 +35,7 @@ class SMTPSender implements SMTPSenderInterface
      * @param \EmailSender\MessageStore\Domain\Aggregate\MessageStore $messageStore
      *
      * @throws \EmailSender\MessageQueue\Infrastructure\Service\SMTPException
+     * @throws \Exception
      */
     public function send(MessageLog $messageLog, MessageStore $messageStore): void
     {
@@ -58,6 +59,8 @@ class SMTPSender implements SMTPSenderInterface
     /**
      * @param \EmailSender\MessageStore\Domain\Aggregate\MessageStore $messageStore
      * @param \SMTP                                                   $smtp
+     *
+     * @throws \Exception
      */
     private function setRecipients(MessageStore $messageStore, SMTP $smtp): void
     {

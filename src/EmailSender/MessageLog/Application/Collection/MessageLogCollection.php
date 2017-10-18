@@ -14,9 +14,8 @@ class MessageLogCollection extends Collection
 {
     /**
      * @param \EmailSender\MessageLog\Domain\Aggregate\MessageLog $item
-     */
-    /**
-     * @param object $item
+     *
+     * @throws \InvalidArgumentException
      */
     public function add($item): void
     {

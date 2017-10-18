@@ -112,17 +112,19 @@ class MessageQueueService implements MessageQueueServiceInterface
      * @param array                                    $getRequest
      *
      * @return \Psr\Http\Message\MessageInterface
-     *
-     * @ignoreCodeCoverage
+     * @throws \Error
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @throws \phpmailerException
      */
     public function addMessageToQueue(
         ServerRequestInterface $request,
         ResponseInterface $response,
         array $getRequest
     ): MessageInterface {
-        $getRequest = $request->getParsedBody();
+        $postRequest = $request->getParsedBody();
 
-        (new MessageQueueAddRequestValidator())->validate($getRequest);
+        (new MessageQueueAddRequestValidator())->validate($postRequest);
 
         $messageService = new MessageService();
 
@@ -157,7 +159,7 @@ class MessageQueueService implements MessageQueueServiceInterface
             $messageQueueBuilder
         );
 
-        $addMessageQueueService->add($getRequest);
+        $addMessageQueueService->add($postRequest);
 
         /** @var \Slim\Http\Response $response */
         $response = $response->withJson([
@@ -171,7 +173,10 @@ class MessageQueueService implements MessageQueueServiceInterface
     /**
      * @param string $messageQueue
      *
-     * @return void
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     * @throws \EmailSender\MessageQueue\Infrastructure\Service\SMTPException
+     * @throws \Error
+     * @throws \InvalidArgumentException
      */
     public function sendMessageFromQueue(string $messageQueue): void
     {

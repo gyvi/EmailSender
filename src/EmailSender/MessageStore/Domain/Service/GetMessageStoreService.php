@@ -42,6 +42,8 @@ class GetMessageStoreService
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageId
      *
      * @return \EmailSender\MessageStore\Domain\Aggregate\MessageStore
+     * @throws \Error
+     * @throws \InvalidArgumentException
      */
     public function readByMessageId(UnsignedInteger $messageId): MessageStore
     {

@@ -55,13 +55,11 @@ class MailAddress implements JsonSerializable
     /**
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
-            MailAddressPropertyNames::DISPLAY_NAME => !empty($this->displayName)
-                                                                  ? $this->displayName->getValue()
-                                                                  : '',
-            MailAddressPropertyNames::ADDRESS      => $this->address->getValue(),
+            MailAddressPropertyNames::DISPLAY_NAME => $this->displayName ?? '',
+            MailAddressPropertyNames::ADDRESS      => $this->address,
         ];
     }
 

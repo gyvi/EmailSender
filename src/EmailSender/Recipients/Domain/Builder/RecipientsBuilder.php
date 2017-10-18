@@ -34,6 +34,7 @@ class RecipientsBuilder
      * @param \EmailSender\Message\Domain\Aggregate\Message $message
      *
      * @return \EmailSender\Recipients\Domain\Aggregate\Recipients
+     * @throws \InvalidArgumentException
      */
     public function buildRecipientsFromMessage(Message $message): Recipients
     {
@@ -75,6 +76,7 @@ class RecipientsBuilder
      * @param array $recipientsArray
      *
      * @return \EmailSender\Recipients\Domain\Aggregate\Recipients
+     * @throws \InvalidArgumentException
      */
     public function buildRecipientsFromArray(array $recipientsArray): Recipients
     {

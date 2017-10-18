@@ -34,6 +34,7 @@ class EmailComposer implements EmailComposerInterface
      * @param \EmailSender\Message\Domain\Aggregate\Message $message
      *
      * @return \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral
+     * @throws \phpmailerException
      */
     public function composeEmailFromMessage(Message $message): StringLiteral
     {

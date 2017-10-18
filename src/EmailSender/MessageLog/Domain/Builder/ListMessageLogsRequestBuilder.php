@@ -36,13 +36,14 @@ class ListMessageLogsRequestBuilder
      * @param array $listMessageLogsRequestArray
      *
      * @return \EmailSender\MessageLog\Domain\Entity\ListMessageLogsRequest
+     * @throws \InvalidArgumentException
      */
     public function buildListMessageLogsRequestFromArray(array $listMessageLogsRequestArray): ListMessageLogsRequest
     {
         $listMessageLogsRequest = new ListMessageLogsRequest();
 
         $listMessageLogsRequest->setFrom($this->getFromFromRequest($listMessageLogsRequestArray));
-        $listMessageLogsRequest->setRows($this->getRowsFromRequest($listMessageLogsRequestArray));
+        $listMessageLogsRequest->setPerPage($this->getPerPageFromRequest($listMessageLogsRequestArray));
         $listMessageLogsRequest->setPage($this->getPageFromRequest($listMessageLogsRequestArray));
         $listMessageLogsRequest->setLastMessageId($this->getLastMessageIdFromRequest($listMessageLogsRequestArray));
 
@@ -53,6 +54,7 @@ class ListMessageLogsRequestBuilder
      * @param array $listMessageLogsRequestArray
      *
      * @return \EmailSender\MailAddress\Domain\Aggregate\MailAddress|null
+     * @throws \InvalidArgumentException
      */
     private function getFromFromRequest(array $listMessageLogsRequestArray): ?MailAddress
     {
@@ -79,34 +81,36 @@ class ListMessageLogsRequestBuilder
      * @param array $listMessageLogsRequestArray
      *
      * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger|null
+     * @throws \InvalidArgumentException
      */
-    private function getRowsFromRequest(array $listMessageLogsRequestArray): ?UnsignedInteger
+    private function getPerPageFromRequest(array $listMessageLogsRequestArray): ?UnsignedInteger
     {
-        $rows = null;
+        $perPage = null;
 
         try {
-            if (!empty($listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::ROWS])
-                && intval($listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::ROWS]) > 0
+            if (!empty($listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::PER_PAGE])
+                && (int)$listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::PER_PAGE] > 0
             ) {
-                $rows = new UnsignedInteger(
-                    (int)$listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::ROWS]
+                $perPage = new UnsignedInteger(
+                    (int)$listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::PER_PAGE]
                 );
             }
         } catch (Throwable $e) {
             throw new InvalidArgumentException(
-                "Wrong property: '"  . ListMessageLogsRequestPropertyNames::ROWS . "'",
+                "Wrong property: '"  . ListMessageLogsRequestPropertyNames::PER_PAGE . "'",
                 0,
                 $e
             );
         }
 
-        return $rows;
+        return $perPage;
     }
 
     /**
      * @param array $listMessageLogsRequestArray
      *
      * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger|null
+     * @throws \InvalidArgumentException
      */
     private function getPageFromRequest(array $listMessageLogsRequestArray): ?UnsignedInteger
     {
@@ -114,7 +118,7 @@ class ListMessageLogsRequestBuilder
 
         try {
             if (!empty($listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::PAGE])
-                && intval($listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::PAGE]) > 0
+                && (int)$listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::PAGE] > 0
             ) {
                 $page = new UnsignedInteger(
                     (int)$listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::PAGE]
@@ -135,6 +139,7 @@ class ListMessageLogsRequestBuilder
      * @param array $listMessageLogsRequestArray
      *
      * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger|null
+     * @throws \InvalidArgumentException
      */
     private function getLastMessageIdFromRequest(array $listMessageLogsRequestArray): ?UnsignedInteger
     {
@@ -142,7 +147,7 @@ class ListMessageLogsRequestBuilder
 
         try {
             if (!empty($listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::LAST_MESSAGE_ID])
-                && intval($listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::LAST_MESSAGE_ID]) > 0
+                && (int)$listMessageLogsRequestArray[ListMessageLogsRequestPropertyNames::LAST_MESSAGE_ID] > 0
             ) {
                 $lastMessageId = new UnsignedInteger(
                     (int)$listMessageLogsRequestArray[

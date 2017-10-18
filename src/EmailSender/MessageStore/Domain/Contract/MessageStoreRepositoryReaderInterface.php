@@ -15,6 +15,8 @@ interface MessageStoreRepositoryReaderInterface
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageId
      *
      * @return array
+     *
+     * @throws \Error
      */
     public function readByMessageId(UnsignedInteger $messageId): array;
 }

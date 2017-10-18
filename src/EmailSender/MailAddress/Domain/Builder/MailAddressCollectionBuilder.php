@@ -31,11 +31,11 @@ class MailAddressCollectionBuilder
     }
 
     /**
-     * Build MailAddressCollection from string.
-     *
      * @param string $mailAddressCollectionString
      *
      * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     * @throws \InvalidArgumentException
      */
     public function buildMailAddressCollectionFromString(string $mailAddressCollectionString): MailAddressCollection
     {
@@ -47,9 +47,9 @@ class MailAddressCollectionBuilder
             /** @var \stdClass $mailAddressObject */
             foreach ($mailAddressCollectionArray as $mailAddressObject) {
                 $mailAddressString = imap_rfc822_write_address(
-                    isset($mailAddressObject->mailbox)  ? $mailAddressObject->mailbox  : '',
-                    isset($mailAddressObject->host)     ? $mailAddressObject->host     : '',
-                    isset($mailAddressObject->personal) ? $mailAddressObject->personal : ''
+                    $mailAddressObject->mailbox ?? '',
+                    $mailAddressObject->host ?? '',
+                    $mailAddressObject->personal ?? ''
                 );
 
                 if (!empty(trim($mailAddressString))) {
@@ -67,6 +67,7 @@ class MailAddressCollectionBuilder
      * @param array $mailAddressCollectionArray
      *
      * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     * @throws \InvalidArgumentException
      */
     public function buildMailAddressCollectionFromArray(array $mailAddressCollectionArray): MailAddressCollection
     {

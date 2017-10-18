@@ -117,6 +117,8 @@ class MessageLogService implements MessageLogServiceInterface
      * @param int $messageLogIdInt
      *
      * @return \EmailSender\MessageLog\Domain\Aggregate\MessageLog
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     * @throws \InvalidArgumentException
      */
     public function getMessageLogFromRepository(int $messageLogIdInt): MessageLog
     {
@@ -138,7 +140,6 @@ class MessageLogService implements MessageLogServiceInterface
             $this->repositoryReader,
             $messageLogBuilder,
             $messageLogCollectionBuilder,
-            $mailAddressService,
             $listMessageLogsRequestBuilder
         );
 
@@ -151,15 +152,18 @@ class MessageLogService implements MessageLogServiceInterface
      * @param array                                    $getRequest
      *
      * @return \Psr\Http\Message\MessageInterface
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     public function listMessageLogs(
         ServerRequestInterface $request,
         ResponseInterface $response,
         array $getRequest
     ): MessageInterface {
-        $getRequest = $request->getParsedBody();
+        $queryParams = $request->getQueryParams();
 
-        (new MessageLogListRequestValidator())->validate($getRequest);
+        (new MessageLogListRequestValidator())->validate($queryParams);
 
         $recipientsService             = new RecipientsService();
         $mailAddressService            = new MailAddressService();
@@ -178,11 +182,10 @@ class MessageLogService implements MessageLogServiceInterface
             $this->repositoryReader,
             $messageLogBuilder,
             $messageLogCollectionBuilder,
-            $mailAddressService,
             $listMessageLogsRequestBuilder
         );
 
-        $messageLogList = $getMessageLogService->listMessageLogs($getRequest);
+        $messageLogList = $getMessageLogService->listMessageLogs($queryParams);
 
         /** @var \Slim\Http\Response $response */
         $response = $response->withJson([
@@ -208,6 +211,6 @@ class MessageLogService implements MessageLogServiceInterface
         /** @var \Slim\Views\Twig $twig */
         $twig = ($this->view)();
 
-        return $twig->render($response, 'MessageLog/Application/View/messageLogLister.twig', []);
+        return $twig->render($response, 'MessageLog/Application/View/messageLogLister.twig');
     }
 }

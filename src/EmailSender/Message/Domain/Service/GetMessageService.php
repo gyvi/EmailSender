@@ -2,7 +2,6 @@
 
 namespace EmailSender\Message\Domain\Service;
 
-use EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\Message\Domain\Builder\MessageBuilder;
 
@@ -14,11 +13,6 @@ use EmailSender\Message\Domain\Builder\MessageBuilder;
 class GetMessageService
 {
     /**
-     * @var \EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface
-     */
-    private $mailAddressService;
-
-    /**
      * @var \EmailSender\Message\Domain\Builder\MessageBuilder
      */
     private $messageBuilder;
@@ -26,19 +20,18 @@ class GetMessageService
     /**
      * GetMessageService constructor.
      *
-     * @param \EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface $mailAddressService
-     * @param \EmailSender\Message\Domain\Builder\MessageBuilder                        $messageBuilder
+     * @param \EmailSender\Message\Domain\Builder\MessageBuilder $messageBuilder
      */
-    public function __construct(MailAddressServiceInterface $mailAddressService, MessageBuilder $messageBuilder)
+    public function __construct(MessageBuilder $messageBuilder)
     {
-        $this->mailAddressService = $mailAddressService;
-        $this->messageBuilder     = $messageBuilder;
+        $this->messageBuilder = $messageBuilder;
     }
 
     /**
      * @param array $request
      *
      * @return \EmailSender\Message\Domain\Aggregate\Message
+     * @throws \InvalidArgumentException
      */
     public function getMessageFromRequest(array $request): Message
     {

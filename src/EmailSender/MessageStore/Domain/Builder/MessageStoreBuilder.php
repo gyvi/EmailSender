@@ -43,6 +43,8 @@ class MessageStoreBuilder
      * @param \EmailSender\Message\Domain\Aggregate\Message $message
      *
      * @return \EmailSender\MessageStore\Domain\Aggregate\MessageStore
+     * @throws \InvalidArgumentException
+     * @throws \phpmailerException
      */
     public function buildMessageStoreFromMessage(Message $message): MessageStore
     {
@@ -56,6 +58,7 @@ class MessageStoreBuilder
      * @param array $messageStoreArray
      *
      * @return \EmailSender\MessageStore\Domain\Aggregate\MessageStore
+     * @throws \InvalidArgumentException
      */
     public function buildMessageStoreFromArray(array $messageStoreArray): MessageStore
     {

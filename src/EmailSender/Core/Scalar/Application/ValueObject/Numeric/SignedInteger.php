@@ -32,6 +32,8 @@ class SignedInteger implements ValueObjectInterface, JsonSerializable
      * SignedInteger constructor.
      *
      * @param int $value
+     *
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
      */
     public function __construct(int $value)
     {
@@ -73,7 +75,7 @@ class SignedInteger implements ValueObjectInterface, JsonSerializable
     /**
      * @return int
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): int
     {
         return $this->getValue();
     }

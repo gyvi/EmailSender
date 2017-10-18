@@ -19,6 +19,8 @@ interface MessageQueueServiceInterface
      * @param array                                    $getRequest
      *
      * @return \Psr\Http\Message\MessageInterface
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     public function addMessageToQueue(
         ServerRequestInterface $request,
@@ -28,6 +30,10 @@ interface MessageQueueServiceInterface
 
     /**
      * @param string $messageQueue
+     *
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     * @throws \EmailSender\MessageQueue\Infrastructure\Service\SMTPException
+     * @throws \InvalidArgumentException
      */
     public function sendMessageFromQueue(string $messageQueue): void;
 }

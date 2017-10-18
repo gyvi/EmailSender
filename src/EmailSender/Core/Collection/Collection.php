@@ -72,13 +72,13 @@ abstract class Collection implements IteratorAggregate, Countable, JsonSerializa
      */
     public function isEmpty(): bool
     {
-        return $this->count() == 0;
+        return $this->count() === 0;
     }
 
     /**
      * @return \ArrayIterator
      */
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->items);
     }

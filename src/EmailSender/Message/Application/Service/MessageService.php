@@ -19,12 +19,13 @@ class MessageService implements MessageServiceInterface
      * @param array $request
      *
      * @return \EmailSender\Message\Domain\Aggregate\Message
+     * @throws \InvalidArgumentException
      */
     public function getMessageFromRequest(array $request): Message
     {
         $mailAddressService = new MailAddressService();
         $messageBuilder     = new MessageBuilder($mailAddressService);
-        $getMessageService  = new GetMessageService($mailAddressService, $messageBuilder);
+        $getMessageService  = new GetMessageService($messageBuilder);
 
         return $getMessageService->getMessageFromRequest($request);
     }

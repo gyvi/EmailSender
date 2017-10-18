@@ -15,15 +15,9 @@ class MessageLogListRequestValidator extends RequestValidator
     /**
      * @var array
      */
-    protected $requiredProperties = [
-    ];
-
-    /**
-     * @var array
-     */
     protected $optionalProperties = [
         ListMessageLogsRequestPropertyNames::FROM,
-        ListMessageLogsRequestPropertyNames::ROWS,
+        ListMessageLogsRequestPropertyNames::PER_PAGE,
         ListMessageLogsRequestPropertyNames::PAGE,
         ListMessageLogsRequestPropertyNames::LAST_MESSAGE_ID,
     ];

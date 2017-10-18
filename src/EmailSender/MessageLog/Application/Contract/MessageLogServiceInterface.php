@@ -38,11 +38,13 @@ interface MessageLogServiceInterface
     ): void;
 
     /**
-     * @param int $messageLogId
+     * @param int $messageLogIdInt
      *
      * @return \EmailSender\MessageLog\Domain\Aggregate\MessageLog
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     * @throws \InvalidArgumentException
      */
-    public function getMessageLogFromRepository(int $messageLogId): MessageLog;
+    public function getMessageLogFromRepository(int $messageLogIdInt): MessageLog;
 
     /**
      * @param \Psr\Http\Message\ServerRequestInterface $request
@@ -50,6 +52,9 @@ interface MessageLogServiceInterface
      * @param array                                    $getRequest
      *
      * @return \Psr\Http\Message\MessageInterface
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     public function listMessageLogs(
         ServerRequestInterface $request,

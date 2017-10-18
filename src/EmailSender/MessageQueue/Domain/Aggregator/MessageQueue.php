@@ -69,7 +69,7 @@ class MessageQueue implements JsonSerializable
     /**
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             MessageQueuePropertyNames::MESSAGE_LOG_ID => $this->getMessageLogId(),

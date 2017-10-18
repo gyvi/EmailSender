@@ -54,14 +54,14 @@ class DateTimeFactory
     {
         return new DateTime(
             new Date(
-                new Year(intval($dateTime->format('Y'))),
-                new Month(intval($dateTime->format('n'))),
-                new Day(intval($dateTime->format('j')))
+                new Year((int)$dateTime->format('Y')),
+                new Month((int)$dateTime->format('n')),
+                new Day((int)$dateTime->format('j'))
             ),
             new Time(
-                new Hour(intval($dateTime->format('G'))),
-                new Minute(intval($dateTime->format('i'))),
-                new Second(intval($dateTime->format('s')))
+                new Hour((int)$dateTime->format('G')),
+                new Minute((int)$dateTime->format('i')),
+                new Second((int)$dateTime->format('s'))
             )
         );
     }

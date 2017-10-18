@@ -39,6 +39,7 @@ class MessageBuilder
      * @param array $request
      *
      * @return \EmailSender\Message\Domain\Aggregate\Message
+     * @throws \InvalidArgumentException
      */
     public function buildMessageFromRequest(array $request): Message
     {
@@ -58,6 +59,7 @@ class MessageBuilder
      * @param array $request
      *
      * @return \EmailSender\MailAddress\Domain\Aggregate\MailAddress
+     * @throws \InvalidArgumentException
      */
     private function getFromFromRequest(array $request): MailAddress
     {
@@ -74,8 +76,7 @@ class MessageBuilder
      * @param array $request
      *
      * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
-     *
-     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     * @throws \InvalidArgumentException
      */
     private function getToFromRequest(array $request): MailAddressCollection
     {
@@ -99,12 +100,13 @@ class MessageBuilder
      * @param array $request
      *
      * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     * @throws \InvalidArgumentException
      */
     private function getCcFromRequest(array $request): MailAddressCollection
     {
         try {
             $cc = $this->mailAddressService->getMailAddressCollectionFromRequest(
-                isset($request[MessagePropertyNames::CC]) ? $request[MessagePropertyNames::CC] : ''
+                $request[MessagePropertyNames::CC] ?? ''
             );
         } catch (ValueObjectException $e) {
             throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyNames::CC . "'", 0, $e);
@@ -117,12 +119,13 @@ class MessageBuilder
      * @param array $request
      *
      * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     * @throws \InvalidArgumentException
      */
     private function getBccFromRequest(array $request): MailAddressCollection
     {
         try {
             $bcc = $this->mailAddressService->getMailAddressCollectionFromRequest(
-                isset($request[MessagePropertyNames::BCC]) ? $request[MessagePropertyNames::BCC] : ''
+                $request[MessagePropertyNames::BCC] ?? ''
             );
         } catch (ValueObjectException $e) {
             throw new InvalidArgumentException("Wrong property: '"  . MessagePropertyNames::BCC . "'", 0, $e);
@@ -135,6 +138,7 @@ class MessageBuilder
      * @param array $request
      *
      * @return \EmailSender\Core\ValueObject\Subject
+     * @throws \InvalidArgumentException
      */
     private function getSubjectFromRequest(array $request): Subject
     {
@@ -151,6 +155,7 @@ class MessageBuilder
      * @param array $request
      *
      * @return \EmailSender\Message\Domain\ValueObject\Body
+     * @throws \InvalidArgumentException
      */
     private function getBodyFromRequest(array $request): Body
     {
@@ -167,6 +172,7 @@ class MessageBuilder
      * @param array $request
      *
      * @return \EmailSender\MailAddress\Domain\Aggregate\MailAddress|null
+     * @throws \InvalidArgumentException
      */
     private function getReplyToFromRequest(array $request): ?MailAddress
     {
@@ -189,6 +195,7 @@ class MessageBuilder
      * @param array $request
      *
      * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
+     * @throws \InvalidArgumentException
      */
     private function getDelayFromRequest(array $request): UnsignedInteger
     {

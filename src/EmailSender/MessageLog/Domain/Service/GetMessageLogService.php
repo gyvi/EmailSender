@@ -3,7 +3,6 @@
 namespace EmailSender\MessageLog\Domain\Service;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
-use EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface;
 use EmailSender\MessageLog\Application\Collection\MessageLogCollection;
 use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
 use EmailSender\MessageLog\Domain\Builder\ListMessageLogsRequestBuilder;
@@ -34,11 +33,6 @@ class GetMessageLogService
     private $messageLogCollectionBuilder;
 
     /**
-     * @var \EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface
-     */
-    private $mailAddressService;
-
-    /**
      * @var \EmailSender\MessageLog\Domain\Builder\ListMessageLogsRequestBuilder
      */
     private $listMessageLogsRequestBuilder;
@@ -49,20 +43,17 @@ class GetMessageLogService
      * @param \EmailSender\MessageLog\Domain\Contract\MessageLogRepositoryReaderInterface $repositoryReader
      * @param \EmailSender\MessageLog\Domain\Builder\MessageLogBuilder                    $messageLogBuilder
      * @param \EmailSender\MessageLog\Domain\Builder\MessageLogCollectionBuilder          $messageLogCollectionBuilder
-     * @param \EmailSender\MailAddress\Application\Contract\MailAddressServiceInterface   $mailAddressService
      * @param \EmailSender\MessageLog\Domain\Builder\ListMessageLogsRequestBuilder        $listMessageLogsRequestBuilder
      */
     public function __construct(
         MessageLogRepositoryReaderInterface $repositoryReader,
         MessageLogBuilder $messageLogBuilder,
         MessageLogCollectionBuilder $messageLogCollectionBuilder,
-        MailAddressServiceInterface $mailAddressService,
         ListMessageLogsRequestBuilder $listMessageLogsRequestBuilder
     ) {
         $this->repositoryReader              = $repositoryReader;
         $this->messageLogBuilder             = $messageLogBuilder;
         $this->messageLogCollectionBuilder   = $messageLogCollectionBuilder;
-        $this->mailAddressService            = $mailAddressService;
         $this->listMessageLogsRequestBuilder = $listMessageLogsRequestBuilder;
     }
 
@@ -70,6 +61,8 @@ class GetMessageLogService
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageLogId
      *
      * @return \EmailSender\MessageLog\Domain\Aggregate\MessageLog
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     * @throws \InvalidArgumentException
      */
     public function readByMessageLogId(UnsignedInteger $messageLogId): MessageLog
     {
@@ -82,6 +75,8 @@ class GetMessageLogService
      * @param array $request
      *
      * @return \EmailSender\MessageLog\Application\Collection\MessageLogCollection
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     * @throws \InvalidArgumentException
      */
     public function listMessageLogs(array $request): MessageLogCollection
     {

@@ -23,8 +23,12 @@ class MessageQueueController extends AbstractController
      * @param array                                    $getRequest
      *
      * @return \Psr\Http\Message\MessageInterface
-     *
-     * @ignoreCodeCoverage
+     * @throws \Error
+     * @throws \InvalidArgumentException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \RuntimeException
+     * @throws \phpmailerException
      */
     public function addMessageToQueue(
         ServerRequestInterface $request,

@@ -23,8 +23,11 @@ class MessageLogController extends AbstractController
      * @param array                                    $getRequest
      *
      * @return \Psr\Http\Message\MessageInterface
-     *
-     * @ignoreCodeCoverage
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     * @throws \InvalidArgumentException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \RuntimeException
      */
     public function listMessageLogs(
         ServerRequestInterface $request,
@@ -59,6 +62,8 @@ class MessageLogController extends AbstractController
      * @param array                                    $getRequest
      *
      * @return \Psr\Http\Message\MessageInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function messageLogLister(
         ServerRequestInterface $request,

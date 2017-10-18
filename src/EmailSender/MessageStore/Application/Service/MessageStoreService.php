@@ -60,6 +60,9 @@ class MessageStoreService implements MessageStoreServiceInterface
      * @param \EmailSender\Message\Domain\Aggregate\Message $message
      *
      * @return \EmailSender\MessageStore\Domain\Aggregate\MessageStore
+     * @throws \Error
+     * @throws \InvalidArgumentException
+     * @throws \phpmailerException
      */
     public function addMessageToMessageStore(Message $message): MessageStore
     {
@@ -76,6 +79,8 @@ class MessageStoreService implements MessageStoreServiceInterface
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageId
      *
      * @return \EmailSender\MessageStore\Domain\Aggregate\MessageStore
+     * @throws \Error
+     * @throws \InvalidArgumentException
      */
     public function getMessageStoreFromRepository(UnsignedInteger $messageId): MessageStore
     {

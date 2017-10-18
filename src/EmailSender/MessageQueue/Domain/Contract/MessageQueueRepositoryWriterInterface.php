@@ -15,6 +15,7 @@ interface MessageQueueRepositoryWriterInterface
      * @param \EmailSender\MessageQueue\Domain\Aggregator\MessageQueue $messageQueue
      *
      * @return bool
+     * @throws \Error
      */
     public function add(MessageQueue $messageQueue): bool;
 }

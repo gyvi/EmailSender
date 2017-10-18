@@ -18,7 +18,7 @@ class AMQPMessageBuilder
      *
      * @return \PhpAmqpLib\Message\AMQPMessage
      */
-    public function buildAMQPMessage(MessageQueue $messageQueue)
+    public function buildAMQPMessage(MessageQueue $messageQueue): AMQPMessage
     {
         $messageProperties = [
             'delivery_mode'       => AMQPMessage::DELIVERY_MODE_PERSISTENT,
