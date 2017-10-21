@@ -3,7 +3,7 @@
 namespace EmailSender\MessageLog\Domain\Entity;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
-use EmailSender\MailAddress\Domain\Aggregate\MailAddress;
+use EmailSender\Core\ValueObject\EmailAddress;
 
 /**
  * Class ListMessageLogsRequest
@@ -16,7 +16,7 @@ class ListMessageLogsRequest
     const DEFAULT_PER_PAGE = 50;
 
     /**
-     * @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress|null
+     * @var \EmailSender\Core\ValueObject\EmailAddress|null
      */
     private $from;
 
@@ -36,17 +36,17 @@ class ListMessageLogsRequest
     private $lastMessageId;
 
     /**
-     * @return \EmailSender\MailAddress\Domain\Aggregate\MailAddress
+     * @return \EmailSender\Core\ValueObject\EmailAddress|null
      */
-    public function getFrom(): ?MailAddress
+    public function getFrom(): ?EmailAddress
     {
         return $this->from;
     }
 
     /**
-     * @param \EmailSender\MailAddress\Domain\Aggregate\MailAddress $from
+     * @param \EmailSender\Core\ValueObject\EmailAddress|null $from
      */
-    public function setFrom(?MailAddress $from): void
+    public function setFrom(?EmailAddress $from): void
     {
         $this->from = $from;
     }

@@ -14,21 +14,6 @@ use Slim\App;
 class RouteTest extends TestCase
 {
     /**
-     * Test __construct method.
-     */
-    public function testConstruct()
-    {
-        /** @var App|\PHPUnit_Framework_MockObject_MockObject $application */
-        $application = $this->getMockBuilder(App::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-       $route = new Route($application);
-
-       $this->assertInstanceOf(Route::class, $route);
-    }
-
-    /**
      * Test init method.
      */
     public function testInit()
@@ -38,10 +23,10 @@ class RouteTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $application->expects($this->exactly(1))
+        $application->expects($this->exactly(2))
             ->method('get');
 
-        $application->expects($this->exactly(1))
+        $application->expects($this->never())
             ->method('post');
 
         $route = new Route($application);

@@ -2,21 +2,22 @@
 
 namespace EmailSender\MessageLog\Application\Service;
 
+use EmailSender\Core\Factory\EmailAddressCollectionFactory;
+use EmailSender\Core\Factory\EmailAddressFactory;
+use EmailSender\Core\Factory\RecipientsFactory;
 use EmailSender\Core\Scalar\Application\Factory\DateTimeFactory;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
-use EmailSender\MailAddress\Application\Service\MailAddressService;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\MessageLog\Application\Contract\MessageLogServiceInterface;
 use EmailSender\MessageLog\Application\Validator\MessageLogListRequestValidator;
 use EmailSender\MessageLog\Application\ValueObject\MessageLogStatus;
 use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
-use EmailSender\MessageLog\Domain\Builder\ListMessageLogsRequestBuilder;
-use EmailSender\MessageLog\Domain\Builder\MessageLogCollectionBuilder;
+use EmailSender\MessageLog\Domain\Factory\ListMessageLogsRequestFactory;
+use EmailSender\MessageLog\Domain\Factory\MessageLogCollectionFactory;
 use EmailSender\MessageLog\Domain\Service\AddMessageLogService;
 use EmailSender\MessageLog\Domain\Service\GetMessageLogService;
 use EmailSender\MessageLog\Domain\Service\UpdateMessageLogService;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
-use EmailSender\Recipients\Application\Service\RecipientsService;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\MessageInterface;
@@ -25,7 +26,7 @@ use Closure;
 use Psr\Log\LoggerInterface;
 use EmailSender\MessageLog\Infrastructure\Persistence\MessageLogRepositoryReader;
 use EmailSender\MessageLog\Infrastructure\Persistence\MessageLogRepositoryWriter;
-use EmailSender\MessageLog\Domain\Builder\MessageLogBuilder;
+use EmailSender\MessageLog\Domain\Factory\MessageLogFactory;
 
 /**
  * Class MessageLogService
@@ -82,17 +83,18 @@ class MessageLogService implements MessageLogServiceInterface
      */
     public function addMessageToMessageLog(Message $message, MessageStore $messageStore): MessageLog
     {
-        $recipientsService  = new RecipientsService();
-        $mailAddressService = new MailAddressService();
+        $emailAddressFactory           = new EmailAddressFactory();
+        $emailAddressCollectionFactory = new EmailAddressCollectionFactory($emailAddressFactory);
+        $recipientsFactory             = new RecipientsFactory($emailAddressCollectionFactory);
 
-        $dateTimeFactory    = new DateTimeFactory();
-        $messageLogBuilder  = new MessageLogBuilder(
-            $recipientsService,
-            $mailAddressService,
+        $dateTimeFactory               = new DateTimeFactory();
+        $messageLogFactory             = new MessageLogFactory(
+            $recipientsFactory,
+            $emailAddressFactory,
             $dateTimeFactory
         );
 
-        $addMessageLogService = new AddMessageLogService($this->repositoryWriter, $messageLogBuilder);
+        $addMessageLogService = new AddMessageLogService($this->repositoryWriter, $messageLogFactory);
 
         return $addMessageLogService->add($message, $messageStore);
     }
@@ -123,22 +125,24 @@ class MessageLogService implements MessageLogServiceInterface
     public function getMessageLogFromRepository(int $messageLogIdInt): MessageLog
     {
         $messageLogId                  = new UnsignedInteger($messageLogIdInt);
-        $recipientsService             = new RecipientsService();
-        $mailAddressService            = new MailAddressService();
+        $emailAddressFactory           = new EmailAddressFactory();
+        $emailAddressCollectionFactory = new EmailAddressCollectionFactory($emailAddressFactory);
+        $recipientsFactory             = new RecipientsFactory($emailAddressCollectionFactory);
+
 
         $dateTimeFactory               = new DateTimeFactory();
-        $messageLogBuilder             = new MessageLogBuilder(
-            $recipientsService,
-            $mailAddressService,
+        $messageLogFactory             = new MessageLogFactory(
+            $recipientsFactory,
+            $emailAddressFactory,
             $dateTimeFactory
         );
 
-        $messageLogCollectionBuilder   = new MessageLogCollectionBuilder($messageLogBuilder);
-        $listMessageLogsRequestBuilder = new ListMessageLogsRequestBuilder($mailAddressService);
+        $messageLogCollectionBuilder   = new MessageLogCollectionFactory($messageLogFactory);
+        $listMessageLogsRequestBuilder = new ListMessageLogsRequestFactory($emailAddressFactory);
 
         $getMessageLogService = new GetMessageLogService(
             $this->repositoryReader,
-            $messageLogBuilder,
+            $messageLogFactory,
             $messageLogCollectionBuilder,
             $listMessageLogsRequestBuilder
         );
@@ -165,18 +169,19 @@ class MessageLogService implements MessageLogServiceInterface
 
         (new MessageLogListRequestValidator())->validate($queryParams);
 
-        $recipientsService             = new RecipientsService();
-        $mailAddressService            = new MailAddressService();
+        $emailAddressFactory           = new EmailAddressFactory();
+        $emailAddressCollectionFactory = new EmailAddressCollectionFactory($emailAddressFactory);
+        $recipientsFactory             = new RecipientsFactory($emailAddressCollectionFactory);
 
         $dateTimeFactory               = new DateTimeFactory();
-        $messageLogBuilder             = new MessageLogBuilder(
-            $recipientsService,
-            $mailAddressService,
+        $messageLogBuilder             = new MessageLogFactory(
+            $recipientsFactory,
+            $emailAddressFactory,
             $dateTimeFactory
         );
 
-        $messageLogCollectionBuilder   = new MessageLogCollectionBuilder($messageLogBuilder);
-        $listMessageLogsRequestBuilder = new ListMessageLogsRequestBuilder($mailAddressService);
+        $messageLogCollectionBuilder   = new MessageLogCollectionFactory($messageLogBuilder);
+        $listMessageLogsRequestBuilder = new ListMessageLogsRequestFactory($emailAddressFactory);
 
         $getMessageLogService = new GetMessageLogService(
             $this->repositoryReader,

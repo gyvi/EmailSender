@@ -22,7 +22,7 @@ interface MessageQueueServiceInterface
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function addMessageToQueue(
+    public function add(
         ServerRequestInterface $request,
         ResponseInterface $response,
         array $getRequest

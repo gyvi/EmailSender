@@ -39,8 +39,6 @@ class DisplayNameTest extends TestCase
     public function testConstructWithNotMatchedValues(string $value)
     {
         new DisplayName($value);
-
-        $this->fail();
     }
 
     /**
@@ -52,8 +50,6 @@ class DisplayNameTest extends TestCase
     public function testConstructWithTooShortValue()
     {
         new DisplayName('');
-
-        $this->fail();
     }
 
     /**
@@ -65,8 +61,6 @@ class DisplayNameTest extends TestCase
     public function testConstructWithTooLongValue()
     {
         new DisplayName('01234567890123456789012345678901234567890123456789012345678901234');
-
-        $this->fail();
     }
 
     /**
@@ -74,7 +68,7 @@ class DisplayNameTest extends TestCase
      *
      * @return array
      */
-    public function providerForTestConstructWithValidValues()
+    public function providerForTestConstructWithValidValues(): array
     {
         return [
             ['test name'],
@@ -87,12 +81,12 @@ class DisplayNameTest extends TestCase
      *
      * @return array
      */
-    public function providerForTestConstructWithNotMatchedValues()
+    public function providerForTestConstructWithNotMatchedValues(): array
     {
         return [
-            ["asd €"],
-            ["dfdfg
-            dfgdg"],
+            ['asd €'],
+            ['dfdfg
+            dfgdg'],
         ];
     }
 }

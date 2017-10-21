@@ -3,7 +3,7 @@
 namespace EmailSender\MessageQueue\Application\Validator;
 
 use EmailSender\Core\Validator\RequestValidator;
-use EmailSender\Message\Application\Catalog\MessagePropertyNames;
+use EmailSender\Message\Application\Catalog\MessagePropertyNameList;
 
 /**
  * Class MessageQueueAddRequestValidator
@@ -16,19 +16,19 @@ class MessageQueueAddRequestValidator extends RequestValidator
      * @var array
      */
     protected $requiredProperties = [
-        MessagePropertyNames::FROM,
-        MessagePropertyNames::TO,
-        MessagePropertyNames::SUBJECT,
-        MessagePropertyNames::BODY,
+        MessagePropertyNameList::FROM,
+        MessagePropertyNameList::TO,
+        MessagePropertyNameList::SUBJECT,
+        MessagePropertyNameList::BODY,
     ];
 
     /**
      * @var array
      */
     protected $optionalProperties = [
-        MessagePropertyNames::CC,
-        MessagePropertyNames::BCC,
-        MessagePropertyNames::DELAY,
-        MessagePropertyNames::REPLY_TO,
+        MessagePropertyNameList::CC,
+        MessagePropertyNameList::BCC,
+        MessagePropertyNameList::DELAY,
+        MessagePropertyNameList::REPLY_TO,
     ];
 }

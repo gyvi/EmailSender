@@ -3,7 +3,7 @@
 namespace EmailSender\MessageStore\Domain\Service;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
-use EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder;
+use EmailSender\MessageStore\Domain\Factory\MessageStoreFactory;
 use EmailSender\MessageStore\Domain\Contract\MessageStoreRepositoryReaderInterface;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
 
@@ -20,7 +20,7 @@ class GetMessageStoreService
     private $repositoryReader;
 
     /**
-     * @var \EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder
+     * @var \EmailSender\MessageStore\Domain\Factory\MessageStoreFactory
      */
     private $messageStoreBuilder;
 
@@ -28,11 +28,11 @@ class GetMessageStoreService
      * GetMessageStoreService constructor.
      *
      * @param \EmailSender\MessageStore\Domain\Contract\MessageStoreRepositoryReaderInterface $repositoryReader
-     * @param \EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder                    $messageStoreBuilder
+     * @param \EmailSender\MessageStore\Domain\Factory\MessageStoreFactory                    $messageStoreBuilder
      */
     public function __construct(
         MessageStoreRepositoryReaderInterface $repositoryReader,
-        MessageStoreBuilder $messageStoreBuilder
+        MessageStoreFactory $messageStoreBuilder
     ) {
         $this->repositoryReader    = $repositoryReader;
         $this->messageStoreBuilder = $messageStoreBuilder;
@@ -49,6 +49,6 @@ class GetMessageStoreService
     {
         $messageStoreArray = $this->repositoryReader->readByMessageId($messageId);
 
-        return $this->messageStoreBuilder->buildMessageStoreFromArray($messageStoreArray);
+        return $this->messageStoreBuilder->createFromArray($messageStoreArray);
     }
 }

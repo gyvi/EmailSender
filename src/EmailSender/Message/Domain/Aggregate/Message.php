@@ -2,9 +2,9 @@
 
 namespace EmailSender\Message\Domain\Aggregate;
 
+use EmailSender\Core\Collection\EmailAddressCollection;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
-use EmailSender\MailAddress\Application\Collection\MailAddressCollection;
-use EmailSender\MailAddress\Domain\Aggregate\MailAddress;
+use EmailSender\Core\ValueObject\EmailAddress;
 use EmailSender\Core\ValueObject\Subject;
 use EmailSender\Message\Domain\ValueObject\Body;
 use JsonSerializable;
@@ -17,22 +17,22 @@ use JsonSerializable;
 class Message implements JsonSerializable
 {
     /**
-     * @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress
+     * @var \EmailSender\Core\ValueObject\EmailAddress
      */
     private $from;
 
     /**
-     * @var \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     * @var \EmailSender\Core\Collection\EmailAddressCollection
      */
     private $to;
 
     /**
-     * @var \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     * @var \EmailSender\Core\Collection\EmailAddressCollection
      */
     private $cc;
 
     /**
-     * @var \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     * @var \EmailSender\Core\Collection\EmailAddressCollection
      */
     private $bcc;
 
@@ -47,7 +47,7 @@ class Message implements JsonSerializable
     private $body;
 
     /**
-     * @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress|null
+     * @var \EmailSender\Core\ValueObject\EmailAddress|null
      */
     private $replyTo;
 
@@ -59,23 +59,23 @@ class Message implements JsonSerializable
     /**
      * Message constructor.
      *
-     * @param \EmailSender\MailAddress\Domain\Aggregate\MailAddress                    $from
-     * @param \EmailSender\MailAddress\Application\Collection\MailAddressCollection    $to
-     * @param \EmailSender\MailAddress\Application\Collection\MailAddressCollection    $cc
-     * @param \EmailSender\MailAddress\Application\Collection\MailAddressCollection    $bcc
+     * @param \EmailSender\Core\ValueObject\EmailAddress                               $from
+     * @param \EmailSender\Core\Collection\EmailAddressCollection                      $to
+     * @param \EmailSender\Core\Collection\EmailAddressCollection                      $cc
+     * @param \EmailSender\Core\Collection\EmailAddressCollection                      $bcc
      * @param \EmailSender\Core\ValueObject\Subject                                    $subject
      * @param \EmailSender\Message\Domain\ValueObject\Body                             $body
-     * @param \EmailSender\MailAddress\Domain\Aggregate\MailAddress|null               $replyTo
+     * @param \EmailSender\Core\ValueObject\EmailAddress|null                          $replyTo
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $delay
      */
     public function __construct(
-        MailAddress $from,
-        MailAddressCollection $to,
-        MailAddressCollection $cc,
-        MailAddressCollection $bcc,
+        EmailAddress $from,
+        EmailAddressCollection $to,
+        EmailAddressCollection $cc,
+        EmailAddressCollection $bcc,
         Subject $subject,
         Body $body,
-        ?MailAddress $replyTo,
+        ?EmailAddress $replyTo,
         UnsignedInteger $delay
     ) {
         $this->from    = $from;
@@ -89,33 +89,33 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @return \EmailSender\MailAddress\Domain\Aggregate\MailAddress
+     * @return \EmailSender\Core\ValueObject\EmailAddress
      */
-    public function getFrom(): MailAddress
+    public function getFrom(): EmailAddress
     {
         return $this->from;
     }
 
     /**
-     * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     * @return \EmailSender\Core\Collection\EmailAddressCollection
      */
-    public function getTo(): MailAddressCollection
+    public function getTo(): EmailAddressCollection
     {
         return $this->to;
     }
 
     /**
-     * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     * @return \EmailSender\Core\Collection\EmailAddressCollection
      */
-    public function getCc(): MailAddressCollection
+    public function getCc(): EmailAddressCollection
     {
         return $this->cc;
     }
 
     /**
-     * @return \EmailSender\MailAddress\Application\Collection\MailAddressCollection
+     * @return \EmailSender\Core\Collection\EmailAddressCollection
      */
-    public function getBcc(): MailAddressCollection
+    public function getBcc(): EmailAddressCollection
     {
         return $this->bcc;
     }
@@ -137,9 +137,9 @@ class Message implements JsonSerializable
     }
 
     /**
-     * @return \EmailSender\MailAddress\Domain\Aggregate\MailAddress|null
+     * @return \EmailSender\Core\ValueObject\EmailAddress|null
      */
-    public function getReplyTo(): ?MailAddress
+    public function getReplyTo(): ?EmailAddress
     {
         return $this->replyTo;
     }

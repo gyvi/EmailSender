@@ -4,7 +4,7 @@ namespace EmailSender\MessageStore\Domain\Service;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
-use EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder;
+use EmailSender\MessageStore\Domain\Factory\MessageStoreFactory;
 use EmailSender\MessageStore\Domain\Contract\MessageStoreRepositoryWriterInterface;
 use EmailSender\Message\Domain\Aggregate\Message;
 
@@ -21,7 +21,7 @@ class AddMessageStoreService
     private $repositoryWriter;
 
     /**
-     * @var \EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder
+     * @var \EmailSender\MessageStore\Domain\Factory\MessageStoreFactory
      */
     private $messageStoreBuilder;
 
@@ -29,11 +29,11 @@ class AddMessageStoreService
      * AddMessageStoreService constructor.
      *
      * @param \EmailSender\MessageStore\Domain\Contract\MessageStoreRepositoryWriterInterface $repositoryWriter
-     * @param \EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder                    $messageStoreBuilder
+     * @param \EmailSender\MessageStore\Domain\Factory\MessageStoreFactory                    $messageStoreBuilder
      */
     public function __construct(
         MessageStoreRepositoryWriterInterface $repositoryWriter,
-        MessageStoreBuilder $messageStoreBuilder
+        MessageStoreFactory $messageStoreBuilder
     ) {
         $this->repositoryWriter    = $repositoryWriter;
         $this->messageStoreBuilder = $messageStoreBuilder;
@@ -49,7 +49,7 @@ class AddMessageStoreService
      */
     public function add(Message $message): MessageStore
     {
-        $messageStore   = $this->messageStoreBuilder->buildMessageStoreFromMessage($message);
+        $messageStore   = $this->messageStoreBuilder->createFromMessage($message);
         $messageStoreId = $this->repositoryWriter->add($messageStore);
 
         $messageStore->setMessageId(new UnsignedInteger($messageStoreId));

@@ -17,7 +17,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\MessageInterface;
 use Closure;
 use Psr\Log\LoggerInterface;
-use EmailSender\MessageQueue\Domain\Builder\MessageQueueBuilder;
+use EmailSender\MessageQueue\Domain\Factory\MessageQueueFactory;
 
 /**
  * Class MessageQueueService
@@ -117,7 +117,7 @@ class MessageQueueService implements MessageQueueServiceInterface
      * @throws \RuntimeException
      * @throws \phpmailerException
      */
-    public function addMessageToQueue(
+    public function add(
         ServerRequestInterface $request,
         ResponseInterface $response,
         array $getRequest
@@ -150,7 +150,7 @@ class MessageQueueService implements MessageQueueServiceInterface
             $this->queueServiceSettings['exchange']
         );
 
-        $messageQueueBuilder    = new MessageQueueBuilder();
+        $messageQueueBuilder    = new MessageQueueFactory();
         $addMessageQueueService = new AddMessageQueueService(
             $queueWriter,
             $messageService,

@@ -3,7 +3,7 @@
 namespace EmailSender\Message\Domain\Service;
 
 use EmailSender\Message\Domain\Aggregate\Message;
-use EmailSender\Message\Domain\Builder\MessageBuilder;
+use EmailSender\Message\Domain\Factory\MessageFactory;
 
 /**
  * Class GetMessageService
@@ -13,18 +13,18 @@ use EmailSender\Message\Domain\Builder\MessageBuilder;
 class GetMessageService
 {
     /**
-     * @var \EmailSender\Message\Domain\Builder\MessageBuilder
+     * @var \EmailSender\Message\Domain\Factory\MessageFactory
      */
-    private $messageBuilder;
+    private $messageFactory;
 
     /**
      * GetMessageService constructor.
      *
-     * @param \EmailSender\Message\Domain\Builder\MessageBuilder $messageBuilder
+     * @param \EmailSender\Message\Domain\Factory\MessageFactory $messageFactory
      */
-    public function __construct(MessageBuilder $messageBuilder)
+    public function __construct(MessageFactory $messageFactory)
     {
-        $this->messageBuilder = $messageBuilder;
+        $this->messageFactory = $messageFactory;
     }
 
     /**
@@ -35,6 +35,6 @@ class GetMessageService
      */
     public function getMessageFromRequest(array $request): Message
     {
-        return $this->messageBuilder->buildMessageFromRequest($request);
+        return $this->messageFactory->create($request);
     }
 }

@@ -5,10 +5,10 @@ namespace EmailSender\MessageLog\Domain\Service;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\MessageLog\Application\Collection\MessageLogCollection;
 use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
-use EmailSender\MessageLog\Domain\Builder\ListMessageLogsRequestBuilder;
-use EmailSender\MessageLog\Domain\Builder\MessageLogCollectionBuilder;
+use EmailSender\MessageLog\Domain\Factory\ListMessageLogsRequestFactory;
+use EmailSender\MessageLog\Domain\Factory\MessageLogCollectionFactory;
 use EmailSender\MessageLog\Domain\Contract\MessageLogRepositoryReaderInterface;
-use EmailSender\MessageLog\Domain\Builder\MessageLogBuilder;
+use EmailSender\MessageLog\Domain\Factory\MessageLogFactory;
 
 /**
  * Class GetMessageLogService
@@ -23,17 +23,17 @@ class GetMessageLogService
     private $repositoryReader;
 
     /**
-     * @var \EmailSender\MessageLog\Domain\Builder\MessageLogBuilder
+     * @var \EmailSender\MessageLog\Domain\Factory\MessageLogFactory
      */
     private $messageLogBuilder;
 
     /**
-     * @var \EmailSender\MessageLog\Domain\Builder\MessageLogCollectionBuilder
+     * @var \EmailSender\MessageLog\Domain\Factory\MessageLogCollectionFactory
      */
     private $messageLogCollectionBuilder;
 
     /**
-     * @var \EmailSender\MessageLog\Domain\Builder\ListMessageLogsRequestBuilder
+     * @var \EmailSender\MessageLog\Domain\Factory\ListMessageLogsRequestFactory
      */
     private $listMessageLogsRequestBuilder;
 
@@ -41,15 +41,15 @@ class GetMessageLogService
      * GetMessageLogService constructor.
      *
      * @param \EmailSender\MessageLog\Domain\Contract\MessageLogRepositoryReaderInterface $repositoryReader
-     * @param \EmailSender\MessageLog\Domain\Builder\MessageLogBuilder                    $messageLogBuilder
-     * @param \EmailSender\MessageLog\Domain\Builder\MessageLogCollectionBuilder          $messageLogCollectionBuilder
-     * @param \EmailSender\MessageLog\Domain\Builder\ListMessageLogsRequestBuilder        $listMessageLogsRequestBuilder
+     * @param \EmailSender\MessageLog\Domain\Factory\MessageLogFactory                    $messageLogBuilder
+     * @param \EmailSender\MessageLog\Domain\Factory\MessageLogCollectionFactory          $messageLogCollectionBuilder
+     * @param \EmailSender\MessageLog\Domain\Factory\ListMessageLogsRequestFactory        $listMessageLogsRequestBuilder
      */
     public function __construct(
         MessageLogRepositoryReaderInterface $repositoryReader,
-        MessageLogBuilder $messageLogBuilder,
-        MessageLogCollectionBuilder $messageLogCollectionBuilder,
-        ListMessageLogsRequestBuilder $listMessageLogsRequestBuilder
+        MessageLogFactory $messageLogBuilder,
+        MessageLogCollectionFactory $messageLogCollectionBuilder,
+        ListMessageLogsRequestFactory $listMessageLogsRequestBuilder
     ) {
         $this->repositoryReader              = $repositoryReader;
         $this->messageLogBuilder             = $messageLogBuilder;
@@ -68,7 +68,7 @@ class GetMessageLogService
     {
         $messageLogArray = $this->repositoryReader->readByMessageLogId($messageLogId);
 
-        return $this->messageLogBuilder->buildMessageLogFromArray($messageLogArray);
+        return $this->messageLogBuilder->createFromArray($messageLogArray);
     }
 
     /**
@@ -80,10 +80,10 @@ class GetMessageLogService
      */
     public function listMessageLogs(array $request): MessageLogCollection
     {
-        $listMessageLogsRequest = $this->listMessageLogsRequestBuilder->buildListMessageLogsRequestFromArray($request);
+        $listMessageLogsRequest = $this->listMessageLogsRequestBuilder->create($request);
 
         $messageLogCollectionArray = $this->repositoryReader->listMessageLogs($listMessageLogsRequest);
 
-        return $this->messageLogCollectionBuilder->buildMessageLogCollectionFromArray($messageLogCollectionArray);
+        return $this->messageLogCollectionBuilder->create($messageLogCollectionArray);
     }
 }

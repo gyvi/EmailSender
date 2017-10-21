@@ -2,10 +2,11 @@
 
 namespace EmailSender\Message\Application\Service;
 
-use EmailSender\MailAddress\Application\Service\MailAddressService;
+use EmailSender\Core\Factory\EmailAddressCollectionFactory;
+use EmailSender\Core\Factory\EmailAddressFactory;
 use EmailSender\Message\Application\Contract\MessageServiceInterface;
 use EmailSender\Message\Domain\Aggregate\Message;
-use EmailSender\Message\Domain\Builder\MessageBuilder;
+use EmailSender\Message\Domain\Factory\MessageFactory;
 use EmailSender\Message\Domain\Service\GetMessageService;
 
 /**
@@ -23,9 +24,10 @@ class MessageService implements MessageServiceInterface
      */
     public function getMessageFromRequest(array $request): Message
     {
-        $mailAddressService = new MailAddressService();
-        $messageBuilder     = new MessageBuilder($mailAddressService);
-        $getMessageService  = new GetMessageService($messageBuilder);
+        $emailAddressFactory           = new EmailAddressFactory();
+        $emailAddressCollectionFactory = new EmailAddressCollectionFactory($emailAddressFactory);
+        $messageFactory                = new MessageFactory($emailAddressFactory, $emailAddressCollectionFactory);
+        $getMessageService             = new GetMessageService($messageFactory);
 
         return $getMessageService->getMessageFromRequest($request);
     }

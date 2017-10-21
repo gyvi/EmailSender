@@ -3,7 +3,6 @@
 namespace EmailSender\MessageStore\Infrastructure\Service;
 
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
-use EmailSender\MailAddress\Domain\Aggregate\MailAddress;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\MessageStore\Domain\Contract\EmailComposerInterface;
 use PHPMailer;
@@ -36,7 +35,7 @@ class EmailComposer implements EmailComposerInterface
      * @return \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral
      * @throws \phpmailerException
      */
-    public function composeEmailFromMessage(Message $message): StringLiteral
+    public function compose(Message $message): StringLiteral
     {
         $this->phpMailer->XMailer = 'EmailSenderForSenorita';
 
@@ -45,31 +44,28 @@ class EmailComposer implements EmailComposerInterface
 
         $this->phpMailer->setFrom(
             $message->getFrom()->getAddress()->getValue(),
-            $this->getDisplayNameAsString($message->getFrom())
+            (string)$message->getFrom()->getDisplayName()
         );
 
-        /** @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress $toAddress */
+        /** @var \EmailSender\Core\ValueObject\EmailAddress $toAddress */
         foreach ($message->getTo() as $toAddress) {
-            $this->phpMailer->addAddress(
-                $toAddress->getAddress()->getValue(),
-                $this->getDisplayNameAsString($toAddress)
-            );
+            $this->phpMailer->addAddress($toAddress->getAddress()->getValue(), (string)$toAddress->getDisplayName());
         }
 
-        /** @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress $ccAddress */
+        /** @var \EmailSender\Core\ValueObject\EmailAddress $ccAddress */
         foreach ($message->getCc() as $ccAddress) {
-            $this->phpMailer->addCC($ccAddress->getAddress()->getValue(), $this->getDisplayNameAsString($ccAddress));
+            $this->phpMailer->addCC($ccAddress->getAddress()->getValue(), (string)$ccAddress->getDisplayName());
         }
 
-        /** @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress $bccAddress */
+        /** @var \EmailSender\Core\ValueObject\EmailAddress $bccAddress */
         foreach ($message->getBcc() as $bccAddress) {
-            $this->phpMailer->addBCC($bccAddress->getAddress()->getValue(), $this->getDisplayNameAsString($bccAddress));
+            $this->phpMailer->addBCC($bccAddress->getAddress()->getValue(), (string)$bccAddress->getDisplayName());
         }
 
         if ($message->getReplyTo()) {
             $this->phpMailer->addReplyTo(
                 $message->getReplyTo()->getAddress()->getValue(),
-                $this->getDisplayNameAsString($message->getReplyTo())
+                (string)$message->getReplyTo()->getDisplayName()
             );
         }
 
@@ -81,21 +77,5 @@ class EmailComposer implements EmailComposerInterface
         $this->phpMailer->preSend();
 
         return new StringLiteral($this->phpMailer->getSentMIMEMessage());
-    }
-
-    /**
-     * @param \EmailSender\MailAddress\Domain\Aggregate\MailAddress $mailAddress
-     *
-     * @return string
-     */
-    private function getDisplayNameAsString(MailAddress $mailAddress): string
-    {
-        $displayNameAsString = '';
-
-        if ($mailAddress->getDisplayName()) {
-            $displayNameAsString = $mailAddress->getDisplayName()->getValue();
-        }
-
-        return $displayNameAsString;
     }
 }

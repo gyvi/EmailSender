@@ -64,17 +64,17 @@ class SMTPSender implements SMTPSenderInterface
      */
     private function setRecipients(MessageStore $messageStore, SMTP $smtp): void
     {
-        /** @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress $to */
+        /** @var \EmailSender\Core\ValueObject\EmailAddress $to */
         foreach ($messageStore->getRecipients()->getTo() as $to) {
             $this->addRecipient($smtp, $to->getAddress()->getValue());
         }
 
-        /** @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress $cc */
+        /** @var \EmailSender\Core\ValueObject\EmailAddress $cc */
         foreach ($messageStore->getRecipients()->getCc() as $cc) {
             $this->addRecipient($smtp, $cc->getAddress()->getValue());
         }
 
-        /** @var \EmailSender\MailAddress\Domain\Aggregate\MailAddress $bcc */
+        /** @var \EmailSender\Core\ValueObject\EmailAddress $bcc */
         foreach ($messageStore->getRecipients()->getBcc() as $bcc) {
             $this->addRecipient($smtp, $bcc->getAddress()->getValue());
         }

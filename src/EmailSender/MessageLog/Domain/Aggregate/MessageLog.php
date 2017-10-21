@@ -3,10 +3,10 @@
 namespace EmailSender\MessageLog\Domain\Aggregate;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
-use EmailSender\MailAddress\Domain\Aggregate\MailAddress;
+use EmailSender\Core\ValueObject\EmailAddress;
 use EmailSender\Core\ValueObject\Subject;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\SignedInteger;
-use EmailSender\Recipients\Domain\Aggregate\Recipients;
+use EmailSender\Core\Entity\Recipients;
 use EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use JsonSerializable;
@@ -19,22 +19,22 @@ use JsonSerializable;
 class MessageLog implements JsonSerializable
 {
     /**
-     * @var UnsignedInteger
+     * @var \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
      */
     private $messageLogId;
 
     /**
-     * @var UnsignedInteger
+     * @var \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
      */
     private $messageId;
 
     /**
-     * @var MailAddress
+     * @var \EmailSender\Core\ValueObject\EmailAddress
      */
     private $from;
 
     /**
-     * @var \EmailSender\Recipients\Domain\Aggregate\Recipients
+     * @var \EmailSender\Core\Entity\Recipients
      */
     private $recipients;
 
@@ -77,14 +77,14 @@ class MessageLog implements JsonSerializable
      * MessageLog constructor.
      *
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $messageId
-     * @param \EmailSender\MailAddress\Domain\Aggregate\MailAddress                    $from
-     * @param \EmailSender\Recipients\Domain\Aggregate\Recipients                      $recipients
+     * @param \EmailSender\Core\ValueObject\EmailAddress                               $from
+     * @param \EmailSender\Core\Entity\Recipients                                      $recipients
      * @param \EmailSender\Core\ValueObject\Subject                                    $subject
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $delay
      */
     public function __construct(
         UnsignedInteger $messageId,
-        MailAddress $from,
+        EmailAddress $from,
         Recipients $recipients,
         Subject $subject,
         UnsignedInteger $delay
@@ -121,15 +121,15 @@ class MessageLog implements JsonSerializable
     }
 
     /**
-     * @return \EmailSender\MailAddress\Domain\Aggregate\MailAddress
+     * @return \EmailSender\Core\ValueObject\EmailAddress
      */
-    public function getFrom(): MailAddress
+    public function getFrom(): EmailAddress
     {
         return $this->from;
     }
 
     /**
-     * @return \EmailSender\Recipients\Domain\Aggregate\Recipients
+     * @return \EmailSender\Core\Entity\Recipients
      */
     public function getRecipients(): Recipients
     {

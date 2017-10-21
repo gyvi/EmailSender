@@ -7,7 +7,7 @@ use EmailSender\MessageLog\Application\Catalog\MessageLogStatuses;
 use EmailSender\MessageLog\Application\Contract\MessageLogServiceInterface;
 use EmailSender\MessageLog\Application\ValueObject\MessageLogStatus;
 use EmailSender\MessageQueue\Domain\Aggregator\MessageQueue;
-use EmailSender\MessageQueue\Domain\Builder\MessageQueueBuilder;
+use EmailSender\MessageQueue\Domain\Factory\MessageQueueFactory;
 use EmailSender\MessageQueue\Domain\Contract\MessageQueueRepositoryWriterInterface;
 use EmailSender\MessageStore\Application\Contract\MessageStoreServiceInterface;
 
@@ -39,7 +39,7 @@ class AddMessageQueueService
     private $messageLogService;
 
     /**
-     * @var \EmailSender\MessageQueue\Domain\Builder\MessageQueueBuilder
+     * @var \EmailSender\MessageQueue\Domain\Factory\MessageQueueFactory
      */
     private $messageQueueBuilder;
 
@@ -50,14 +50,14 @@ class AddMessageQueueService
      * @param \EmailSender\Message\Application\Contract\MessageServiceInterface               $messageService
      * @param \EmailSender\MessageStore\Application\Contract\MessageStoreServiceInterface     $messageStoreService
      * @param \EmailSender\MessageLog\Application\Contract\MessageLogServiceInterface         $messageLogService
-     * @param \EmailSender\MessageQueue\Domain\Builder\MessageQueueBuilder                    $messageQueueBuilder
+     * @param \EmailSender\MessageQueue\Domain\Factory\MessageQueueFactory                    $messageQueueBuilder
      */
     public function __construct(
         MessageQueueRepositoryWriterInterface $queueWriter,
         MessageServiceInterface $messageService,
         MessageStoreServiceInterface $messageStoreService,
         MessageLogServiceInterface $messageLogService,
-        MessageQueueBuilder $messageQueueBuilder
+        MessageQueueFactory $messageQueueBuilder
     ) {
         $this->queueWriter         = $queueWriter;
         $this->messageService      = $messageService;
@@ -80,7 +80,7 @@ class AddMessageQueueService
         $messageStore = $this->messageStoreService->addMessageToMessageStore($message);
         $messageLog   = $this->messageLogService->addMessageToMessageLog($message, $messageStore);
 
-        $messageQueue = $this->messageQueueBuilder->buildMessageQueueFromMessageLog($messageLog);
+        $messageQueue = $this->messageQueueBuilder->createFromMessageLog($messageLog);
 
         $this->queueWriter->add($messageQueue);
 

@@ -5,7 +5,7 @@ namespace EmailSender\MessageLog\Domain\Service;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\MessageLog\Domain\Aggregate\MessageLog;
 use EmailSender\MessageLog\Domain\Contract\MessageLogRepositoryWriterInterface;
-use EmailSender\MessageLog\Domain\Builder\MessageLogBuilder;
+use EmailSender\MessageLog\Domain\Factory\MessageLogFactory;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\MessageStore\Domain\Aggregate\MessageStore;
 
@@ -22,7 +22,7 @@ class AddMessageLogService
     private $repositoryWriter;
 
     /**
-     * @var \EmailSender\MessageLog\Domain\Builder\MessageLogBuilder
+     * @var \EmailSender\MessageLog\Domain\Factory\MessageLogFactory
      */
     private $messageLogBuilder;
 
@@ -30,11 +30,11 @@ class AddMessageLogService
      * AddMessageLogService constructor.
      *
      * @param \EmailSender\MessageLog\Domain\Contract\MessageLogRepositoryWriterInterface $repositoryWriter
-     * @param \EmailSender\MessageLog\Domain\Builder\MessageLogBuilder                    $messageLogBuilder
+     * @param \EmailSender\MessageLog\Domain\Factory\MessageLogFactory                    $messageLogBuilder
      */
     public function __construct(
         MessageLogRepositoryWriterInterface $repositoryWriter,
-        MessageLogBuilder $messageLogBuilder
+        MessageLogFactory $messageLogBuilder
     ) {
         $this->repositoryWriter  = $repositoryWriter;
         $this->messageLogBuilder = $messageLogBuilder;
@@ -48,7 +48,7 @@ class AddMessageLogService
      */
     public function add(Message $message, MessageStore $messageStore): MessageLog
     {
-        $messageLog   = $this->messageLogBuilder->buildMessageLogFromMessage($message, $messageStore);
+        $messageLog   = $this->messageLogBuilder->createFromMessage($message, $messageStore);
         $messageLogId = $this->repositoryWriter->add($messageLog);
 
         $messageLog->setMessageLogId(new UnsignedInteger($messageLogId));

@@ -2,6 +2,9 @@
 
 namespace EmailSender\MessageStore\Application\Service;
 
+use EmailSender\Core\Factory\EmailAddressCollectionFactory;
+use EmailSender\Core\Factory\EmailAddressFactory;
+use EmailSender\Core\Factory\RecipientsFactory;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Message\Domain\Aggregate\Message;
 use EmailSender\MessageStore\Application\Contract\MessageStoreServiceInterface;
@@ -11,10 +14,9 @@ use EmailSender\MessageStore\Domain\Service\GetMessageStoreService;
 use EmailSender\MessageStore\Infrastructure\Persistence\MessageStoreRepositoryReader;
 use EmailSender\MessageStore\Infrastructure\Persistence\MessageStoreRepositoryWriter;
 use EmailSender\MessageStore\Infrastructure\Service\EmailComposer;
-use EmailSender\Recipients\Application\Service\RecipientsService;
 use Closure;
 use Psr\Log\LoggerInterface;
-use EmailSender\MessageStore\Domain\Builder\MessageStoreBuilder;
+use EmailSender\MessageStore\Domain\Factory\MessageStoreFactory;
 use PHPMailer;
 
 /**
@@ -66,11 +68,13 @@ class MessageStoreService implements MessageStoreServiceInterface
      */
     public function addMessageToMessageStore(Message $message): MessageStore
     {
-        $phpMailer              = new PHPMailer();
-        $emailComposer          = new EmailComposer($phpMailer);
-        $recipientsService      = new RecipientsService();
-        $messageStoreBuilder    = new MessageStoreBuilder($emailComposer, $recipientsService);
-        $addMessageStoreService = new AddMessageStoreService($this->repositoryWriter, $messageStoreBuilder);
+        $phpMailer                     = new PHPMailer();
+        $emailComposer                 = new EmailComposer($phpMailer);
+        $emailAddressFactory           = new EmailAddressFactory();
+        $emailAddressCollectionFactory = new EmailAddressCollectionFactory($emailAddressFactory);
+        $recipientsFactory             = new RecipientsFactory($emailAddressCollectionFactory);
+        $messageStoreBuilder           = new MessageStoreFactory($emailComposer, $recipientsFactory);
+        $addMessageStoreService        = new AddMessageStoreService($this->repositoryWriter, $messageStoreBuilder);
 
         return $addMessageStoreService->add($message);
     }
@@ -84,11 +88,13 @@ class MessageStoreService implements MessageStoreServiceInterface
      */
     public function getMessageStoreFromRepository(UnsignedInteger $messageId): MessageStore
     {
-        $phpMailer              = new PHPMailer();
-        $emailComposer          = new EmailComposer($phpMailer);
-        $recipientsService      = new RecipientsService();
-        $messageStoreBuilder    = new MessageStoreBuilder($emailComposer, $recipientsService);
-        $getMessageStoreService = new GetMessageStoreService($this->repositoryReader, $messageStoreBuilder);
+        $phpMailer                     = new PHPMailer();
+        $emailComposer                 = new EmailComposer($phpMailer);
+        $emailAddressFactory           = new EmailAddressFactory();
+        $emailAddressCollectionFactory = new EmailAddressCollectionFactory($emailAddressFactory);
+        $recipientsFactory             = new RecipientsFactory($emailAddressCollectionFactory);
+        $messageStoreBuilder           = new MessageStoreFactory($emailComposer, $recipientsFactory);
+        $getMessageStoreService        = new GetMessageStoreService($this->repositoryReader, $messageStoreBuilder);
 
         return $getMessageStoreService->readByMessageId($messageId);
     }

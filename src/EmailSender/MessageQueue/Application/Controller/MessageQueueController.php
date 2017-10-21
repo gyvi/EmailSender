@@ -74,6 +74,6 @@ class MessageQueueController extends AbstractController
             $smtpService
         );
 
-        return $messageQueueService->addMessageToQueue($request, $response, $getRequest);
+        return $messageQueueService->add($request, $response, $getRequest);
     }
 }

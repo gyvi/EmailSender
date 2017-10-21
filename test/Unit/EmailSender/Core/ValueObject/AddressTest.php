@@ -35,8 +35,6 @@ class AddressTest extends TestCase
     public function testConstructWithInvalidValues(string $value)
     {
         new Address($value);
-
-        $this->fail();
     }
 
     /**
@@ -44,7 +42,7 @@ class AddressTest extends TestCase
      *
      * @return array
      */
-    public function providerForTestConstructWithInvalidValues()
+    public function providerForTestConstructWithInvalidValues(): array
     {
         return [
             [

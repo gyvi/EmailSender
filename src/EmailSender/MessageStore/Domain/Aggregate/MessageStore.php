@@ -4,7 +4,7 @@ namespace EmailSender\MessageStore\Domain\Aggregate;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
-use EmailSender\Recipients\Domain\Aggregate\Recipients;
+use EmailSender\Core\Entity\Recipients;
 use JsonSerializable;
 
 /**
@@ -20,7 +20,7 @@ class MessageStore implements JsonSerializable
     private $messageId;
 
     /**
-     * @var \EmailSender\Recipients\Domain\Aggregate\Recipients
+     * @var \EmailSender\Core\Entity\Recipients
      */
     private $recipients;
 
@@ -32,7 +32,7 @@ class MessageStore implements JsonSerializable
     /**
      * MessageStore constructor.
      *
-     * @param \EmailSender\Recipients\Domain\Aggregate\Recipients                   $recipients
+     * @param \EmailSender\Core\Entity\Recipients                                   $recipients
      * @param \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral $message
      */
     public function __construct(Recipients $recipients, StringLiteral $message)
@@ -42,7 +42,7 @@ class MessageStore implements JsonSerializable
     }
 
     /**
-     * @return \EmailSender\Recipients\Domain\Aggregate\Recipients
+     * @return \EmailSender\Core\Entity\Recipients
      */
     public function getRecipients(): Recipients
     {
