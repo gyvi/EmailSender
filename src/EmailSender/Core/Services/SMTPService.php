@@ -3,7 +3,7 @@
 namespace EmailSender\Core\Services;
 
 use Closure;
-use EmailSender\MessageQueue\Infrastructure\Service\SMTPException;
+use EmailSender\EmailQueue\Infrastructure\Service\SMTPException;
 use Interop\Container\ContainerInterface;
 use SMTP;
 

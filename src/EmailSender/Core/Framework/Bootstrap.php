@@ -2,10 +2,10 @@
 
 namespace EmailSender\Core\Framework;
 
-use EmailSender\Core\Services\MessageStoreReaderService;
-use EmailSender\Core\Services\MessageStoreWriterService;
-use EmailSender\Core\Services\MessageLogReaderService;
-use EmailSender\Core\Services\MessageLogWriterService;
+use EmailSender\Core\Services\ComposedReaderService;
+use EmailSender\Core\Services\ComposedEmailWriterService;
+use EmailSender\Core\Services\EmailLogReaderService;
+use EmailSender\Core\Services\EmailLogWriterService;
 use EmailSender\Core\Services\QueueService;
 use EmailSender\Core\Services\ViewService;
 use Interop\Container\ContainerInterface;
@@ -16,8 +16,8 @@ use EmailSender\Core\Services\LoggerService;
 use EmailSender\Core\Services\ErrorHandler;
 use EmailSender\Core\Services\PhpErrorHandler;
 use EmailSender\Core\Route\Routing;
-use EmailSender\MessageLog\Application\Route\Route as MessageLogRoute;
-use EmailSender\MessageQueue\Application\Route\Route as MessageQueueRoute;
+use EmailSender\EmailLog\Application\Route\Route as EmailLogRoute;
+use EmailSender\EmailQueue\Application\Route\Route as EmailQueueRoute;
 use EmailSender\Core\Services\SMTPService;
 
 /**
@@ -68,10 +68,10 @@ class Bootstrap
         $serviceProvider->addService(ServiceList::LOGGER, new LoggerService());
         $serviceProvider->addService(ServiceList::ERROR_HANDLER, new ErrorHandler());
         $serviceProvider->addService(ServiceList::PHP_ERROR_HANDLER, new PhpErrorHandler());
-        $serviceProvider->addService(ServiceList::MESSAGE_STORE_READER, new MessageStoreReaderService());
-        $serviceProvider->addService(ServiceList::MESSAGE_STORE_WRITER, new MessageStoreWriterService());
-        $serviceProvider->addService(ServiceList::MESSAGE_LOG_READER, new MessageLogReaderService());
-        $serviceProvider->addService(ServiceList::MESSAGE_LOG_WRITER, new MessageLogWriterService());
+        $serviceProvider->addService(ServiceList::COMPOSED_EMAIL_READER, new ComposedReaderService());
+        $serviceProvider->addService(ServiceList::COMPOSED_EMAIL_WRITER, new ComposedEmailWriterService());
+        $serviceProvider->addService(ServiceList::EMAIL_LOG_READER, new EmailLogReaderService());
+        $serviceProvider->addService(ServiceList::EMAIL_LOG_WRITER, new EmailLogWriterService());
         $serviceProvider->addService(ServiceList::QUEUE, new QueueService());
         $serviceProvider->addService(ServiceList::SMTP, new SMTPService());
         $serviceProvider->addService(ServiceList::VIEW, new ViewService());
@@ -88,8 +88,8 @@ class Bootstrap
     {
         $routing   = new Routing();
 
-        $routing->add(new MessageLogRoute($app));
-        $routing->add(new MessageQueueRoute($app));
+        $routing->add(new EmailLogRoute($app));
+        $routing->add(new EmailQueueRoute($app));
 
         $routing->init();
     }

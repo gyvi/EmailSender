@@ -31,32 +31,32 @@ class ServiceList
     const PHP_ERROR_HANDLER = 'phpErrorHandler';
 
     /**
-     * Message store reader.
+     * Composed email reader.
      *
      * @var string
      */
-    const MESSAGE_STORE_READER = 'messageStoreReader';
+    const COMPOSED_EMAIL_READER = 'composedEmailReader';
 
     /**
-     * Message store writer.
+     * Composed email writer.
      *
      * @var string
      */
-    const MESSAGE_STORE_WRITER = 'messageStoreWriter';
+    const COMPOSED_EMAIL_WRITER = 'composedEmailWriter';
 
     /**
-     * Message log reader.
+     * Email log reader.
      *
      * @var string
      */
-    const MESSAGE_LOG_READER =  'messageLogReader';
+    const EMAIL_LOG_READER =  'emailLogReader';
 
     /**
-     * Message log writer.
+     * Email log writer.
      *
      * @var string
      */
-    const MESSAGE_LOG_WRITER =  'messageLogReader';
+    const EMAIL_LOG_WRITER =  'emailLogReader';
 
     /**
      * Queue writer.

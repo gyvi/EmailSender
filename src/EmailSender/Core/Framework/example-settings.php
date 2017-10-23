@@ -4,25 +4,25 @@
  */
 return [
     'settings' => [
-        'messageStoreReader' => [
+        'composedEmailReader' => [
             'dsn'      => 'mysql:host=host;dbname=DB;charset=UTF8',
             'username' => 'user',
             'password' => 'pass',
             'options'  => [],
         ],
-        'messageStoreWriter' => [
+        'composedEmailWriter' => [
             'dsn'      => 'mysql:host=host;dbname=DB;charset=UTF8',
             'username' => 'user',
             'password' => 'pass',
             'options'  => [],
         ],
-        'messageLogReader' => [
+        'emailLogReader' => [
             'dsn'      => 'mysql:host=host;dbname=DB;charset=UTF8',
             'username' => 'user',
             'password' => 'pass',
             'options'  => [],
         ],
-        'messageLogWriter' => [
+        'emailLogWriter' => [
             'dsn'      => 'mysql:host=host;dbname=DB;charset=UTF8',
             'username' => 'user',
             'password' => 'pass',

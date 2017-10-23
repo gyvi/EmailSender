@@ -29,7 +29,7 @@ class DateTimeFactory
      *
      * @return \EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime
      */
-    public function buildFromNative(int $year, int $month, int $day, int $hour, int $minute, int $second): DateTime
+    public function createFromNative(int $year, int $month, int $day, int $hour, int $minute, int $second): DateTime
     {
         return new DateTime(
             new Date(
@@ -50,7 +50,7 @@ class DateTimeFactory
      *
      * @return \EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime
      */
-    public function buildFromDateTime(\DateTime $dateTime): DateTime
+    public function createFromDateTime(\DateTime $dateTime): DateTime
     {
         return new DateTime(
             new Date(

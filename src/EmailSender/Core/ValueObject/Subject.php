@@ -7,7 +7,7 @@ use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteralLimit;
 /**
  * Class Subject
  *
- * @package EmailSender\Message
+ * @package EmailSender\Core
  */
 class Subject extends StringLiteralLimit
 {

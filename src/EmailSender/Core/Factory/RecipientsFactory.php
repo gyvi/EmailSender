@@ -5,7 +5,7 @@ namespace EmailSender\Core\Factory;
 use EmailSender\Core\Catalog\RecipientsPropertyNameList;
 use EmailSender\Core\Collection\EmailAddressCollection;
 use EmailSender\Core\Entity\Recipients;
-use EmailSender\Message\Domain\Aggregate\Message;
+use EmailSender\Email\Domain\Aggregate\Email;
 
 /**
  * Class RecipientsFactory
@@ -30,12 +30,12 @@ class RecipientsFactory
     }
 
     /**
-     * @param \EmailSender\Message\Domain\Aggregate\Message $message
+     * @param \EmailSender\Email\Domain\Aggregate\Email $email
      *
      * @return \EmailSender\Core\Entity\Recipients
      * @throws \InvalidArgumentException
      */
-    public function createFromMessage(Message $message): Recipients
+    public function create(Email $email): Recipients
     {
         // Use this array for collect unique email addresses.
         $allRecipientsEmailAddresses = [];
@@ -45,7 +45,7 @@ class RecipientsFactory
         $bcc = new EmailAddressCollection();
 
         /** @var \EmailSender\Core\ValueObject\EmailAddress $toAddress */
-        foreach ($message->getTo() as $toAddress) {
+        foreach ($email->getTo() as $toAddress) {
             if (!in_array(strtolower($toAddress->getAddress()->getValue()), $allRecipientsEmailAddresses, true)) {
                 $to->add($toAddress);
                 $allRecipientsEmailAddresses[] = strtolower($toAddress->getAddress()->getValue());
@@ -53,7 +53,7 @@ class RecipientsFactory
         }
 
         /** @var \EmailSender\Core\ValueObject\EmailAddress $ccAddress */
-        foreach ($message->getCc() as $ccAddress) {
+        foreach ($email->getCc() as $ccAddress) {
             if (!in_array(strtolower($ccAddress->getAddress()->getValue()), $allRecipientsEmailAddresses, true)) {
                 $cc->add($ccAddress);
                 $allRecipientsEmailAddresses[] = strtolower($ccAddress->getAddress()->getValue());
@@ -61,7 +61,7 @@ class RecipientsFactory
         }
 
         /** @var \EmailSender\Core\ValueObject\EmailAddress $bccAddress */
-        foreach ($message->getBcc() as $bccAddress) {
+        foreach ($email->getBcc() as $bccAddress) {
             if (!in_array(strtolower($bccAddress->getAddress()->getValue()), $allRecipientsEmailAddresses, true)) {
                 $bcc->add($bccAddress);
                 $allRecipientsEmailAddresses[] = strtolower($ccAddress->getAddress()->getValue());
