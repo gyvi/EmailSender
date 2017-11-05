@@ -31,4 +31,12 @@ class DisplayName extends StringLiteralMatch
      * @var string
      */
     const PATTERN = "/^[\!\#\$\%\&\'\*\+\-\/\=\?\^\_\`\{\|\}\~\.\\" . '"' . "\(\)\,\:\;\<\>\@\[\\ \]\p{L}]+$/u";
+
+     /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->getValue();
+    }
 }

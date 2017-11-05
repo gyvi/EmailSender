@@ -5,6 +5,7 @@ namespace EmailSender\ComposedEmail\Infrastructure\Persistence;
 use Closure;
 use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
 use EmailSender\ComposedEmail\Domain\Contract\ComposedEmailRepositoryWriterInterface;
+use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use PDO;
 use PDOException;
 use Error;
@@ -39,11 +40,11 @@ class ComposedEmailRepositoryWriter implements ComposedEmailRepositoryWriterInte
     /**
      * @param \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail $composedEmail
      *
-     * @return int
+     * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
      *
      * @throws \Error
      */
-    public function add(ComposedEmail $composedEmail): int
+    public function add(ComposedEmail $composedEmail): UnsignedInteger
     {
         try {
             $pdo = $this->getConnection();
@@ -51,17 +52,24 @@ class ComposedEmailRepositoryWriter implements ComposedEmailRepositoryWriterInte
             $sql = '
                 INSERT INTO
                     `composedEmail` (
+                        `' . ComposedEmailFieldList::FROM . '`,
                         `' . ComposedEmailFieldList::RECIPIENTS . '`,
                         `' . ComposedEmailFieldList::EMAIL . '`
                     )
                 VALUES
                     (
+                        :' . ComposedEmailFieldList::FROM . ',
                         :' . ComposedEmailFieldList::RECIPIENTS . ',
                         :' . ComposedEmailFieldList::EMAIL . '
                     ); 
             ';
 
             $statement = $pdo->prepare($sql);
+
+            $statement->bindValue(
+                ':' . ComposedEmailFieldList::FROM,
+                $composedEmail->getFrom()->getAddress()->getValue()
+            );
 
             $statement->bindValue(
                 ':' . ComposedEmailFieldList::RECIPIENTS,
@@ -82,7 +90,7 @@ class ComposedEmailRepositoryWriter implements ComposedEmailRepositoryWriterInte
             throw new Error($e->getMessage(), $e->getCode(), $e);
         }
 
-        return $composedEmailId;
+        return new UnsignedInteger($composedEmailId);
     }
 
     /**

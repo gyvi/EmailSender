@@ -2,6 +2,9 @@
 
 namespace EmailSender\ComposedEmail\Application\Service;
 
+use EmailSender\ComposedEmail\Domain\Service\SendComposedEmailByIdService;
+use EmailSender\ComposedEmail\Domain\Service\SendComposedEmailService;
+use EmailSender\ComposedEmail\Infrastructure\Service\SMTPSender;
 use EmailSender\Core\Factory\EmailAddressCollectionFactory;
 use EmailSender\Core\Factory\EmailAddressFactory;
 use EmailSender\Core\Factory\RecipientsFactory;
@@ -42,20 +45,31 @@ class ComposedEmailService implements ComposedEmailServiceInterface
     private $repositoryWriter;
 
     /**
+     * @var \Closure
+     */
+    private $smtpSenderService;
+
+    /**
      * ComposedEmailService constructor.
      *
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Closure                 $composedEmailReaderService
      * @param \Closure                 $composedEmailWriterService
+     * @param \Closure                 $smtpSenderService
      */
     public function __construct(
         LoggerInterface $logger,
         Closure $composedEmailReaderService,
-        Closure $composedEmailWriterService
+        Closure $composedEmailWriterService,
+        Closure $smtpSenderService
     ) {
         $this->logger           = $logger;
-        $this->repositoryReader = new ComposedEmailRepositoryReader($composedEmailReaderService);
         $this->repositoryWriter = new ComposedEmailRepositoryWriter($composedEmailWriterService);
+        $this->repositoryReader = new ComposedEmailRepositoryReader(
+            $composedEmailReaderService,
+            $this->getComposedEmailFactory()
+        );
+        $this->smtpSenderService = $smtpSenderService;
     }
 
     /**
@@ -69,13 +83,10 @@ class ComposedEmailService implements ComposedEmailServiceInterface
      */
     public function add(Email $email): ComposedEmail
     {
-        $phpMailer                     = new PHPMailer();
-        $emailComposer                 = new EmailComposer($phpMailer);
-        $emailAddressFactory           = new EmailAddressFactory();
-        $emailAddressCollectionFactory = new EmailAddressCollectionFactory($emailAddressFactory);
-        $recipientsFactory             = new RecipientsFactory($emailAddressCollectionFactory);
-        $composedEmailFactory          = new ComposedEmailFactory($emailComposer, $recipientsFactory);
-        $addComposedEmailService       = new AddComposedEmailService($this->repositoryWriter, $composedEmailFactory);
+        $addComposedEmailService = new AddComposedEmailService(
+            $this->repositoryWriter,
+            $this->getComposedEmailFactory()
+        );
 
         return $addComposedEmailService->add($email);
     }
@@ -90,14 +101,44 @@ class ComposedEmailService implements ComposedEmailServiceInterface
      */
     public function get(UnsignedInteger $composedEmailId): ComposedEmail
     {
+        $getComposedEmailService = new GetComposedEmailService($this->repositoryReader);
+
+        return $getComposedEmailService->get($composedEmailId);
+    }
+
+    /**
+     * @param \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail $composedEmail
+     */
+    public function send(ComposedEmail $composedEmail): void
+    {
+        $smtpSender               = new SMTPSender($this->smtpSenderService);
+        $sendComposedEmailService = new SendComposedEmailService($smtpSender);
+
+        $sendComposedEmailService->send($composedEmail);
+    }
+
+    /**
+     * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $composedEmailId
+     */
+    public function sendById(UnsignedInteger $composedEmailId): void
+    {
+        $smtpSender                   = new SMTPSender($this->smtpSenderService);
+        $sendComposedEmailByIdService = new SendComposedEmailByIdService($smtpSender, $this->repositoryReader);
+
+        $sendComposedEmailByIdService->send($composedEmailId);
+    }
+
+    /**
+     * @return \EmailSender\ComposedEmail\Domain\Factory\ComposedEmailFactory
+     */
+    private function getComposedEmailFactory(): ComposedEmailFactory
+    {
         $phpMailer                     = new PHPMailer();
         $emailComposer                 = new EmailComposer($phpMailer);
         $emailAddressFactory           = new EmailAddressFactory();
         $emailAddressCollectionFactory = new EmailAddressCollectionFactory($emailAddressFactory);
         $recipientsFactory             = new RecipientsFactory($emailAddressCollectionFactory);
-        $composedEmailFactory          = new ComposedEmailFactory($emailComposer, $recipientsFactory);
-        $getComposedEmailService       = new GetComposedEmailService($this->repositoryReader, $composedEmailFactory);
 
-        return $getComposedEmailService->get($composedEmailId);
+        return new ComposedEmailFactory($emailComposer, $recipientsFactory, $emailAddressFactory);
     }
 }

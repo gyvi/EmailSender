@@ -3,7 +3,6 @@
 namespace EmailSender\ComposedEmail\Domain\Service;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
-use EmailSender\ComposedEmail\Domain\Factory\ComposedEmailFactory;
 use EmailSender\ComposedEmail\Domain\Contract\ComposedEmailRepositoryReaderInterface;
 use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
 
@@ -20,22 +19,13 @@ class GetComposedEmailService
     private $repositoryReader;
 
     /**
-     * @var \EmailSender\ComposedEmail\Domain\Factory\ComposedEmailFactory
-     */
-    private $composedEmailFactory;
-
-    /**
      * GetComposedEmailService constructor.
      *
      * @param \EmailSender\ComposedEmail\Domain\Contract\ComposedEmailRepositoryReaderInterface $repositoryReader
-     * @param \EmailSender\ComposedEmail\Domain\Factory\ComposedEmailFactory                    $composedEmailFactory
      */
-    public function __construct(
-        ComposedEmailRepositoryReaderInterface $repositoryReader,
-        ComposedEmailFactory $composedEmailFactory
-    ) {
-        $this->repositoryReader     = $repositoryReader;
-        $this->composedEmailFactory = $composedEmailFactory;
+    public function __construct(ComposedEmailRepositoryReaderInterface $repositoryReader)
+    {
+        $this->repositoryReader = $repositoryReader;
     }
 
     /**
@@ -47,8 +37,6 @@ class GetComposedEmailService
      */
     public function get(UnsignedInteger $composedEmailId): ComposedEmail
     {
-        $composedEmailArray = $this->repositoryReader->get($composedEmailId);
-
-        return $this->composedEmailFactory->createFromArray($composedEmailArray);
+        return $this->repositoryReader->get($composedEmailId);
     }
 }

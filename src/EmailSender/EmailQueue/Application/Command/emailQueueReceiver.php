@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 require __DIR__ . '/../../../../../vendor/autoload.php';
 
-use EmailSender\EmailQueue\Application\Service\EmailQueueService;
 use EmailSender\Core\Services\ServiceList;
 use EmailSender\Core\Framework\BootstrapCli;
+use EmailSender\ComposedEmail\Application\Service\ComposedEmailService;
+use EmailSender\EmailLog\Application\Service\EmailLogService;
+use EmailSender\EmailQueue\Application\Catalog\EmailQueuePropertyNames;
 use Slim\Container;
+use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
+use EmailSender\Core\Catalog\EmailStatusList;
+use EmailSender\Core\ValueObject\EmailStatus;
 
 $settings  = require __DIR__ . '/../../../../EmailSender/Core/Framework/settings.php';
 $container = new Container($settings);
@@ -29,27 +34,39 @@ $channel = $connection->channel();
 /** @var array $queueName */
 $queueName = $queueSettings['queue'];
 
-$callback = function ($message) use ($container, $queueSettings, $logger, $view) {
+$callback = function ($message) use ($container, $view, $logger) {
     /** @var \PhpAmqpLib\Message\AMQPMessage $message */
 
     /** @var \PhpAmqpLib\Channel\AMQPChannel $deliveryChannel */
     $deliveryChannel = $message->delivery_info['channel'];
+
+    $emailQueue = json_decode($message->body, true);
+
+    $emailLogId      = new UnsignedInteger($emailQueue[EmailQueuePropertyNames::EMAIL_LOG_ID]);
+    $emailLogService = new EmailLogService(
+        $view,
+        $logger,
+        $container->get(ServiceList::EMAIL_LOG_READER),
+        $container->get(ServiceList::EMAIL_LOG_WRITER)
+    );
+
+    $composedEmailService = new ComposedEmailService(
+        $logger,
+        $container->get(ServiceList::COMPOSED_EMAIL_READER),
+        $container->get(ServiceList::COMPOSED_EMAIL_WRITER),
+        $container->get(ServiceList::SMTP)
+    );
+
     try {
-        $emailQueueService = new EmailQueueService(
-            $view,
-            $logger,
-            $container->get(ServiceList::QUEUE),
-            $queueSettings,
-            $container->get(ServiceList::COMPOSED_EMAIL_READER),
-            $container->get(ServiceList::COMPOSED_EMAIL_WRITER),
-            $container->get(ServiceList::EMAIL_LOG_READER),
-            $container->get(ServiceList::EMAIL_LOG_WRITER),
-            $container->get(ServiceList::SMTP)
+        $composedEmailId = new UnsignedInteger($emailQueue[EmailQueuePropertyNames::COMPOSED_EMAIL_ID]);
+
+        $composedEmailService->sendById($composedEmailId);
+
+        $emailLogService->setStatus(
+            $emailLogId,
+            new EmailStatus(EmailStatusList::STATUS_SENT),
+            ''
         );
-
-        $emailQueueService->sendEmailFromQueue($message->body);
-
-        $logger->notice('Sent email: ' . $message->body);
 
         $deliveryChannel->basic_ack($message->delivery_info['delivery_tag']);
     } catch (Throwable $e) {
@@ -58,6 +75,12 @@ $callback = function ($message) use ($container, $queueSettings, $logger, $view)
         $logger->warning(
             'Unable to sent email: ' . $message->body . PHP_EOL . ' Error: ' .
             $e->getMessage() . $e->getTraceAsString()
+        );
+
+        $emailLogService->setStatus(
+            new UnsignedInteger($emailQueue[EmailQueuePropertyNames::EMAIL_LOG_ID]),
+            new EmailStatus(EmailStatusList::STATUS_ERROR),
+            $e->getMessage()
         );
     }
 };

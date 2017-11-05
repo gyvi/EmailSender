@@ -15,6 +15,11 @@ class ComposedEmailFieldList
     const COMPOSED_EMAIL_ID = 'composedEmailId';
 
     /**
+     * From field of the composedEmail SQL table.
+     */
+    const FROM = 'from';
+
+    /**
      * Recipients field of the composedEmail SQL table.
      */
     const RECIPIENTS = 'recipients';

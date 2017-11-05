@@ -1,20 +1,22 @@
 <?php
 
-namespace EmailSender\EmailQueue\Application\Controller;
+namespace EmailSender\Email\Application\Controller;
 
 use EmailSender\Core\Controller\AbstractController;
 use EmailSender\Core\Services\ServiceList;
-use EmailSender\EmailQueue\Application\Service\EmailQueueService;
+use EmailSender\Email\Application\Service\EmailService;
+use EmailSender\Email\Application\Validator\EmailAddRequestValidator;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use InvalidArgumentException;
 
 /**
  * Class EmailQueueController
  *
  * @package EmailSender\EmailQueue
  */
-class EmailQueueController extends AbstractController
+class EmailController extends AbstractController
 {
     /**
      * @param \Psr\Http\Message\ServerRequestInterface $request
@@ -29,7 +31,7 @@ class EmailQueueController extends AbstractController
      * @throws \RuntimeException
      * @throws \phpmailerException
      */
-    public function addMessageToQueue(
+    public function add(
         ServerRequestInterface $request,
         ResponseInterface $response,
         array $getRequest
@@ -61,7 +63,21 @@ class EmailQueueController extends AbstractController
         /** @var array $queueServiceSettings */
         $smtpService = $this->container->get(ServiceList::SMTP);
 
-        $emailQueueService = new EmailQueueService(
+        try {
+            (new EmailAddRequestValidator())->validate($request->getParsedBody());
+        } catch (InvalidArgumentException $e) { // Invalid request.
+            /** @var \Slim\Http\Response $response */
+            $response = $response
+                ->withStatus(400)
+                ->withJson([
+                    'message' => 'Invalid request.',
+                    'description' => $e->getMessage(),
+                ]);
+
+            return $response;
+        }
+
+        $emailService = new EmailService(
             $view,
             $logger,
             $queueService,
@@ -73,6 +89,6 @@ class EmailQueueController extends AbstractController
             $smtpService
         );
 
-        return $emailQueueService->add($request, $response, $getRequest);
+        return $emailService->add($request, $response, $getRequest);
     }
 }

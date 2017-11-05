@@ -1,10 +1,10 @@
 <?php
 
-namespace EmailSender\EmailQueue\Application\Route;
+namespace EmailSender\Email\Application\Route;
 
 use EmailSender\Core\Route\RouteAbstract;
 use EmailSender\Core\Route\RouteInterface;
-use EmailSender\EmailQueue\Application\Controller\EmailQueueController;
+use EmailSender\Email\Application\Controller\EmailController;
 
 /**
  * Class Route
@@ -18,6 +18,6 @@ class Route extends RouteAbstract implements RouteInterface
      */
     public function init(): void
     {
-        $this->application->post('/api/v1/emails', EmailQueueController::class . ':addEmailToQueue');
+        $this->application->post('/api/v1/emails', EmailController::class . ':add');
     }
 }

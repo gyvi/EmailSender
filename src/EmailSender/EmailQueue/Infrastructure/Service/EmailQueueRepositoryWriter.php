@@ -65,10 +65,9 @@ class EmailQueueRepositoryWriter implements EmailQueueRepositoryWriterInterface
     /**
      * @param \EmailSender\EmailQueue\Domain\Aggregator\EmailQueue $emailQueue
      *
-     * @return bool
      * @throws \Error
      */
-    public function add(EmailQueue $emailQueue): bool
+    public function add(EmailQueue $emailQueue): void
     {
         try {
             $connection = $this->getConnection();
@@ -104,8 +103,6 @@ class EmailQueueRepositoryWriter implements EmailQueueRepositoryWriterInterface
         } catch (Throwable $e) {
             throw new Error($e->getMessage(), $e->getCode(), $e);
         }
-
-        return true;
     }
 
     /**

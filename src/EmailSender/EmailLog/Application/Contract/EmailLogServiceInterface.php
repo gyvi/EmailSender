@@ -9,7 +9,7 @@ use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\MessageInterface;
-use EmailSender\EmailLog\Application\ValueObject\EmailLogStatus;
+use EmailSender\Core\ValueObject\EmailStatus;
 
 /**
  * Interface EmailLogServiceInterface
@@ -28,12 +28,12 @@ interface EmailLogServiceInterface
 
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $emailLogId
-     * @param \EmailSender\EmailLog\Application\ValueObject\EmailLogStatus             $emailLogStatus
+     * @param \EmailSender\Core\ValueObject\EmailStatus                                $emailLogStatus
      * @param null|string                                                              $errorMessage
      */
     public function setStatus(
         UnsignedInteger $emailLogId,
-        EmailLogStatus $emailLogStatus,
+        EmailStatus $emailLogStatus,
         ?string $errorMessage
     ): void;
 

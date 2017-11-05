@@ -2,6 +2,7 @@
 
 namespace EmailSender\ComposedEmail\Domain\Factory;
 
+use EmailSender\Core\Factory\EmailAddressFactory;
 use EmailSender\Core\Factory\RecipientsFactory;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
@@ -28,15 +29,25 @@ class ComposedEmailFactory
     private $recipientsFactory;
 
     /**
+     * @var \EmailSender\Core\Factory\EmailAddressFactory
+     */
+    private $emailAddressFactory;
+
+    /**
      * ComposedEmailFactory constructor.
      *
      * @param \EmailSender\ComposedEmail\Domain\Contract\EmailComposerInterface $emailComposer
-     * @param \EmailSender\Core\Factory\RecipientsFactory                      $recipientsFactory
+     * @param \EmailSender\Core\Factory\RecipientsFactory                       $recipientsFactory
+     * @param \EmailSender\Core\Factory\EmailAddressFactory                     $emailAddressFactory
      */
-    public function __construct(EmailComposerInterface $emailComposer, RecipientsFactory $recipientsFactory)
-    {
-        $this->emailComposer     = $emailComposer;
-        $this->recipientsFactory = $recipientsFactory;
+    public function __construct(
+        EmailComposerInterface $emailComposer,
+        RecipientsFactory $recipientsFactory,
+        EmailAddressFactory $emailAddressFactory
+    ) {
+        $this->emailComposer       = $emailComposer;
+        $this->recipientsFactory   = $recipientsFactory;
+        $this->emailAddressFactory = $emailAddressFactory;
     }
 
     /**
@@ -52,7 +63,7 @@ class ComposedEmailFactory
         $recipients          = $this->recipientsFactory->create($email);
         $composedEmailString = $this->emailComposer->compose($email);
 
-        return new ComposedEmail($recipients, $composedEmailString);
+        return new ComposedEmail($email->getFrom(), $recipients, $composedEmailString);
     }
 
     /**
@@ -69,6 +80,7 @@ class ComposedEmailFactory
         );
 
         $composedEmail = new ComposedEmail(
+            $this->emailAddressFactory->create($composedEmailArray[ComposedEmailFieldList::FROM]),
             $recipients,
             new StringLiteral($composedEmailArray[ComposedEmailFieldList::EMAIL])
         );

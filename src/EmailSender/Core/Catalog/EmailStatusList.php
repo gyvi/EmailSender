@@ -1,13 +1,13 @@
 <?php
 
-namespace EmailSender\EmailLog\Application\Catalog;
+namespace EmailSender\Core\Catalog;
 
 /**
- * Class EmailLogStatuses
+ * Class EmailLogStatusList
  *
- * @package EmailSender\EmailLog
+ * @package EmailSender\Core
  */
-class EmailLogStatuses
+class EmailStatusList
 {
     /**
      * An error happened.

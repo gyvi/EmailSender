@@ -72,9 +72,9 @@ class EmailQueue implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            EmailQueuePropertyNames::EMAIL_LOG_ID => $this->getEmailLogId(),
+            EmailQueuePropertyNames::EMAIL_LOG_ID      => $this->getEmailLogId(),
             EmailQueuePropertyNames::COMPOSED_EMAIL_ID => $this->getComposedEmailId(),
-            EmailQueuePropertyNames::DELAY => $this->getDelay(),
+            EmailQueuePropertyNames::DELAY             => $this->getDelay(),
         ];
     }
 }

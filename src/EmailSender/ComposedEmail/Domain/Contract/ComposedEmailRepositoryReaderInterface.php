@@ -2,6 +2,7 @@
 
 namespace EmailSender\ComposedEmail\Domain\Contract;
 
+use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 
 /**
@@ -14,9 +15,10 @@ interface ComposedEmailRepositoryReaderInterface
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $composedEmailId
      *
-     * @return array
+     * @return \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail
      *
      * @throws \Error
+     * @throws \InvalidArgumentException
      */
-    public function get(UnsignedInteger $composedEmailId): array;
+    public function get(UnsignedInteger $composedEmailId): ComposedEmail;
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace EmailSender\EmailQueue\Application\Validator;
+namespace EmailSender\Email\Application\Validator;
 
 use EmailSender\Core\Validator\RequestValidator;
 use EmailSender\Email\Application\Catalog\EmailPropertyNameList;
@@ -10,7 +10,7 @@ use EmailSender\Email\Application\Catalog\EmailPropertyNameList;
  *
  * @package EmailSender\EmailQueue
  */
-class EmailQueueAddRequestValidator extends RequestValidator
+class EmailAddRequestValidator extends RequestValidator
 {
     /**
      * @var array

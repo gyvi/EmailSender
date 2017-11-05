@@ -2,7 +2,9 @@
 
 namespace EmailSender\Email\Application\Contract;
 
-use EmailSender\Email\Domain\Aggregate\Email;
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Interface EmailServiceInterface
@@ -12,11 +14,18 @@ use EmailSender\Email\Domain\Aggregate\Email;
 interface EmailServiceInterface
 {
     /**
-     * @param array $request
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @param \Psr\Http\Message\ResponseInterface      $response
+     * @param array                                    $getRequest
      *
-     * @return \EmailSender\Email\Domain\Aggregate\Email
+     * @return \Psr\Http\Message\MessageInterface
      *
      * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
-    public function getEmailFromRequest(array $request): Email;
+    public function add(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        array $getRequest
+    ): MessageInterface;
 }

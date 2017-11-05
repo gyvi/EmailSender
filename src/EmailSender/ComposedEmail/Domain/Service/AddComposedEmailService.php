@@ -2,7 +2,6 @@
 
 namespace EmailSender\ComposedEmail\Domain\Service;
 
-use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
 use EmailSender\ComposedEmail\Domain\Factory\ComposedEmailFactory;
 use EmailSender\ComposedEmail\Domain\Contract\ComposedEmailRepositoryWriterInterface;
@@ -53,7 +52,7 @@ class AddComposedEmailService
         $composedEmail   = $this->composedEmailFactory->create($email);
         $composedEmailId = $this->repositoryWriter->add($composedEmail);
 
-        $composedEmail->setComposedEmailId(new UnsignedInteger($composedEmailId));
+        $composedEmail->setComposedEmailId($composedEmailId);
 
         return $composedEmail;
     }

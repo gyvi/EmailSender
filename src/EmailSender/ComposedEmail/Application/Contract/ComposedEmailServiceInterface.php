@@ -33,4 +33,14 @@ interface ComposedEmailServiceInterface
      * @throws \InvalidArgumentException
      */
     public function get(UnsignedInteger $composedEmailId): ComposedEmail;
+
+    /**
+     * @param \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail $composedEmail
+     */
+    public function send(ComposedEmail $composedEmail): void;
+
+    /**
+     * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $composedEmailId
+     */
+    public function sendById(UnsignedInteger $composedEmailId): void;
 }

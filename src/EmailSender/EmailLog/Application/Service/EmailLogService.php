@@ -10,7 +10,7 @@ use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\Email\Domain\Aggregate\Email;
 use EmailSender\EmailLog\Application\Contract\EmailLogServiceInterface;
 use EmailSender\EmailLog\Application\Validator\ListRequestValidator;
-use EmailSender\EmailLog\Application\ValueObject\EmailLogStatus;
+use EmailSender\Core\ValueObject\EmailStatus;
 use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
 use EmailSender\EmailLog\Domain\Factory\ListRequestFactory;
 use EmailSender\EmailLog\Domain\Factory\EmailLogCollectionFactory;
@@ -101,12 +101,12 @@ class EmailLogService implements EmailLogServiceInterface
 
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $emailLogId
-     * @param \EmailSender\EmailLog\Application\ValueObject\EmailLogStatus             $emailLogStatus
+     * @param \EmailSender\Core\ValueObject\EmailStatus                                $emailLogStatus
      * @param null|string                                                              $errorMessageString
      */
     public function setStatus(
         UnsignedInteger $emailLogId,
-        EmailLogStatus $emailLogStatus,
+        EmailStatus $emailLogStatus,
         ?string $errorMessageString
     ): void {
         $errorMessage          = new StringLiteral((string)$errorMessageString);
@@ -192,10 +192,8 @@ class EmailLogService implements EmailLogServiceInterface
         $emailLogCollection = $getEmailLogService->list($queryParams);
 
         /** @var \Slim\Http\Response $response */
-        $response = $response->withJson([
-            'status' => 0,
-            'messages' => $emailLogCollection,
-        ]);
+        $response = $response->withJson(['data' => $emailLogCollection])
+                             ->withStatus(200);
 
         return $response;
     }

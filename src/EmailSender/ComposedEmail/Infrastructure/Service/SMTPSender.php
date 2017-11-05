@@ -1,9 +1,8 @@
 <?php
 
-namespace EmailSender\EmailQueue\Infrastructure\Service;
+namespace EmailSender\ComposedEmail\Infrastructure\Service;
 
-use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
-use EmailSender\EmailQueue\Domain\Contract\SMTPSenderInterface;
+use EmailSender\ComposedEmail\Domain\Contract\SMTPSenderInterface;
 use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
 use Closure;
 use SMTP;
@@ -11,7 +10,7 @@ use SMTP;
 /**
  * Class SMTPSender
  *
- * @package EmailSender\EmailQueue
+ * @package EmailSender\ComposedEmail
  */
 class SMTPSender implements SMTPSenderInterface
 {
@@ -31,19 +30,18 @@ class SMTPSender implements SMTPSenderInterface
     }
 
     /**
-     * @param \EmailSender\EmailLog\Domain\Aggregate\EmailLog           $emailLog
      * @param \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail $composedEmail
      *
-     * @throws \EmailSender\EmailQueue\Infrastructure\Service\SMTPException
+     * @throws \EmailSender\ComposedEmail\Infrastructure\Service\SMTPException
      * @throws \Exception
      */
-    public function send(EmailLog $emailLog, ComposedEmail $composedEmail): void
+    public function send(ComposedEmail $composedEmail): void
     {
         /** @var SMTP $smtp */
         $smtp = ($this->smtpService)();
 
-        if (!$smtp->mail($emailLog->getFrom()->getAddress()->getValue())) {
-            throw new SMTPException('Unable to set SMTP From: ' . $emailLog->getFrom()->getAddress()->getValue());
+        if (!$smtp->mail($composedEmail->getFrom()->getAddress()->getValue())) {
+            throw new SMTPException('Unable to set SMTP From: ' . $composedEmail->getFrom()->getAddress()->getValue());
         }
 
         $this->setRecipients($composedEmail, $smtp);

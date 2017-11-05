@@ -14,8 +14,7 @@ interface EmailQueueRepositoryWriterInterface
     /**
      * @param \EmailSender\EmailQueue\Domain\Aggregator\EmailQueue $emailQueue
      *
-     * @return bool
      * @throws \Error
      */
-    public function add(EmailQueue $emailQueue): bool;
+    public function add(EmailQueue $emailQueue): void;
 }

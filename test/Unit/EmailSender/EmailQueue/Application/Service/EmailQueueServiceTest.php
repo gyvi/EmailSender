@@ -19,27 +19,18 @@ class EmailQueueServiceTest extends TestCase
      */
     public function testConstruct()
     {
-        /** @var Closure $repositoryService */
-        $repositoryService = function () {};
+        /** @var Closure $queueService */
+        $queueService = function () {};
 
         /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->getMockBuilder(LoggerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var Closure $view */
-        $view = function () {};
-
         $emailQueueService = new EmailQueueService(
-            $view,
             $logger,
-            $repositoryService,
-            [],
-            $repositoryService,
-            $repositoryService,
-            $repositoryService,
-            $repositoryService,
-            $repositoryService
+            $queueService,
+            []
         );
 
         $this->assertInstanceOf(EmailQueueService::class, $emailQueueService);

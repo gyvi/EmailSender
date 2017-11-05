@@ -17,7 +17,7 @@ use EmailSender\Core\Services\ErrorHandler;
 use EmailSender\Core\Services\PhpErrorHandler;
 use EmailSender\Core\Route\Routing;
 use EmailSender\EmailLog\Application\Route\Route as EmailLogRoute;
-use EmailSender\EmailQueue\Application\Route\Route as EmailQueueRoute;
+use EmailSender\Email\Application\Route\Route as EmailRoute;
 use EmailSender\Core\Services\SMTPService;
 
 /**
@@ -86,10 +86,10 @@ class Bootstrap
      */
     private function initRouting(App $app): void
     {
-        $routing   = new Routing();
+        $routing = new Routing();
 
         $routing->add(new EmailLogRoute($app));
-        $routing->add(new EmailQueueRoute($app));
+        $routing->add(new EmailRoute($app));
 
         $routing->init();
     }

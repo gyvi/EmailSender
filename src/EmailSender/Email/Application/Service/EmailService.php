@@ -2,12 +2,20 @@
 
 namespace EmailSender\Email\Application\Service;
 
+use EmailSender\ComposedEmail\Application\Service\ComposedEmailService;
+use EmailSender\Core\Catalog\EmailStatusList;
 use EmailSender\Core\Factory\EmailAddressCollectionFactory;
 use EmailSender\Core\Factory\EmailAddressFactory;
 use EmailSender\Email\Application\Contract\EmailServiceInterface;
-use EmailSender\Email\Domain\Aggregate\Email;
 use EmailSender\Email\Domain\Factory\EmailFactory;
-use EmailSender\Email\Domain\Service\GetEmailService;
+use EmailSender\Email\Domain\Service\AddEmailService;
+use Closure;
+use EmailSender\EmailLog\Application\Service\EmailLogService;
+use EmailSender\EmailQueue\Application\Service\EmailQueueService;
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class EmailService
@@ -17,18 +25,146 @@ use EmailSender\Email\Domain\Service\GetEmailService;
 class EmailService implements EmailServiceInterface
 {
     /**
-     * @param array $request
-     *
-     * @return \EmailSender\Email\Domain\Aggregate\Email
-     * @throws \InvalidArgumentException
+     * @var \Closure
      */
-    public function getEmailFromRequest(array $request): Email
-    {
+    private $view;
+
+    /**
+     * @var \EmailSender\Email\Application\Service\LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var \Closure
+     */
+    private $queueService;
+
+    /**
+     * @var array
+     */
+    private $queueServiceSettings;
+
+    /**
+     * @var \Closure
+     */
+    private $composedEmailReaderService;
+
+    /**
+     * @var \Closure
+     */
+    private $composedEmailWriterService;
+
+    /**
+     * @var \Closure
+     */
+    private $emailLogReaderService;
+
+    /**
+     * @var \Closure
+     */
+    private $emailLogWriterService;
+
+    /**
+     * @var \Closure
+     */
+    private $smtpService;
+
+    /**
+     * EmailService constructor.
+     *
+     * @param \Closure                 $view
+     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Closure                 $queueService
+     * @param array                    $queueServiceSettings
+     * @param \Closure                 $composedEmailReaderService
+     * @param \Closure                 $composedEmailWriterService
+     * @param \Closure                 $emailLogReaderService
+     * @param \Closure                 $emailLogWriterService
+     * @param \Closure                 $smtpService
+     */
+    public function __construct(
+        Closure $view,
+        LoggerInterface $logger,
+        Closure $queueService,
+        array $queueServiceSettings,
+        Closure $composedEmailReaderService,
+        Closure $composedEmailWriterService,
+        Closure $emailLogReaderService,
+        Closure $emailLogWriterService,
+        Closure $smtpService
+    ) {
+        $this->view                       = $view;
+        $this->logger                     = $logger;
+        $this->queueService               = $queueService;
+        $this->queueServiceSettings       = $queueServiceSettings;
+        $this->composedEmailReaderService = $composedEmailReaderService;
+        $this->composedEmailWriterService = $composedEmailWriterService;
+        $this->emailLogReaderService      = $emailLogReaderService;
+        $this->emailLogWriterService      = $emailLogWriterService;
+        $this->smtpService                = $smtpService;
+    }
+
+    /**
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @param \Psr\Http\Message\ResponseInterface      $response
+     * @param array                                    $getRequest
+     *
+     * @return \Psr\Http\Message\MessageInterface
+     */
+    public function add(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        array $getRequest
+    ): MessageInterface {
+        $postRequest = $request->getParsedBody();
+
+        $composedEmailService = new ComposedEmailService(
+            $this->logger,
+            $this->composedEmailReaderService,
+            $this->composedEmailWriterService,
+            $this->smtpService
+        );
+
+        $emailLogService = new EmailLogService(
+            $this->view,
+            $this->logger,
+            $this->emailLogReaderService,
+            $this->emailLogWriterService
+        );
+
+        $emailQueueService = new EmailQueueService(
+            $this->logger,
+            $this->queueService,
+            $this->queueServiceSettings
+        );
+
         $emailAddressFactory           = new EmailAddressFactory();
         $emailAddressCollectionFactory = new EmailAddressCollectionFactory($emailAddressFactory);
         $emailFactory                  = new EmailFactory($emailAddressFactory, $emailAddressCollectionFactory);
-        $getEmailService               = new GetEmailService($emailFactory);
 
-        return $getEmailService->get($request);
+        $addEmailService = new AddEmailService(
+            $composedEmailService,
+            $emailLogService,
+            $emailQueueService,
+            $emailFactory
+        );
+
+        $addResult = $addEmailService->add($postRequest);
+
+        switch ($addResult) {
+            case EmailStatusList::STATUS_SENT:
+                $response = $response->withStatus(204);
+
+                break;
+            case EmailStatusList::STATUS_QUEUED:
+                $response = $response->withAddedHeader('Location', '/api/v1/emails/logs')
+                                     ->withStatus(201);
+
+                break;
+            default:
+                break;
+        }
+
+        return $response;
     }
 }

@@ -5,6 +5,7 @@ namespace EmailSender\ComposedEmail\Domain\Aggregate;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\Core\Entity\Recipients;
+use EmailSender\Core\ValueObject\EmailAddress;
 use JsonSerializable;
 
 /**
@@ -20,6 +21,11 @@ class ComposedEmail implements JsonSerializable
     private $composedEmailId;
 
     /**
+     * @var \EmailSender\Core\ValueObject\EmailAddress
+     */
+    private $from;
+
+    /**
      * @var \EmailSender\Core\Entity\Recipients
      */
     private $recipients;
@@ -32,13 +38,23 @@ class ComposedEmail implements JsonSerializable
     /**
      * ComposedEmail constructor.
      *
+     * @param \EmailSender\Core\ValueObject\EmailAddress                            $from
      * @param \EmailSender\Core\Entity\Recipients                                   $recipients
      * @param \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral $email
      */
-    public function __construct(Recipients $recipients, StringLiteral $email)
+    public function __construct(EmailAddress $from, Recipients $recipients, StringLiteral $email)
     {
+        $this->from       = $from;
         $this->recipients = $recipients;
         $this->email      = $email;
+    }
+
+    /**
+     * @return \EmailSender\Core\ValueObject\EmailAddress
+     */
+    public function getFrom(): EmailAddress
+    {
+        return $this->from;
     }
 
     /**

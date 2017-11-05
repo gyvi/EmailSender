@@ -2,9 +2,8 @@
 
 namespace EmailSender\EmailQueue\Application\Contract;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\MessageInterface;
+use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
+use EmailSender\EmailQueue\Domain\Aggregator\EmailQueue;
 
 /**
  * Interface EmailQueueServiceInterface
@@ -14,26 +13,9 @@ use Psr\Http\Message\MessageInterface;
 interface EmailQueueServiceInterface
 {
     /**
-     * @param \Psr\Http\Message\ServerRequestInterface $request
-     * @param \Psr\Http\Message\ResponseInterface      $response
-     * @param array                                    $getRequest
+     * @param \EmailSender\EmailLog\Domain\Aggregate\EmailLog $emailLog
      *
-     * @return \Psr\Http\Message\MessageInterface
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @return \EmailSender\EmailQueue\Domain\Aggregator\EmailQueue
      */
-    public function add(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        array $getRequest
-    ): MessageInterface;
-
-    /**
-     * @param string $emailQueue
-     *
-     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
-     * @throws \EmailSender\EmailQueue\Infrastructure\Service\SMTPException
-     * @throws \InvalidArgumentException
-     */
-    public function sendEmailFromQueue(string $emailQueue): void;
+    public function add(EmailLog $emailLog): EmailQueue;
 }

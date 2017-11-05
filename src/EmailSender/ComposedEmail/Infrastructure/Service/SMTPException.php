@@ -1,13 +1,13 @@
 <?php
 
-namespace EmailSender\EmailQueue\Infrastructure\Service;
+namespace EmailSender\ComposedEmail\Infrastructure\Service;
 
 use Exception;
 
 /**
  * Class SMTPException
  *
- * @package EmailSender\EmailQueue
+ * @package EmailSender\ComposedEmail
  */
 class SMTPException extends Exception
 {

@@ -3,6 +3,8 @@
 namespace EmailSender\ComposedEmail\Infrastructure\Persistence;
 
 use Closure;
+use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
+use EmailSender\ComposedEmail\Domain\Factory\ComposedEmailFactory;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\ComposedEmail\Domain\Contract\ComposedEmailRepositoryReaderInterface;
 use PDO;
@@ -22,6 +24,11 @@ class ComposedEmailRepositoryReader implements ComposedEmailRepositoryReaderInte
     private $composedEmailReaderService;
 
     /**
+     * @var \EmailSender\ComposedEmail\Domain\Factory\ComposedEmailFactory
+     */
+    private $composedEmailFactory;
+
+    /**
      * @var \PDO
      */
     private $dbConnection;
@@ -29,21 +36,24 @@ class ComposedEmailRepositoryReader implements ComposedEmailRepositoryReaderInte
     /**
      * ComposedEmailRepositoryReader constructor.
      *
-     * @param \Closure $composedEmailReaderService
+     * @param \Closure                                                       $composedEmailReaderService
+     * @param \EmailSender\ComposedEmail\Domain\Factory\ComposedEmailFactory $composedEmailFactory
      */
-    public function __construct(Closure $composedEmailReaderService)
+    public function __construct(Closure $composedEmailReaderService, ComposedEmailFactory $composedEmailFactory)
     {
         $this->composedEmailReaderService = $composedEmailReaderService;
+        $this->composedEmailFactory       = $composedEmailFactory;
     }
 
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $composedEmailId
      *
-     * @return array
+     * @return \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail
      *
      * @throws \Error
+     * @throws \InvalidArgumentException
      */
-    public function get(UnsignedInteger $composedEmailId): array
+    public function get(UnsignedInteger $composedEmailId): ComposedEmail
     {
         try {
             $pdo = $this->getConnection();
@@ -51,6 +61,7 @@ class ComposedEmailRepositoryReader implements ComposedEmailRepositoryReaderInte
             $sql = '
                 SELECT
                     `' . ComposedEmailFieldList::COMPOSED_EMAIL_ID . '`,
+                    `' . ComposedEmailFieldList::FROM . '`,
                     `' . ComposedEmailFieldList::RECIPIENTS . '`,
                     `' . ComposedEmailFieldList::EMAIL . '`
                 FROM
@@ -77,7 +88,7 @@ class ComposedEmailRepositoryReader implements ComposedEmailRepositoryReaderInte
             throw new Error($e->getMessage(), $e->getCode(), $e);
         }
 
-        return $composedEmailArray;
+        return $this->composedEmailFactory->createFromArray($composedEmailArray);
     }
 
     /**
