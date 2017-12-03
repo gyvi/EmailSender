@@ -18,19 +18,6 @@ use PHPUnit\Framework\TestCase;
 class EmailAddressCollectionFactoryTest extends TestCase
 {
     /**
-     * @return \EmailSender\Core\ValueObject\EmailAddress|\PHPUnit_Framework_MockObject_MockObject
-     */
-    public function getEmailAddress()
-    {
-        /** @var \EmailSender\Core\ValueObject\EmailAddress|\PHPUnit_Framework_MockObject_MockObject $emailAddress */
-        $emailAddress = $this->getMockBuilder(EmailAddress::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        return $emailAddress;
-    }
-
-    /**
      * @return \EmailSender\Core\Factory\EmailAddressFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     public function getEmailAddressFactory()
@@ -54,6 +41,7 @@ class EmailAddressCollectionFactoryTest extends TestCase
         string $emailAddressCollectionString
     ) {
         $emailAddressFactory = $this->getEmailAddressFactory();
+
         $emailAddressFactory->expects($this->any())
             ->method('create')
             ->willReturn(new EmailAddress(new Address('test@test.hu'), null));

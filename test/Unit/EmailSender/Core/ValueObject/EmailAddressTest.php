@@ -3,9 +3,8 @@
 namespace Test\Unit\EmailSender\Core\ValueObject;
 
 use EmailSender\Core\ValueObject\EmailAddress;
-use EmailSender\Core\ValueObject\Address;
-use EmailSender\Core\ValueObject\Name;
 use PHPUnit\Framework\TestCase;
+use Test\Helper\EmailSender\Mockery;
 
 /**
  * Class EmailAddressTest
@@ -19,10 +18,7 @@ class EmailAddressTest extends TestCase
      */
     public function getAddressMock()
     {
-        /** @var Address|\PHPUnit_Framework_MockObject_MockObject $address */
-        $address = $this->getMockBuilder(Address::class)->disableOriginalConstructor()->getMock();
-
-        return $address;
+        return (new Mockery($this))->getAddressMock('');
     }
 
     /**
@@ -30,12 +26,7 @@ class EmailAddressTest extends TestCase
      */
     public function getNameMock()
     {
-        /** @var Name|\PHPUnit_Framework_MockObject_MockObject $name */
-        $name = $this->getMockBuilder(Name::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        return $name;
+        return (new Mockery($this))->getNameMock('');
     }
 
     /**
@@ -71,8 +62,8 @@ class EmailAddressTest extends TestCase
      */
     public function testGetName()
     {
-        $address     = $this->getAddressMock();
-        $name = $this->getNameMock();
+        $address = $this->getAddressMock();
+        $name    = $this->getNameMock();
 
         $mailAddress = new EmailAddress($address, $name);
 
@@ -85,7 +76,6 @@ class EmailAddressTest extends TestCase
     public function testGetNameWithNullValue()
     {
         $address     = $this->getAddressMock();
-
         $mailAddress = new EmailAddress($address, null);
 
         $this->assertNull($mailAddress->getName());

@@ -4,7 +4,7 @@ namespace Test\Unit\EmailSender\EmailLog\Application\Service;
 
 use EmailSender\EmailLog\Application\Service\EmailLogService;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
+use Test\Helper\EmailSender\Mockery;
 
 /**
  * Class EmailLogServiceTest
@@ -18,16 +18,9 @@ class EmailLogServiceTest extends TestCase
      */
     public function testConstruct()
     {
-        /** @var \Closure $repositoryService */
-        $repositoryService = function () {};
-
-        /** @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        /** @var \Closure $view */
-        $view = function () {};
+        $repositoryService = (new Mockery($this))->getRepositoryServiceMock();
+        $logger            = (new Mockery($this))->getLoggerMock();
+        $view              = (new Mockery($this))->getViewServiceMock();
 
         $emailLogService = new EmailLogService(
             $view,

@@ -6,6 +6,7 @@ use EmailSender\EmailQueue\Application\Service\EmailQueueService;
 use PHPUnit\Framework\TestCase;
 use Closure;
 use Psr\Log\LoggerInterface;
+use Test\Helper\EmailSender\Mockery;
 
 /**
  * Class EmailQueueServiceTest
@@ -19,13 +20,8 @@ class EmailQueueServiceTest extends TestCase
      */
     public function testConstruct()
     {
-        /** @var Closure $queueService */
-        $queueService = function () {};
-
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->getMockBuilder(LoggerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $queueService = (new Mockery($this))->getQueueServiceMock();
+        $logger       = (new Mockery($this))->getLoggerMock();
 
         $emailQueueService = new EmailQueueService(
             $logger,

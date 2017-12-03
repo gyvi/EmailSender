@@ -14,14 +14,21 @@ use PHPUnit\Framework\TestCase;
 class RoutingTest extends TestCase
 {
     /**
+     * @return \EmailSender\Core\Route\RouteInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    public function getRouteMock(): RouteInterface
+    {
+        return $this->getMockBuilder(RouteInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
      * Test add method.
      */
     public function testAdd()
     {
-        /** @var RouteInterface|\PHPUnit_Framework_MockObject_MockObject $route */
-        $route = $this->getMockBuilder(RouteInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $route = $this->getRouteMock();
 
         $route->expects($this->never())
             ->method('init');
@@ -35,10 +42,7 @@ class RoutingTest extends TestCase
      */
     public function testInit()
     {
-        /** @var RouteInterface|\PHPUnit_Framework_MockObject_MockObject $route */
-        $route = $this->getMockBuilder(RouteInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $route = $this->getRouteMock();
 
         $route->expects($this->once())
             ->method('init');

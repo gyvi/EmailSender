@@ -6,6 +6,7 @@ use EmailSender\Core\Collection\EmailAddressCollection;
 use EmailSender\Core\ValueObject\EmailAddress;
 use PHPUnit\Framework\TestCase;
 use ArrayIterator;
+use Test\Helper\EmailSender\Mockery;
 
 /**
  * Class EmailAddressCollectionTest
@@ -14,19 +15,6 @@ use ArrayIterator;
  */
 class EmailAddressCollectionTest extends TestCase
 {
-    /**
-     * @return \EmailSender\Core\ValueObject\EmailAddress|\PHPUnit_Framework_MockObject_MockObject
-     */
-    public function getMailAddress()
-    {
-        /** @var \EmailSender\Core\ValueObject\EmailAddress|\PHPUnit_Framework_MockObject_MockObject $emailAddress */
-        $emailAddress = $this->getMockBuilder(EmailAddress::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        return $emailAddress;
-    }
-
     /**
      * Test getType method.
      */
@@ -42,7 +30,7 @@ class EmailAddressCollectionTest extends TestCase
      */
     public function testAddWithValidValue()
     {
-        $emailAddress = $this->getMailAddress();
+        $emailAddress = (new Mockery($this))->getEmailAddressMock('');
 
         $emailAddressCollection = new EmailAddressCollection();
 
@@ -71,7 +59,7 @@ class EmailAddressCollectionTest extends TestCase
      */
     public function testCountAndIsEmpty()
     {
-        $emailAddress = $this->getMailAddress();
+        $emailAddress = (new Mockery($this))->getEmailAddressMock('');
 
         $emailAddressCollection = new EmailAddressCollection();
 
@@ -90,7 +78,7 @@ class EmailAddressCollectionTest extends TestCase
      */
     public function testJsonSerialize()
     {
-        $emailAddress = $this->getMailAddress();
+        $emailAddress = (new Mockery($this))->getEmailAddressMock('');
 
         $emailAddressCollection = new EmailAddressCollection();
 
@@ -105,7 +93,7 @@ class EmailAddressCollectionTest extends TestCase
      */
     public function testGetIterator()
     {
-        $emailAddress = $this->getMailAddress();
+        $emailAddress = (new Mockery($this))->getEmailAddressMock('');
 
         $emailAddressCollection = new EmailAddressCollection();
 
