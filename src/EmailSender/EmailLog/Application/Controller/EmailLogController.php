@@ -106,8 +106,6 @@ class EmailLogController extends AbstractController
             $emailLogWriter
         );
 
-        $logger->info('test');
-
         return $emailLogService->lister($request, $response, $getRequest);
     }
 }

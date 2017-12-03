@@ -1,35 +1,31 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var listButton      = document.querySelector('#listButton');
-    var messageLogTable = document.querySelector('#messageLog tbody');
-    var fromTextField   = document.querySelector('#from');
+    var listButton    = document.querySelector('#listButton');
+    var emailLogTable = document.querySelector('#emailLog tbody');
+    var fromTextField = document.querySelector('#from');
 
     listButton.addEventListener('click', function() {
         var xmlHttp = new XMLHttpRequest();
-        var Url = "log";
-        var query;
+        var Url = "/api/v1/emails/logs";
 
         if (fromTextField.value.trim().length > 0) {
-            query = {from : fromTextField.value};
-        } else {
-            query = {};
+            Url = Url + '?from=' + fromTextField.value;
         }
 
-        xmlHttp.onReadyStatechange = function() {
+        xmlHttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
                 var result = JSON.parse(this.responseText);
                 showResult(result);
             } else if (this.readyState === 4 && this.status === 400) {
                 var errorResult = JSON.parse(this.responseText);
 
-                if (errorResult.hasOwnProperty('statusMessage')) {
-                    window.alert(errorResult.statusMessage);
+                if (errorResult.hasOwnProperty('message')) {
+                    window.alert(errorResult.message);
                 }
             }
         };
 
-        xmlHttp.open("POST", Url, true);
-        xmlHttp.setRequestHeader("Content-Type", "application/json");
-        xmlHttp.send(JSON.stringify(query));
+        xmlHttp.open("GET", Url, true);
+        xmlHttp.send();
     });
 
     /**
@@ -37,76 +33,76 @@ document.addEventListener("DOMContentLoaded", function() {
      *
      * @param result
      */
-    function showResult(result) {
-
-        if (result.status === 0) {
+    function showResult(result)
+    {
+        if (result.data.length > 0) {
             clearRows();
-        }
-
-        if (result.messages.length > 0) {
-            showMessages(result.messages);
+            showEmails(result.data);
         }
     }
 
     /**
      * Clear table rows.
      */
-    function clearRows() {
-        var tableRows = document.querySelectorAll('#messageLog tbody tr');
+    function clearRows()
+    {
+        var tableRows = document.querySelectorAll('#emailLog tbody tr');
 
         if (tableRows.length > 0) {
             for (i = 0; i < tableRows.length; i++) {
-                messageLogTable.deleteRow(0);
+                emailLogTable.deleteRow(0);
             }
         }
     }
 
     /**
-     * Show messages.
+     * Show emails.
      *
-     * @param messages
+     * @param data
      */
-    function showMessages(messages) {
-        for (i = 0; i < messages.length; i++) {
-            showMessage(messages[i]);
+    function showEmails(data)
+    {
+        for (i = 0; i < data.length; i++) {
+            showEmail(data[i]);
         }
     }
 
     /**
      * Show a message.
      *
-     * @param message
+     * @param email
      */
-    function showMessage(message) {
-        var row = messageLogTable.insertRow();
+    function showEmail(email)
+    {
+        var row = emailLogTable.insertRow();
 
-        var logId     = row.insertCell(0);
-        var messageId = row.insertCell(1);
-        var from      = row.insertCell(2);
-        var to        = row.insertCell(3);
-        var subject   = row.insertCell(4);
-        var logged    = row.insertCell(5);
-        var queued    = row.insertCell(6);
-        var sent      = row.insertCell(7);
-        var delay     = row.insertCell(8);
-        var error     = row.insertCell(9);
+        var emailLogId      = row.insertCell(0);
+        var composedEmailId = row.insertCell(1);
+        var from            = row.insertCell(2);
+        var to              = row.insertCell(3);
+        var subject         = row.insertCell(4);
+        var logged          = row.insertCell(5);
+        var queued          = row.insertCell(6);
+        var sent            = row.insertCell(7);
+        var delay           = row.insertCell(8);
+        var error           = row.insertCell(9);
 
-        logId.innerText     = message.messageLogId;
-        messageId.innerText = message.messageId;
-        from.innerText      = message.from.address;
-        to.innerText        = message.recipients.to[0].address + '...';
-        subject.innerText   = message.subject;
-        logged.innerText    = message.logged;
-        queued.innerText    = message.queued;
-        sent.innerText      = message.sent;
-        delay.innerText     = message.delay;
-        error.innerText     = message.errorMessage;
+        emailLogId.innerText      = email.emailLogId;
+        composedEmailId.innerText = email.composedEmailId;
+        from.innerText            = email.from.address;
+        to.innerText              = email.recipients.to[0].address + '...';
+        subject.innerText         = email.subject;
+        logged.innerText          = email.logged;
+        queued.innerText          = email.queued;
+        sent.innerText            = email.sent;
+        delay.innerText           = email.delay;
+        error.innerText           = email.errorMessage;
 
-        if (message.status === -1) {
+        if (email.status === -1) {
             row.classList.add('error');
-        } else if (message.status === 1) {
+        } else if (email.status === 1) {
             row.classList.add('queued');
-        } else if (message.status === 2) {
+        } else if (email.status === 2) {
             row.classList.add('sent');
         } else {
             row.classList.add('stored');

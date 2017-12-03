@@ -21,12 +21,15 @@ class ViewService implements ServiceInterface
     {
         return function (ContainerInterface $container): Closure {
             return function () use ($container) {
-                $view = new Twig('../EmailSender');
+                $view = new Twig(dirname(__DIR__, 2));
 
-                /** @var \Psr\Http\Message\ServerRequestInterface $request */
+                /** @var \Slim\Http\Request $request */
                 $request = $container->get('request');
 
-                $basePath = rtrim(str_ireplace('index.php', '', $request->getUri()->getBasePath()), '/');
+                /** @var \Slim\Http\Uri $uri */
+                $uri = $request->getUri();
+
+                $basePath = rtrim(str_ireplace('index.php', '', $uri->getBasePath()), '/');
 
                 $view->addExtension(new TwigExtension($container->get('router'), $basePath));
 

@@ -16,17 +16,17 @@ h2 {
     margin: 30px 0;
 }
 
-#messageLog {
+#emailLog {
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
 }
 
-#messageLog tr, #messageLog td, #messageLog th {
+#emailLog tr, #emailLog td, #emailLog th {
     border: 1px solid #555555;
 }
 
-#messageLog th {
+#emailLog th {
     background: #AAAAAA;
     padding: 2px;
     text-align: left;
