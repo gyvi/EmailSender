@@ -17,7 +17,7 @@ use Throwable;
 class ErrorHandler implements ServiceInterface
 {
     /**
-     * Return with the Errorhandler
+     * Return with the ErrorHandler
      *
      * @return \Closure
      */
@@ -33,7 +33,7 @@ class ErrorHandler implements ServiceInterface
 
                 /** @var \Monolog\Logger $logger */
                 $logger = $container->get(ServiceList::LOGGER);
-                $logger->notice($throwable->getMessage(), $throwable->getTrace());
+                $logger->alert($throwable->getMessage(), $throwable->getTrace());
 
                 $errorMessage = $throwable->getMessage();
 
@@ -46,14 +46,13 @@ class ErrorHandler implements ServiceInterface
                 }
 
                 /** @var \Slim\Http\Response $response */
-                return $response
-                    ->withJson(
-                        [
-                            'status' => -1,
-                            'statusMessage' => $errorMessage
-                        ],
-                        $httpResponseCode
-                    );
+                return $response->withJson(
+                    [
+                        'message'     => 'An unexpected error occurred.',
+                        'description' => $errorMessage
+                    ],
+                    $httpResponseCode
+                );
             };
         };
     }

@@ -16,8 +16,6 @@ interface EmailComposerInterface
      * @param \EmailSender\Email\Domain\Aggregate\Email $email
      *
      * @return \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral
-     *
-     * @throws \phpmailerException
      */
     public function compose(Email $email): StringLiteral;
 }

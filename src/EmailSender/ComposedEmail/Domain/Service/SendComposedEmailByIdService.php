@@ -39,9 +39,6 @@ class SendComposedEmailByIdService
 
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $composedEmailId
-     *
-     * @throws \EmailSender\ComposedEmail\Infrastructure\Service\SMTPException
-     * @throws \Exception
      */
     public function send(UnsignedInteger $composedEmailId): void
     {

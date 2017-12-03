@@ -17,28 +17,28 @@ class EmailAddressFactoryTest extends TestCase
      *
      * @param string      $emailAddressString
      * @param string      $expectedAddress
-     * @param string|null $expectedDisplayName
+     * @param string|null $expectedName
      *
      * @dataProvider providerForTestCreateWithValidValues
      */
     public function testCreateWithValidValues(
         string $emailAddressString,
         string $expectedAddress,
-        ?string $expectedDisplayName
+        ?string $expectedName
     ) {
         $emailAddressFactory = new EmailAddressFactory();
 
         $emailAddress = $emailAddressFactory->create($emailAddressString);
 
-        $address     = $emailAddress->getAddress();
-        $displayName = $emailAddress->getDisplayName();
+        $address = $emailAddress->getAddress();
+        $name    = $emailAddress->getName();
 
-        if ($displayName) {
-            $displayName = $displayName->getValue();
+        if ($name) {
+            $name = $name->getValue();
         }
 
         $this->assertEquals($expectedAddress, $address->getValue());
-        $this->assertEquals($expectedDisplayName, $displayName);
+        $this->assertEquals($expectedName, $name);
     }
 
     /**

@@ -16,8 +16,6 @@ interface ComposedEmailRepositoryWriterInterface
      * @param \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail $composedEmail
      *
      * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
-     *
-     * @throws \Error
      */
     public function add(ComposedEmail $composedEmail): UnsignedInteger;
 }

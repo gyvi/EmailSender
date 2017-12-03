@@ -56,7 +56,6 @@ class ComposedEmailFactory
      * @return \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail
      *
      * @throws \InvalidArgumentException
-     * @throws \phpmailerException
      */
     public function create(Email $email): ComposedEmail
     {
@@ -70,6 +69,8 @@ class ComposedEmailFactory
      * @param array $composedEmailArray
      *
      * @return \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail
+     *
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
      *
      * @throws \InvalidArgumentException
      */

@@ -4,7 +4,7 @@ namespace Test\Unit\EmailSender\Core\ValueObject;
 
 use EmailSender\Core\ValueObject\EmailAddress;
 use EmailSender\Core\ValueObject\Address;
-use EmailSender\Core\ValueObject\DisplayName;
+use EmailSender\Core\ValueObject\Name;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -26,31 +26,31 @@ class EmailAddressTest extends TestCase
     }
 
     /**
-     * @return \EmailSender\Core\ValueObject\DisplayName|\PHPUnit_Framework_MockObject_MockObject
+     * @return \EmailSender\Core\ValueObject\Name|\PHPUnit_Framework_MockObject_MockObject
      */
-    public function getDisplayNameMock()
+    public function getNameMock()
     {
-        /** @var DisplayName|\PHPUnit_Framework_MockObject_MockObject $displayName */
-        $displayName = $this->getMockBuilder(DisplayName::class)
+        /** @var Name|\PHPUnit_Framework_MockObject_MockObject $name */
+        $name = $this->getMockBuilder(Name::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        return $displayName;
+        return $name;
     }
 
     /**
      * Test __construct with invalid values.
      *
      * @param mixed $address
-     * @param mixed $displayName
+     * @param mixed $name
      *
      * @dataProvider providerForTestConstructWithInvalidValues
      *
      * @expectedException \TypeError
      */
-    public function testConstructWithInvalidValues($address, $displayName)
+    public function testConstructWithInvalidValues($address, $name)
     {
-        new EmailAddress($address, $displayName);
+        new EmailAddress($address, $name);
     }
 
     /**
@@ -58,37 +58,37 @@ class EmailAddressTest extends TestCase
      */
     public function testGetAddress()
     {
-        $address     = $this->getAddressMock();
-        $displayName = $this->getDisplayNameMock();
+        $address = $this->getAddressMock();
+        $name    = $this->getNameMock();
 
-        $mailAddress = new EmailAddress($address, $displayName);
+        $mailAddress = new EmailAddress($address, $name);
 
         $this->assertEquals($address, $mailAddress->getAddress());
     }
 
     /**
-     * Test getDisplayName method.
+     * Test getName method.
      */
-    public function testGetDisplayName()
+    public function testGetName()
     {
         $address     = $this->getAddressMock();
-        $displayName = $this->getDisplayNameMock();
+        $name = $this->getNameMock();
 
-        $mailAddress = new EmailAddress($address, $displayName);
+        $mailAddress = new EmailAddress($address, $name);
 
-        $this->assertEquals($displayName, $mailAddress->getDisplayName());
+        $this->assertEquals($name, $mailAddress->getName());
     }
 
     /**
-     * Test getDisplayName method with null value.
+     * Test getName method with null value.
      */
-    public function testGetDisplayNameWithNullValue()
+    public function testGetNameWithNullValue()
     {
         $address     = $this->getAddressMock();
 
         $mailAddress = new EmailAddress($address, null);
 
-        $this->assertNull($mailAddress->getDisplayName());
+        $this->assertNull($mailAddress->getName());
     }
 
     /**
@@ -98,13 +98,13 @@ class EmailAddressTest extends TestCase
      */
     public function providerForTestConstructWithValidValues(): array
     {
-        $address     = $this->getAddressMock();
-        $displayName = $this->getDisplayNameMock();
+        $address = $this->getAddressMock();
+        $name    = $this->getNameMock();
 
         return [
             [
                 $address,
-                $displayName,
+                $name,
             ],
             [
                 $address,
@@ -120,13 +120,13 @@ class EmailAddressTest extends TestCase
      */
     public function providerForTestConstructWithInvalidValues(): array
     {
-        $address     = $this->getAddressMock();
-        $displayName = $this->getDisplayNameMock();
+        $address = $this->getAddressMock();
+        $name    = $this->getNameMock();
 
         return [
             [
                 'string',
-                $displayName,
+                $name,
             ],
             [
                 $address,

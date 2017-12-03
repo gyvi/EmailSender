@@ -2,7 +2,6 @@
 
 namespace EmailSender\EmailLog\Domain\Service;
 
-use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
 use EmailSender\EmailLog\Domain\Contract\EmailLogRepositoryWriterInterface;
 use EmailSender\EmailLog\Domain\Factory\EmailLogFactory;
@@ -41,7 +40,7 @@ class AddEmailLogService
     }
 
     /**
-     * @param \EmailSender\Email\Domain\Aggregate\Email               $email
+     * @param \EmailSender\Email\Domain\Aggregate\Email                 $email
      * @param \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail $composedEmail
      *
      * @return \EmailSender\EmailLog\Domain\Aggregate\EmailLog
@@ -51,7 +50,7 @@ class AddEmailLogService
         $emailLog   = $this->emailLogFactory->create($email, $composedEmail);
         $emailLogId = $this->repositoryWriter->add($emailLog);
 
-        $emailLog->setEmailLogId(new UnsignedInteger($emailLogId));
+        $emailLog->setEmailLogId($emailLogId);
 
         return $emailLog;
     }

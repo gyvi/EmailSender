@@ -24,7 +24,7 @@
   "scripts": {
     "phpcs": "./vendor/bin/phpcs ./src --extensions=php --standard=PSR2 -p",
     "phpmd": "./vendor/bin/phpmd ./src/ text cleancode,codesize,controversial,design,unusedcode",
-    "phpunit": "./vendor/bin/phpunit -c build/phpunit.xml",
-    "phpunit-with-code-coverage": "./vendor/bin/phpunit -c build/phpunit-with-code-coverage.xml"
+    "phpunit": "./vendor/bin/phpunit -c ./phpunit.xml",
+    "phpunit-with-code-coverage": "./vendor/bin/phpunit -c ./phpunit-with-code-coverage.xml"
   }
 }

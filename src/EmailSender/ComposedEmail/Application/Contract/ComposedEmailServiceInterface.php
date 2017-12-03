@@ -17,10 +17,6 @@ interface ComposedEmailServiceInterface
      * @param \EmailSender\Email\Domain\Aggregate\Email $email
      *
      * @return \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail
-     *
-     * @throws \Error
-     * @throws \InvalidArgumentException
-     * @throws \phpmailerException
      */
     public function add(Email $email): ComposedEmail;
 
@@ -28,9 +24,6 @@ interface ComposedEmailServiceInterface
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $composedEmailId
      *
      * @return \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail
-     *
-     * @throws \Error
-     * @throws \InvalidArgumentException
      */
     public function get(UnsignedInteger $composedEmailId): ComposedEmail;
 

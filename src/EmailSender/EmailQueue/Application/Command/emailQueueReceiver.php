@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/../../../../../vendor/autoload.php';
+require dirname(__DIR__, 5) . '/vendor/autoload.php';
 
 use EmailSender\Core\Services\ServiceList;
 use EmailSender\Core\Framework\BootstrapCli;
@@ -14,7 +14,7 @@ use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\Catalog\EmailStatusList;
 use EmailSender\Core\ValueObject\EmailStatus;
 
-$settings  = require __DIR__ . '/../../../../EmailSender/Core/Framework/settings.php';
+$settings  = require dirname(__DIR__, 5) . '/config/settings.php';
 $container = new Container($settings);
 
 // Bootstrap init
@@ -72,7 +72,7 @@ $callback = function ($message) use ($container, $view, $logger) {
     } catch (Throwable $e) {
         $deliveryChannel->basic_nack($message->delivery_info['delivery_tag']);
 
-        $logger->warning(
+        $logger->alert(
             'Unable to sent email: ' . $message->body . PHP_EOL . ' Error: ' .
             $e->getMessage() . $e->getTraceAsString()
         );
@@ -86,6 +86,8 @@ $callback = function ($message) use ($container, $view, $logger) {
 };
 
 $channel->basic_consume($queueName, '', false, false, false, false, $callback);
+
+echo 'queueConsumer started.' . PHP_EOL;
 
 while (count($channel->callbacks)) {
     $channel->wait();

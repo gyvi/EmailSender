@@ -9,7 +9,6 @@ use EmailSender\EmailLog\Domain\Contract\EmailLogRepositoryWriterInterface;
 use Closure;
 use PDO;
 use PDOException;
-use Error;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\ValueObject\EmailStatus;
 
@@ -43,63 +42,58 @@ class EmailLogRepositoryWriter implements EmailLogRepositoryWriterInterface
     /**
      * @param \EmailSender\EmailLog\Domain\Aggregate\EmailLog $emailLog
      *
-     * @return int
-     * @throws \Error
+     * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
+     *
+     * @throws \PDOException
      */
-    public function add(EmailLog $emailLog): int
+    public function add(EmailLog $emailLog): UnsignedInteger
     {
-        try {
-            $pdo = $this->getConnection();
+        $pdo = $this->getConnection();
 
-            $sql = '
-                INSERT INTO
-                    `emailLog` (
-                        `' . EmailLogFieldList::COMPOSED_EMAIL_ID . '`,
-                        `' . EmailLogFieldList::FROM . '`,
-                        `' . EmailLogFieldList::RECIPIENTS . '`,
-                        `' . EmailLogFieldList::SUBJECT . '`,
-                        `' . EmailLogFieldList::DELAY . '`
-                    )
-                VALUES
-                    (
-                        :' . EmailLogFieldList::COMPOSED_EMAIL_ID . ',
-                        :' . EmailLogFieldList::FROM . ',
-                        :' . EmailLogFieldList::RECIPIENTS . ',
-                        :' . EmailLogFieldList::SUBJECT . ',
-                        :' . EmailLogFieldList::DELAY . '
-                    ); 
-            ';
+        $sql = '
+            INSERT INTO
+                `emailLog` (
+                    `' . EmailLogFieldList::COMPOSED_EMAIL_ID . '`,
+                    `' . EmailLogFieldList::FROM . '`,
+                    `' . EmailLogFieldList::RECIPIENTS . '`,
+                    `' . EmailLogFieldList::SUBJECT . '`,
+                    `' . EmailLogFieldList::DELAY . '`
+                )
+            VALUES
+                (
+                    :' . EmailLogFieldList::COMPOSED_EMAIL_ID . ',
+                    :' . EmailLogFieldList::FROM . ',
+                    :' . EmailLogFieldList::RECIPIENTS . ',
+                    :' . EmailLogFieldList::SUBJECT . ',
+                    :' . EmailLogFieldList::DELAY . '
+                ); 
+        ';
 
-            $statement = $pdo->prepare($sql);
+        $statement = $pdo->prepare($sql);
 
-            $statement->bindValue(
-                ':' . EmailLogFieldList::COMPOSED_EMAIL_ID,
-                $emailLog->getComposedEmailId()->getValue(),
-                PDO::PARAM_INT
-            );
+        $statement->bindValue(
+            ':' . EmailLogFieldList::COMPOSED_EMAIL_ID,
+            $emailLog->getComposedEmailId()->getValue(),
+            PDO::PARAM_INT
+        );
 
-            $statement->bindValue(':' . EmailLogFieldList::FROM, $emailLog->getFrom()->getAddress()->getValue());
+        $statement->bindValue(':' . EmailLogFieldList::FROM, $emailLog->getFrom()->getAddress()->getValue());
 
-            $statement->bindValue(':' . EmailLogFieldList::RECIPIENTS, json_encode($emailLog->getRecipients()));
+        $statement->bindValue(':' . EmailLogFieldList::RECIPIENTS, json_encode($emailLog->getRecipients()));
 
-            $statement->bindValue(':' . EmailLogFieldList::SUBJECT, $emailLog->getSubject()->getValue());
+        $statement->bindValue(':' . EmailLogFieldList::SUBJECT, $emailLog->getSubject()->getValue());
 
-            $statement->bindValue(
-                ':' . EmailLogFieldList::DELAY,
-                $emailLog->getDelay()->getValue(),
-                PDO::PARAM_INT
-            );
+        $statement->bindValue(
+            ':' . EmailLogFieldList::DELAY,
+            $emailLog->getDelay()->getValue(),
+            PDO::PARAM_INT
+        );
 
-            if (!$statement->execute()) {
-                throw new PDOException('Unable to write to the database.');
-            }
-
-            $emailLogId = (int)$pdo->lastInsertId();
-        } catch (PDOException $e) {
-            throw new Error($e->getMessage(), $e->getCode(), $e);
+        if (!$statement->execute()) {
+            throw new PDOException('Unable to write to the database.');
         }
 
-        return $emailLogId;
+        return new UnsignedInteger((int)$pdo->lastInsertId());
     }
 
     /**
@@ -107,47 +101,43 @@ class EmailLogRepositoryWriter implements EmailLogRepositoryWriterInterface
      * @param \EmailSender\Core\ValueObject\EmailStatus                                $emailLogStatus
      * @param \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral    $errorMessage
      *
-     * @throws \Error
+     * @throws \PDOException
      */
     public function setStatus(
         UnsignedInteger $emailLogId,
         EmailStatus $emailLogStatus,
         StringLiteral $errorMessage
     ): void {
-        try {
-            $pdo = $this->getConnection();
+        $pdo = $this->getConnection();
 
-            $sql = '
-                UPDATE
-                    `emailLog`
-                SET
-                    `' . EmailLogFieldList::STATUS . '` = :' . EmailLogFieldList::STATUS
-                . $this->getSetStatusDateTimeUpdate($emailLogStatus)
-                . $this->getSetStatusErrorMessageUpdate($emailLogStatus)
-                . '
-                WHERE
-                    `' . EmailLogFieldList::EMAIL_LOG_ID . '` = :' .  EmailLogFieldList::EMAIL_LOG_ID . ';
-            ';
+        $sql = '
+            UPDATE
+                `emailLog`
+            SET
+                `' . EmailLogFieldList::STATUS . '` = :' . EmailLogFieldList::STATUS
+            . $this->getSetStatusDateTimeUpdate($emailLogStatus)
+            . $this->getSetStatusErrorMessageUpdate($emailLogStatus)
+            . '
+            WHERE
+                `' . EmailLogFieldList::EMAIL_LOG_ID . '` = :' .  EmailLogFieldList::EMAIL_LOG_ID . ';
+        ';
 
-            $statement = $pdo->prepare($sql);
+        $statement = $pdo->prepare($sql);
 
-            $statement->bindValue(':' . EmailLogFieldList::STATUS, $emailLogStatus->getValue());
+        $statement->bindValue(':' . EmailLogFieldList::STATUS, $emailLogStatus->getValue());
 
-            $statement->bindValue(
-                ':' . EmailLogFieldList::EMAIL_LOG_ID,
-                $emailLogId->getValue(),
-                PDO::PARAM_INT
-            );
+        $statement->bindValue(
+            ':' . EmailLogFieldList::EMAIL_LOG_ID,
+            $emailLogId->getValue(),
+            PDO::PARAM_INT
+        );
 
-            if ($emailLogStatus->getValue() === EmailStatusList::STATUS_ERROR) {
-                $statement->bindValue(':' . EmailLogFieldList::ERROR_MESSAGE, $errorMessage->getValue());
-            }
+        if ($emailLogStatus->getValue() === EmailStatusList::STATUS_ERROR) {
+            $statement->bindValue(':' . EmailLogFieldList::ERROR_MESSAGE, $errorMessage->getValue());
+        }
 
-            if (!$statement->execute()) {
-                throw new PDOException('Unable to write to the database.');
-            }
-        } catch (PDOException $e) {
-            throw new Error($e->getMessage(), $e->getCode(), $e);
+        if (!$statement->execute()) {
+            throw new PDOException('Unable to write to the database.');
         }
     }
 

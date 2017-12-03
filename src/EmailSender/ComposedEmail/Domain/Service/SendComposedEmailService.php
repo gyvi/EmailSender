@@ -29,9 +29,6 @@ class SendComposedEmailService
 
     /**
      * @param \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail $composedEmail
-     *
-     * @throws \EmailSender\ComposedEmail\Infrastructure\Service\SMTPException
-     * @throws \Exception
      */
     public function send(ComposedEmail $composedEmail): void
     {

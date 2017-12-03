@@ -34,7 +34,7 @@ class ServiceProvider
     /**
      * Init services.
      */
-    public function init()
+    public function init(): void
     {
         foreach ($this->services as $serviceName => $service) {
             $this->container[$serviceName] = $service->getService();
@@ -45,7 +45,7 @@ class ServiceProvider
      * @param string                                      $serviceName
      * @param \EmailSender\Core\Services\ServiceInterface $service
      */
-    public function addService(string $serviceName, ServiceInterface $service)
+    public function addService(string $serviceName, ServiceInterface $service): void
     {
         $this->services[$serviceName] = $service;
     }

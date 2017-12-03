@@ -2,6 +2,7 @@
 
 namespace EmailSender\ComposedEmail\Application\Service;
 
+use EmailSender\ComposedEmail\Application\Exception\ComposedEmailException;
 use EmailSender\ComposedEmail\Domain\Service\SendComposedEmailByIdService;
 use EmailSender\ComposedEmail\Domain\Service\SendComposedEmailService;
 use EmailSender\ComposedEmail\Infrastructure\Service\SMTPSender;
@@ -21,6 +22,7 @@ use Closure;
 use Psr\Log\LoggerInterface;
 use EmailSender\ComposedEmail\Domain\Factory\ComposedEmailFactory;
 use PHPMailer;
+use Throwable;
 
 /**
  * Class ComposedEmailService
@@ -77,18 +79,24 @@ class ComposedEmailService implements ComposedEmailServiceInterface
      *
      * @return \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail
      *
-     * @throws \Error
-     * @throws \InvalidArgumentException
-     * @throws \phpmailerException
+     * @throws \EmailSender\ComposedEmail\Application\Exception\ComposedEmailException
      */
     public function add(Email $email): ComposedEmail
     {
-        $addComposedEmailService = new AddComposedEmailService(
-            $this->repositoryWriter,
-            $this->getComposedEmailFactory()
-        );
+        try {
+            $addComposedEmailService = new AddComposedEmailService(
+                $this->repositoryWriter,
+                $this->getComposedEmailFactory()
+            );
 
-        return $addComposedEmailService->add($email);
+            $composedEmail = $addComposedEmailService->add($email);
+        } catch (Throwable $e) {
+            $this->logger->alert($e->getMessage(), $e->getTrace());
+
+            throw new ComposedEmailException('Something went wrong when try to store the composed email.', 0, $e);
+        }
+
+        return $composedEmail;
     }
 
     /**
@@ -96,36 +104,59 @@ class ComposedEmailService implements ComposedEmailServiceInterface
      *
      * @return \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail
      *
-     * @throws \Error
-     * @throws \InvalidArgumentException
+     * @throws \EmailSender\ComposedEmail\Application\Exception\ComposedEmailException
      */
     public function get(UnsignedInteger $composedEmailId): ComposedEmail
     {
-        $getComposedEmailService = new GetComposedEmailService($this->repositoryReader);
+        try {
+            $getComposedEmailService = new GetComposedEmailService($this->repositoryReader);
 
-        return $getComposedEmailService->get($composedEmailId);
+            $composedEmail = $getComposedEmailService->get($composedEmailId);
+        } catch (Throwable $e) {
+            $this->logger->alert($e->getMessage(), $e->getTrace());
+
+            throw new ComposedEmailException('Something went wrong when try to read the composed email.', 0, $e);
+        }
+
+        return $composedEmail;
     }
 
     /**
      * @param \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail $composedEmail
+     *
+     * @throws \EmailSender\ComposedEmail\Application\Exception\ComposedEmailException
      */
     public function send(ComposedEmail $composedEmail): void
     {
-        $smtpSender               = new SMTPSender($this->smtpSenderService);
-        $sendComposedEmailService = new SendComposedEmailService($smtpSender);
+        try {
+            $smtpSender               = new SMTPSender($this->smtpSenderService);
+            $sendComposedEmailService = new SendComposedEmailService($smtpSender);
 
-        $sendComposedEmailService->send($composedEmail);
+            $sendComposedEmailService->send($composedEmail);
+        } catch (Throwable $e) {
+            $this->logger->alert($e->getMessage(), $e->getTrace());
+
+            throw new ComposedEmailException('Something went wrong when try to send the composed email.', 0, $e);
+        }
     }
 
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $composedEmailId
+     *
+     * @throws \EmailSender\ComposedEmail\Application\Exception\ComposedEmailException
      */
     public function sendById(UnsignedInteger $composedEmailId): void
     {
-        $smtpSender                   = new SMTPSender($this->smtpSenderService);
-        $sendComposedEmailByIdService = new SendComposedEmailByIdService($smtpSender, $this->repositoryReader);
+        try {
+            $smtpSender                   = new SMTPSender($this->smtpSenderService);
+            $sendComposedEmailByIdService = new SendComposedEmailByIdService($smtpSender, $this->repositoryReader);
 
-        $sendComposedEmailByIdService->send($composedEmailId);
+            $sendComposedEmailByIdService->send($composedEmailId);
+        } catch (Throwable $e) {
+            $this->logger->alert($e->getMessage(), $e->getTrace());
+
+            throw new ComposedEmailException('Something went wrong when try to send the composed email.', 0, $e);
+        }
     }
 
     /**

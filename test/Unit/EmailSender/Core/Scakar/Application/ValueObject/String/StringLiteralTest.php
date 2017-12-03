@@ -55,7 +55,7 @@ class StringLiteralTest extends TestCase
      *
      * @return array
      */
-    public function providerForTestConstructWithInvalidValues()
+    public function providerForTestConstructWithInvalidValues(): array
     {
         return [
             [

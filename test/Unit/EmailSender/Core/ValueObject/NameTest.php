@@ -2,15 +2,15 @@
 
 namespace Test\Unit\EmailSender\Core\ValueObject;
 
-use EmailSender\Core\ValueObject\DisplayName;
+use EmailSender\Core\ValueObject\Name;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class DisplayNameTest
+ * Class NameTest
  *
  * @package Test\Unit\EmailSender\Core
  */
-class DisplayNameTest extends TestCase
+class NameTest extends TestCase
 {
     /**
      * Test __construct with valid values.
@@ -21,9 +21,9 @@ class DisplayNameTest extends TestCase
      */
     public function testConstructWithValidValues(string $value)
     {
-        $displayName = new DisplayName($value);
+        $name = new Name($value);
 
-        $this->assertInstanceOf(DisplayName::class, $displayName);
+        $this->assertInstanceOf(Name::class, $name);
     }
 
     /**
@@ -34,33 +34,33 @@ class DisplayNameTest extends TestCase
      * @dataProvider providerForTestConstructWithNotMatchedValues
      *
      * @expectedException \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
-     * @expectedExceptionMessage Invalid DisplayName. The given value doesn't match with the pattern.
+     * @expectedExceptionMessage Invalid Name. The given value doesn't match with the pattern.
      */
     public function testConstructWithNotMatchedValues(string $value)
     {
-        new DisplayName($value);
+        new Name($value);
     }
 
     /**
      * Test __construct with too short value.
      *
      * @expectedException \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
-     * @expectedExceptionMessage Invalid DisplayName. String is too short!
+     * @expectedExceptionMessage Invalid Name. String is too short!
      */
     public function testConstructWithTooShortValue()
     {
-        new DisplayName('');
+        new Name('');
     }
 
     /**
      * Test __construct with too long value.
      *
      * @expectedException \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
-     * @expectedExceptionMessage Invalid DisplayName. String is too long!
+     * @expectedExceptionMessage Invalid Name. String is too long!
      */
     public function testConstructWithTooLongValue()
     {
-        new DisplayName('01234567890123456789012345678901234567890123456789012345678901234');
+        new Name('01234567890123456789012345678901234567890123456789012345678901234');
     }
 
     /**

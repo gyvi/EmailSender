@@ -63,19 +63,17 @@ class AddEmailService
      * @param array $request
      *
      * @return int
-     *
+     * @throws \EmailSender\ComposedEmail\Application\Exception\ComposedEmailException
+     * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
+     * @throws \EmailSender\EmailQueue\Application\Exception\EmailQueueException
      * @throws \InvalidArgumentException
+     * @throws \Throwable
      */
     public function add(array $request): int
     {
-        $email = $this->emailFactory->create($request);
-
-        try {
-            $composedEmail = $this->composedEmailService->add($email);
-            $emailLog      = $this->emailLogService->add($email, $composedEmail);
-        } catch (Throwable $e) {
-            return EmailStatusList::STATUS_ERROR;
-        }
+        $email         = $this->emailFactory->create($request);
+        $composedEmail = $this->composedEmailService->add($email);
+        $emailLog      = $this->emailLogService->add($email, $composedEmail);
 
         if ($email->getDelay()->getValue() > 0) {
             return $this->addToQueue($emailLog);
@@ -88,6 +86,10 @@ class AddEmailService
      * @param \EmailSender\EmailLog\Domain\Aggregate\EmailLog $emailLog
      *
      * @return int
+     *
+     * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
+     * @throws \EmailSender\EmailQueue\Application\Exception\EmailQueueException
+     * @throws \Throwable
      */
     private function addToQueue(EmailLog $emailLog): int
     {
@@ -107,9 +109,9 @@ class AddEmailService
                 new EmailStatus(EmailStatusList::STATUS_ERROR),
                 $e->getMessage()
             );
-        }
 
-        return EmailStatusList::STATUS_ERROR;
+            throw $e;
+        }
     }
 
     /**
@@ -117,6 +119,9 @@ class AddEmailService
      * @param \EmailSender\EmailLog\Domain\Aggregate\EmailLog           $emailLog
      *
      * @return int
+     *
+     * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
+     * @throws \Throwable
      */
     private function send(ComposedEmail $composedEmail, EmailLog $emailLog): int
     {
@@ -136,8 +141,8 @@ class AddEmailService
                 new EmailStatus(EmailStatusList::STATUS_ERROR),
                 $e->getMessage()
             );
-        }
 
-        return EmailStatusList::STATUS_ERROR;
+            throw $e;
+        }
     }
 }

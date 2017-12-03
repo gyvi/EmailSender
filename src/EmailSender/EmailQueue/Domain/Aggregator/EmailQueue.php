@@ -3,7 +3,6 @@
 namespace EmailSender\EmailQueue\Domain\Aggregator;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
-use EmailSender\EmailQueue\Application\Catalog\EmailQueuePropertyNames;
 use JsonSerializable;
 
 /**
@@ -71,10 +70,6 @@ class EmailQueue implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return [
-            EmailQueuePropertyNames::EMAIL_LOG_ID      => $this->getEmailLogId(),
-            EmailQueuePropertyNames::COMPOSED_EMAIL_ID => $this->getComposedEmailId(),
-            EmailQueuePropertyNames::DELAY             => $this->getDelay(),
-        ];
+        return get_object_vars($this);
     }
 }

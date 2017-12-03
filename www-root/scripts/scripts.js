@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
             query = {};
         }
 
-        xmlHttp.onreadystatechange = function() {
+        xmlHttp.onReadyStatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
                 var result = JSON.parse(this.responseText);
                 showResult(result);

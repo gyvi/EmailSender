@@ -2,6 +2,7 @@
 
 namespace EmailSender\Email\Application\Service;
 
+use EmailSender\ComposedEmail\Application\Exception\ComposedEmailException;
 use EmailSender\ComposedEmail\Application\Service\ComposedEmailService;
 use EmailSender\Core\Catalog\EmailStatusList;
 use EmailSender\Core\Factory\EmailAddressCollectionFactory;
@@ -10,12 +11,16 @@ use EmailSender\Email\Application\Contract\EmailServiceInterface;
 use EmailSender\Email\Domain\Factory\EmailFactory;
 use EmailSender\Email\Domain\Service\AddEmailService;
 use Closure;
+use EmailSender\EmailLog\Application\Exception\EmailLogException;
 use EmailSender\EmailLog\Application\Service\EmailLogService;
+use EmailSender\EmailQueue\Application\Exception\EmailQueueException;
 use EmailSender\EmailQueue\Application\Service\EmailQueueService;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use Throwable;
+use InvalidArgumentException;
 
 /**
  * Class EmailService
@@ -116,54 +121,90 @@ class EmailService implements EmailServiceInterface
         ResponseInterface $response,
         array $getRequest
     ): MessageInterface {
-        $postRequest = $request->getParsedBody();
+        try {
+            $postRequest = $request->getParsedBody();
 
-        $composedEmailService = new ComposedEmailService(
-            $this->logger,
-            $this->composedEmailReaderService,
-            $this->composedEmailWriterService,
-            $this->smtpService
-        );
+            $composedEmailService = new ComposedEmailService(
+                $this->logger,
+                $this->composedEmailReaderService,
+                $this->composedEmailWriterService,
+                $this->smtpService
+            );
 
-        $emailLogService = new EmailLogService(
-            $this->view,
-            $this->logger,
-            $this->emailLogReaderService,
-            $this->emailLogWriterService
-        );
+            $emailLogService = new EmailLogService(
+                $this->view,
+                $this->logger,
+                $this->emailLogReaderService,
+                $this->emailLogWriterService
+            );
 
-        $emailQueueService = new EmailQueueService(
-            $this->logger,
-            $this->queueService,
-            $this->queueServiceSettings
-        );
+            $emailQueueService = new EmailQueueService(
+                $this->logger,
+                $this->queueService,
+                $this->queueServiceSettings
+            );
 
-        $emailAddressFactory           = new EmailAddressFactory();
-        $emailAddressCollectionFactory = new EmailAddressCollectionFactory($emailAddressFactory);
-        $emailFactory                  = new EmailFactory($emailAddressFactory, $emailAddressCollectionFactory);
+            $emailAddressFactory           = new EmailAddressFactory();
+            $emailAddressCollectionFactory = new EmailAddressCollectionFactory($emailAddressFactory);
+            $emailFactory                  = new EmailFactory($emailAddressFactory, $emailAddressCollectionFactory);
 
-        $addEmailService = new AddEmailService(
-            $composedEmailService,
-            $emailLogService,
-            $emailQueueService,
-            $emailFactory
-        );
+            $addEmailService = new AddEmailService(
+                $composedEmailService,
+                $emailLogService,
+                $emailQueueService,
+                $emailFactory
+            );
 
-        $addResult = $addEmailService->add($postRequest);
+            $addResult = $addEmailService->add($postRequest);
 
-        switch ($addResult) {
-            case EmailStatusList::STATUS_SENT:
-                $response = $response->withStatus(204);
+            switch ($addResult) {
+                case EmailStatusList::STATUS_SENT:
+                    $response = $response->withStatus(204);
 
-                break;
-            case EmailStatusList::STATUS_QUEUED:
-                $response = $response->withAddedHeader('Location', '/api/v1/emails/logs')
-                                     ->withStatus(201);
+                    break;
+                case EmailStatusList::STATUS_QUEUED:
+                    $response = $response->withAddedHeader('Location', '/api/v1/emails/logs')
+                                         ->withStatus(201);
 
-                break;
-            default:
-                break;
+                    break;
+            }
+        } catch (InvalidArgumentException $e) {
+            $this->logger->warning($e->getMessage(), $e->getTrace());
+
+            $response = $this->getErrorResponse($response, 400, $e->getMessage(), $e->getPrevious());
+        } catch (ComposedEmailException $e) {
+            $response = $this->getErrorResponse($response, 500, 'Something went wrong when adding a new email.', $e);
+        } catch (EmailLogException $e) {
+            $response = $this->getErrorResponse($response, 500, 'Something went wrong when adding a new email.', $e);
+        } catch (EmailQueueException $e) {
+            $response = $this->getErrorResponse($response, 500, 'Something went wrong when adding a new email.', $e);
+        } catch (Throwable $e) {
+            $this->logger->alert($e->getMessage(), $e->getTrace());
+
+            $response = $this->getErrorResponse($response, 500, 'Something went wrong when adding a new email.', $e);
         }
+
+        return $response;
+    }
+
+    /**
+     * @param \Psr\Http\Message\ResponseInterface $response
+     * @param int                                 $status
+     * @param string                              $message
+     * @param null|\Throwable                     $error
+     *
+     * @return \Psr\Http\Message\ResponseInterface|\Slim\Http\Response
+     */
+    private function getErrorResponse(ResponseInterface $response, int $status, string $message, ?Throwable $error)
+    {
+        $responseArray = ['message' => $message];
+
+        if ($error) {
+            $responseArray['description'] = $error->getMessage();
+        }
+
+        /** @var \Slim\Http\Response $response */
+        $response = $response->withJson($responseArray)->withStatus($status);
 
         return $response;
     }

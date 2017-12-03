@@ -17,9 +17,9 @@ interface EmailLogRepositoryWriterInterface
     /**
      * @param \EmailSender\EmailLog\Domain\Aggregate\EmailLog $emailLog
      *
-     * @return int
+     * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
      */
-    public function add(EmailLog $emailLog): int;
+    public function add(EmailLog $emailLog): UnsignedInteger;
 
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $emailLogId

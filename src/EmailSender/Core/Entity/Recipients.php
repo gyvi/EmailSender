@@ -2,7 +2,6 @@
 
 namespace EmailSender\Core\Entity;
 
-use EmailSender\Core\Catalog\RecipientsPropertyNameList;
 use EmailSender\Core\Collection\EmailAddressCollection;
 use JsonSerializable;
 
@@ -71,10 +70,6 @@ class Recipients implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return [
-            RecipientsPropertyNameList::TO  => $this->to,
-            RecipientsPropertyNameList::CC  => $this->cc,
-            RecipientsPropertyNameList::BCC => $this->bcc,
-        ];
+        return get_object_vars($this);
     }
 }

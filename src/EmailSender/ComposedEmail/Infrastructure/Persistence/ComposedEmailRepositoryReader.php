@@ -9,7 +9,6 @@ use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\ComposedEmail\Domain\Contract\ComposedEmailRepositoryReaderInterface;
 use PDO;
 use PDOException;
-use Error;
 
 /**
  * Class ComposedEmailRepositoryReader
@@ -50,43 +49,39 @@ class ComposedEmailRepositoryReader implements ComposedEmailRepositoryReaderInte
      *
      * @return \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail
      *
-     * @throws \Error
      * @throws \InvalidArgumentException
+     * @throws \PDOException
      */
     public function get(UnsignedInteger $composedEmailId): ComposedEmail
     {
-        try {
-            $pdo = $this->getConnection();
+        $pdo = $this->getConnection();
 
-            $sql = '
-                SELECT
-                    `' . ComposedEmailFieldList::COMPOSED_EMAIL_ID . '`,
-                    `' . ComposedEmailFieldList::FROM . '`,
-                    `' . ComposedEmailFieldList::RECIPIENTS . '`,
-                    `' . ComposedEmailFieldList::EMAIL . '`
-                FROM
-                    `composedEmail`
-                WHERE
-                    `' . ComposedEmailFieldList::COMPOSED_EMAIL_ID . '` =
-                        :' .  ComposedEmailFieldList::COMPOSED_EMAIL_ID . '; 
-            ';
+        $sql = '
+            SELECT
+                `' . ComposedEmailFieldList::COMPOSED_EMAIL_ID . '`,
+                `' . ComposedEmailFieldList::FROM . '`,
+                `' . ComposedEmailFieldList::RECIPIENTS . '`,
+                `' . ComposedEmailFieldList::EMAIL . '`
+            FROM
+                `composedEmail`
+            WHERE
+                `' . ComposedEmailFieldList::COMPOSED_EMAIL_ID . '` =
+                    :' .  ComposedEmailFieldList::COMPOSED_EMAIL_ID . '; 
+        ';
 
-            $statement = $pdo->prepare($sql);
+        $statement = $pdo->prepare($sql);
 
-            $statement->bindValue(
-                ':' . ComposedEmailFieldList::COMPOSED_EMAIL_ID,
-                $composedEmailId->getValue(),
-                PDO::PARAM_INT
-            );
+        $statement->bindValue(
+            ':' . ComposedEmailFieldList::COMPOSED_EMAIL_ID,
+            $composedEmailId->getValue(),
+            PDO::PARAM_INT
+        );
 
-            if (!$statement->execute()) {
-                throw new PDOException('Unable read from the database.');
-            }
-
-            $composedEmailArray = $statement->fetch(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            throw new Error($e->getMessage(), $e->getCode(), $e);
+        if (!$statement->execute()) {
+            throw new PDOException('Unable read from the database.');
         }
+
+        $composedEmailArray = $statement->fetch(PDO::FETCH_ASSOC);
 
         return $this->composedEmailFactory->createFromArray($composedEmailArray);
     }

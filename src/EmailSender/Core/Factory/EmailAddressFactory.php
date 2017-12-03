@@ -5,7 +5,7 @@ namespace EmailSender\Core\Factory;
 use EmailSender\Core\ValueObject\EmailAddress;
 use EmailSender\Core\Scalar\Application\Exception\ValueObjectException;
 use EmailSender\Core\ValueObject\Address;
-use EmailSender\Core\ValueObject\DisplayName;
+use EmailSender\Core\ValueObject\Name;
 
 /**
  * Class EmailAddressFactory
@@ -25,7 +25,7 @@ class EmailAddressFactory
         $emailAddressCollectionArray = imap_rfc822_parse_adrlist($emailAddress, '');
 
         if (count($emailAddressCollectionArray) !== 1) {
-            throw new ValueObjectException('Invalid ' . EmailAddress::class . '.');
+            throw new ValueObjectException('Invalid email address.');
         }
 
         $address = new Address(
@@ -33,11 +33,11 @@ class EmailAddressFactory
             (!empty($emailAddressCollectionArray[0]->host) ? '@' . $emailAddressCollectionArray[0]->host : '')
         );
 
-        $displayName = null;
+        $name = null;
         if (!empty($emailAddressCollectionArray[0]->personal)) {
-            $displayName = new DisplayName($emailAddressCollectionArray[0]->personal);
+            $name = new Name($emailAddressCollectionArray[0]->personal);
         }
 
-        return new EmailAddress($address, $displayName);
+        return new EmailAddress($address, $name);
     }
 }

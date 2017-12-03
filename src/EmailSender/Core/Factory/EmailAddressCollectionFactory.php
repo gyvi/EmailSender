@@ -5,7 +5,7 @@ namespace EmailSender\Core\Factory;
 use EmailSender\Core\Catalog\EmailAddressPropertyNameList;
 use EmailSender\Core\Collection\EmailAddressCollection;
 use EmailSender\Core\ValueObject\Address;
-use EmailSender\Core\ValueObject\DisplayName;
+use EmailSender\Core\ValueObject\Name;
 use EmailSender\Core\ValueObject\EmailAddress;
 
 /**
@@ -77,8 +77,8 @@ class EmailAddressCollectionFactory
             $emailAddressCollection->add(
                 new EmailAddress(
                     new Address($emailAddressArray[EmailAddressPropertyNameList::ADDRESS]),
-                    (!empty($emailAddressArray[EmailAddressPropertyNameList::DISPLAY_NAME])
-                        ? new DisplayName($emailAddressArray[EmailAddressPropertyNameList::DISPLAY_NAME])
+                    (!empty($emailAddressArray[EmailAddressPropertyNameList::NAME])
+                        ? new Name($emailAddressArray[EmailAddressPropertyNameList::NAME])
                         : null
                     )
                 )

@@ -3,6 +3,7 @@
 namespace EmailSender\EmailLog\Domain\Factory;
 
 use EmailSender\Core\Factory\EmailAddressFactory;
+use EmailSender\Core\Scalar\Application\Exception\ValueObjectException;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\ValueObject\EmailAddress;
 use EmailSender\EmailLog\Application\Catalog\ListRequestPropertyNames;
@@ -36,6 +37,7 @@ class ListRequestFactory
      * @param array $listRequestArray
      *
      * @return \EmailSender\EmailLog\Domain\Entity\ListRequest
+     *
      * @throws \InvalidArgumentException
      */
     public function create(array $listRequestArray): ListRequest
@@ -54,6 +56,7 @@ class ListRequestFactory
      * @param array $listRequestArray
      *
      * @return \EmailSender\Core\ValueObject\EmailAddress|null
+     *
      * @throws \InvalidArgumentException
      */
     private function getFrom(array $listRequestArray): ?EmailAddress
@@ -79,6 +82,7 @@ class ListRequestFactory
      * @param array $listRequestArray
      *
      * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger|null
+     *
      * @throws \InvalidArgumentException
      */
     private function getPerPage(array $listRequestArray): ?UnsignedInteger
@@ -86,10 +90,8 @@ class ListRequestFactory
         $perPage = null;
 
         try {
-            if (!empty($listRequestArray[ListRequestPropertyNames::PER_PAGE])
-                && (int)$listRequestArray[ListRequestPropertyNames::PER_PAGE] > 0
-            ) {
-                $perPage = new UnsignedInteger((int)$listRequestArray[ListRequestPropertyNames::PER_PAGE]);
+            if (!empty($listRequestArray[ListRequestPropertyNames::PER_PAGE])) {
+                $perPage = $this->getUnsignedInteger($listRequestArray[ListRequestPropertyNames::PER_PAGE]);
             }
         } catch (Throwable $e) {
             throw new InvalidArgumentException(
@@ -106,6 +108,7 @@ class ListRequestFactory
      * @param array $listRequestArray
      *
      * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger|null
+     *
      * @throws \InvalidArgumentException
      */
     private function getPage(array $listRequestArray): ?UnsignedInteger
@@ -113,10 +116,8 @@ class ListRequestFactory
         $page = null;
 
         try {
-            if (!empty($listRequestArray[ListRequestPropertyNames::PAGE])
-                && (int)$listRequestArray[ListRequestPropertyNames::PAGE] > 0
-            ) {
-                $page = new UnsignedInteger((int)$listRequestArray[ListRequestPropertyNames::PAGE]);
+            if (!empty($listRequestArray[ListRequestPropertyNames::PAGE])) {
+                $page = $this->getUnsignedInteger($listRequestArray[ListRequestPropertyNames::PAGE]);
             }
         } catch (Throwable $e) {
             throw new InvalidArgumentException(
@@ -133,6 +134,7 @@ class ListRequestFactory
      * @param array $listRequestArray
      *
      * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger|null
+     *
      * @throws \InvalidArgumentException
      */
     private function getLastComposedEmailId(array $listRequestArray): ?UnsignedInteger
@@ -140,13 +142,9 @@ class ListRequestFactory
         $lastComposedEmailId = null;
 
         try {
-            if (!empty($listRequestArray[ListRequestPropertyNames::LAST_EMAIL_LOG_ID])
-                && (int)$listRequestArray[ListRequestPropertyNames::LAST_EMAIL_LOG_ID] > 0
-            ) {
-                $lastComposedEmailId = new UnsignedInteger(
-                    (int)$listRequestArray[
-                        ListRequestPropertyNames::LAST_EMAIL_LOG_ID
-                    ]
+            if (!empty($listRequestArray[ListRequestPropertyNames::LAST_EMAIL_LOG_ID])) {
+                $lastComposedEmailId = $this->getUnsignedInteger(
+                    $listRequestArray[ListRequestPropertyNames::LAST_EMAIL_LOG_ID]
                 );
             }
         } catch (Throwable $e) {
@@ -158,5 +156,25 @@ class ListRequestFactory
         }
 
         return $lastComposedEmailId;
+    }
+
+    /**
+     * @param mixed $fieldValue
+     *
+     * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger|null
+     *
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     */
+    private function getUnsignedInteger($fieldValue): ?UnsignedInteger
+    {
+        if (!is_numeric($fieldValue)) {
+            throw new ValueObjectException('Invalid unsigned integer value');
+        }
+
+        if ((int)$fieldValue !== 0) {
+            return new UnsignedInteger((int)$fieldValue);
+        }
+
+        return null;
     }
 }

@@ -45,28 +45,28 @@ class EmailComposer implements EmailComposerInterface
 
         $this->phpMailer->setFrom(
             $email->getFrom()->getAddress()->getValue(),
-            (string)$email->getFrom()->getDisplayName()
+            (string)$email->getFrom()->getName()
         );
 
         /** @var \EmailSender\Core\ValueObject\EmailAddress $toAddress */
         foreach ($email->getTo() as $toAddress) {
-            $this->phpMailer->addAddress($toAddress->getAddress()->getValue(), (string)$toAddress->getDisplayName());
+            $this->phpMailer->addAddress($toAddress->getAddress()->getValue(), (string)$toAddress->getName());
         }
 
         /** @var \EmailSender\Core\ValueObject\EmailAddress $ccAddress */
         foreach ($email->getCc() as $ccAddress) {
-            $this->phpMailer->addCC($ccAddress->getAddress()->getValue(), (string)$ccAddress->getDisplayName());
+            $this->phpMailer->addCC($ccAddress->getAddress()->getValue(), (string)$ccAddress->getName());
         }
 
         /** @var \EmailSender\Core\ValueObject\EmailAddress $bccAddress */
         foreach ($email->getBcc() as $bccAddress) {
-            $this->phpMailer->addBCC($bccAddress->getAddress()->getValue(), (string)$bccAddress->getDisplayName());
+            $this->phpMailer->addBCC($bccAddress->getAddress()->getValue(), (string)$bccAddress->getName());
         }
 
         if ($email->getReplyTo()) {
             $this->phpMailer->addReplyTo(
                 $email->getReplyTo()->getAddress()->getValue(),
-                (string)$email->getReplyTo()->getDisplayName()
+                (string)$email->getReplyTo()->getName()
             );
         }
 

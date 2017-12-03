@@ -74,7 +74,7 @@ class UnsignedIntegerTest extends TestCase
      *
      * @return array
      */
-    public function providerForTestConstructWithInvalidValues()
+    public function providerForTestConstructWithInvalidValues(): array
     {
         return [
             [
@@ -106,7 +106,7 @@ class UnsignedIntegerTest extends TestCase
      *
      * @return array
      */
-    public function providerForTestConstructWithOutOfRangeValues()
+    public function providerForTestConstructWithOutOfRangeValues(): array
     {
         return [
             [

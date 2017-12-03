@@ -1,4 +1,4 @@
 .idea
 vendor/*
-log/*
-src/EmailSender/Core/Framework/settings.php
+CodeCoverageReport/*
+config/settings.php

@@ -42,8 +42,6 @@ class AddEmailQueueService
      * @param \EmailSender\EmailLog\Domain\Aggregate\EmailLog $emailLog
      *
      * @return \EmailSender\EmailQueue\Domain\Aggregator\EmailQueue
-     *
-     * @throws \Error
      */
     public function add(EmailLog $emailLog): EmailQueue
     {

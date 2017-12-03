@@ -2,7 +2,7 @@
 <phpunit colors="true" verbose="true">
     <testsuites>
         <testsuite name="EmailSender Test Suite">
-            <directory>../test/Unit/EmailSender</directory>
+            <directory>test/Unit/EmailSender</directory>
         </testsuite>
     </testsuites>
 </phpunit>

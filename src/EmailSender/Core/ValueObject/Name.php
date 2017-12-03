@@ -5,21 +5,21 @@ namespace EmailSender\Core\ValueObject;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteralMatch;
 
 /**
- * Class DisplayName
+ * Class Name
  *
  * @package EmailSender\Core
  */
-class DisplayName extends StringLiteralMatch
+class Name extends StringLiteralMatch
 {
     /**
-     * Min length of the DisplayName.
+     * Min length of the Name.
      *
      * @var int
      */
     const MIN_LENGTH = 1;
 
     /**
-     * Max length of the DisplayName.
+     * Max length of Name.
      *
      * @var int
      */

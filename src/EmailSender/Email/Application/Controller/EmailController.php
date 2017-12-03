@@ -66,6 +66,8 @@ class EmailController extends AbstractController
         try {
             (new EmailAddRequestValidator())->validate($request->getParsedBody());
         } catch (InvalidArgumentException $e) { // Invalid request.
+            $logger->warning($e->getMessage(), $e->getTrace());
+
             /** @var \Slim\Http\Response $response */
             $response = $response
                 ->withStatus(400)

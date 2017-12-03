@@ -2,15 +2,15 @@
 <phpunit colors="true" verbose="true">
     <testsuites>
         <testsuite name="EmailSender Test Suite">
-            <directory>../test/Unit/EmailSender</directory>
+            <directory>test/Unit/EmailSender</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist>
-            <directory suffix=".php">../src/EmailSender</directory>
+            <directory suffix=".php">src/EmailSender</directory>
         </whitelist>
     </filter>
     <logging>
-        <log type="coverage-html" target="../log/CodeCoverageReport" charset="UTF-8" highlight="false" lowUpperBound="35" highUpperBound="70" />
+        <log type="coverage-html" target="CodeCoverageReport" charset="UTF-8" highlight="false" lowUpperBound="35" highUpperBound="70" />
     </logging>
 </phpunit>

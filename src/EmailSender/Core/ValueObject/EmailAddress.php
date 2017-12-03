@@ -13,34 +13,25 @@ use JsonSerializable;
 class EmailAddress implements JsonSerializable
 {
     /**
+     * @var \EmailSender\Core\ValueObject\Name|null
+     */
+    private $name;
+
+    /**
      * @var \EmailSender\Core\ValueObject\Address
      */
     private $address;
 
     /**
-     * @var \EmailSender\Core\ValueObject\DisplayName|null
-     */
-    private $displayName;
-
-    /**
      * EmailAddress constructor.
      *
-     * @param \EmailSender\Core\ValueObject\Address          $address
-     * @param \EmailSender\Core\ValueObject\DisplayName|null $displayName
+     * @param \EmailSender\Core\ValueObject\Address   $address
+     * @param \EmailSender\Core\ValueObject\Name|null $name
      */
-    public function __construct(Address $address, ?DisplayName $displayName)
+    public function __construct(Address $address, ?Name $name)
     {
         $this->address = $address;
-        $this->displayName = $displayName;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return $this->displayName ? $this->displayName->getValue() . ' <' . $this->address->getValue() . '>' :
-            $this->address->getValue();
+        $this->name    = $name;
     }
 
     /**
@@ -52,11 +43,11 @@ class EmailAddress implements JsonSerializable
     }
 
     /**
-     * @return \EmailSender\Core\ValueObject\DisplayName|null
+     * @return \EmailSender\Core\ValueObject\Name|null
      */
-    public function getDisplayName(): ?DisplayName
+    public function getName(): ?Name
     {
-        return $this->displayName;
+        return $this->name;
     }
 
     /**
@@ -65,8 +56,8 @@ class EmailAddress implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            EmailAddressPropertyNameList::DISPLAY_NAME => $this->displayName ?? '',
-            EmailAddressPropertyNameList::ADDRESS      => $this->address,
+            EmailAddressPropertyNameList::NAME    => $this->name ?? '',
+            EmailAddressPropertyNameList::ADDRESS => $this->address,
         ];
     }
 }

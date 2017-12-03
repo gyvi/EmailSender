@@ -16,7 +16,7 @@ use Throwable;
 class PhpErrorHandler implements ServiceInterface
 {
     /**
-     * Return with the PhpErrorhandler
+     * Return with the PhpErrorHandler
      *
      * @return \Closure
      */
@@ -30,16 +30,16 @@ class PhpErrorHandler implements ServiceInterface
             ) use ($container) {
                 /** @var \Monolog\Logger $logger */
                 $logger = $container->get(ServiceList::LOGGER);
-                $logger->warning($exception->getMessage(), $exception->getTrace());
+                $logger->alert($exception->getMessage(), $exception->getTrace());
 
-                return $response->withStatus(500)
-                    ->withHeader('Content-Type', 'application/json')
-                    ->write(
-                        json_encode([
-                            'status' => -1,
-                            'statusMessage' => 'An unexpected error occurred.',
-                        ])
-                    );
+                /** @var \Slim\Http\Response $response */
+                return $response->withJson(
+                    [
+                        'status' => 'An unexpected error occurred.',
+                        'statusMessage' => $exception->getMessage()
+                    ],
+                    500
+                );
             };
         };
     }

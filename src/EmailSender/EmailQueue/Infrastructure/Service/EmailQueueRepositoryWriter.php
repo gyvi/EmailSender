@@ -7,8 +7,6 @@ use EmailSender\EmailQueue\Domain\Contract\EmailQueueRepositoryWriterInterface;
 use Closure;
 use EmailSender\EmailQueue\Infrastructure\Factory\AMQPMessageFactory;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
-use Throwable;
-use Error;
 
 /**
  * Class EmailQueueRepositoryWriter
@@ -64,45 +62,39 @@ class EmailQueueRepositoryWriter implements EmailQueueRepositoryWriterInterface
 
     /**
      * @param \EmailSender\EmailQueue\Domain\Aggregator\EmailQueue $emailQueue
-     *
-     * @throws \Error
      */
     public function add(EmailQueue $emailQueue): void
     {
-        try {
-            $connection = $this->getConnection();
-            $channel    = $connection->channel();
+        $connection = $this->getConnection();
+        $channel    = $connection->channel();
 
-            $channel->exchange_declare(
-                $this->exchange,
-                'x-delayed-message',
-                false,  /* Passive, create if exchange doesn't exist */
-                true,   /* Durable, persist through server reboots */
-                false,  /* Auto delete */
-                false,  /* Internal */
-                false,  /* Nowait */
-                ['x-delayed-type' => ['S', 'direct']]
-            );
+        $channel->exchange_declare(
+            $this->exchange,
+            'x-delayed-message',
+            false,  /* Passive, create if exchange doesn't exist */
+            true,   /* Durable, persist through server reboots */
+            false,  /* Auto delete */
+            false,  /* Internal */
+            false,  /* Nowait */
+            ['x-delayed-type' => ['S', 'direct']]
+        );
 
-            $channel->queue_declare(
-                $this->queue,
-                false,  /* Passive */
-                true,   /* Durable */
-                false,  /* Exclusive */
-                false   /* Auto Delete */
-            );
+        $channel->queue_declare(
+            $this->queue,
+            false,  /* Passive */
+            true,   /* Durable */
+            false,  /* Exclusive */
+            false   /* Auto Delete */
+        );
 
-            $channel->queue_bind($this->queue, $this->exchange, $this->queue);
+        $channel->queue_bind($this->queue, $this->exchange, $this->queue);
 
-            $message = $this->amqpMessageBuilder->create($emailQueue);
+        $message = $this->amqpMessageBuilder->create($emailQueue);
 
-            $channel->basic_publish($message, $this->exchange, $this->queue);
+        $channel->basic_publish($message, $this->exchange, $this->queue);
 
-            $channel->close();
-            $connection->close();
-        } catch (Throwable $e) {
-            throw new Error($e->getMessage(), $e->getCode(), $e);
-        }
+        $channel->close();
+        $connection->close();
     }
 
     /**

@@ -43,9 +43,7 @@ class AddComposedEmailService
      *
      * @return \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail
      *
-     * @throws \Error
      * @throws \InvalidArgumentException
-     * @throws \phpmailerException
      */
     public function add(Email $email): ComposedEmail
     {

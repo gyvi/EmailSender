@@ -9,13 +9,14 @@ use EmailSender\Core\Scalar\Application\Factory\DateTimeFactory;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\Email\Domain\Aggregate\Email;
 use EmailSender\EmailLog\Application\Contract\EmailLogServiceInterface;
-use EmailSender\EmailLog\Application\Validator\ListRequestValidator;
+use EmailSender\EmailLog\Application\Exception\EmailLogException;
 use EmailSender\Core\ValueObject\EmailStatus;
 use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
 use EmailSender\EmailLog\Domain\Factory\ListRequestFactory;
 use EmailSender\EmailLog\Domain\Factory\EmailLogCollectionFactory;
 use EmailSender\EmailLog\Domain\Service\AddEmailLogService;
 use EmailSender\EmailLog\Domain\Service\GetEmailLogService;
+use EmailSender\EmailLog\Domain\Service\ListEmailLogService;
 use EmailSender\EmailLog\Domain\Service\UpdateEmailLogService;
 use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,6 +28,8 @@ use Psr\Log\LoggerInterface;
 use EmailSender\EmailLog\Infrastructure\Persistence\EmailLogRepositoryReader;
 use EmailSender\EmailLog\Infrastructure\Persistence\EmailLogRepositoryWriter;
 use EmailSender\EmailLog\Domain\Factory\EmailLogFactory;
+use Throwable;
+use InvalidArgumentException;
 
 /**
  * Class EmailLogService
@@ -69,84 +72,87 @@ class EmailLogService implements EmailLogServiceInterface
         Closure $emailLogReaderService,
         Closure $emailLogWriterService
     ) {
-        $this->view             = $view;
-        $this->logger           = $logger;
-        $this->repositoryReader = new EmailLogRepositoryReader($emailLogReaderService);
-        $this->repositoryWriter = new EmailLogRepositoryWriter($emailLogWriterService);
+        $this->view                = $view;
+        $this->logger              = $logger;
+
+        $emailLogFactory           = $this->getEmailLogFactory();
+        $emailLogCollectionFactory = new EmailLogCollectionFactory($emailLogFactory);
+
+        $this->repositoryReader    = new EmailLogRepositoryReader(
+            $emailLogReaderService,
+            $emailLogFactory,
+            $emailLogCollectionFactory
+        );
+
+        $this->repositoryWriter    = new EmailLogRepositoryWriter($emailLogWriterService);
     }
 
     /**
-     * @param \EmailSender\Email\Domain\Aggregate\Email               $email
+     * @param \EmailSender\Email\Domain\Aggregate\Email                 $email
      * @param \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail $composedEmail
      *
      * @return \EmailSender\EmailLog\Domain\Aggregate\EmailLog
+     *
+     * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
      */
     public function add(Email $email, ComposedEmail $composedEmail): EmailLog
     {
-        $emailAddressFactory           = new EmailAddressFactory();
-        $emailAddressCollectionFactory = new EmailAddressCollectionFactory($emailAddressFactory);
-        $recipientsFactory             = new RecipientsFactory($emailAddressCollectionFactory);
+        try {
+            $addEmailLogService = new AddEmailLogService($this->repositoryWriter, $this->getEmailLogFactory());
+            $emailLog           = $addEmailLogService->add($email, $composedEmail);
+        } catch (Throwable $e) {
+            $this->logger->alert($e->getMessage(), $e->getTrace());
 
-        $dateTimeFactory               = new DateTimeFactory();
-        $emailLogFactory               = new EmailLogFactory(
-            $recipientsFactory,
-            $emailAddressFactory,
-            $dateTimeFactory
-        );
+            throw new EmailLogException('Something went wrong when adding email log.', 0, $e);
+        }
 
-        $addEmailLogService            = new AddEmailLogService($this->repositoryWriter, $emailLogFactory);
-
-        return $addEmailLogService->add($email, $composedEmail);
+        return $emailLog;
     }
 
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $emailLogId
      * @param \EmailSender\Core\ValueObject\EmailStatus                                $emailLogStatus
      * @param null|string                                                              $errorMessageString
+     *
+     * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
      */
     public function setStatus(
         UnsignedInteger $emailLogId,
         EmailStatus $emailLogStatus,
         ?string $errorMessageString
     ): void {
-        $errorMessage          = new StringLiteral((string)$errorMessageString);
-        $updateEmailLogService = new UpdateEmailLogService($this->repositoryWriter);
+        try {
+            $errorMessage          = new StringLiteral((string)$errorMessageString);
+            $updateEmailLogService = new UpdateEmailLogService($this->repositoryWriter);
 
-        $updateEmailLogService->setStatus($emailLogId, $emailLogStatus, $errorMessage);
+            $updateEmailLogService->setStatus($emailLogId, $emailLogStatus, $errorMessage);
+        } catch (Throwable $e) {
+            $this->logger->alert($e->getMessage(), $e->getTrace());
+
+            throw new EmailLogException('Something went wrong when setting email log status.', 0, $e);
+        }
     }
 
     /**
      * @param int $emailLogIdInt
      *
      * @return \EmailSender\EmailLog\Domain\Aggregate\EmailLog
-     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
-     * @throws \InvalidArgumentException
+     * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
      */
     public function get(int $emailLogIdInt): EmailLog
     {
-        $emailLogId                    = new UnsignedInteger($emailLogIdInt);
-        $emailAddressFactory           = new EmailAddressFactory();
-        $emailAddressCollectionFactory = new EmailAddressCollectionFactory($emailAddressFactory);
-        $recipientsFactory             = new RecipientsFactory($emailAddressCollectionFactory);
+        try {
+            $emailLogId         = new UnsignedInteger($emailLogIdInt);
+            $getEmailLogService = new GetEmailLogService($this->repositoryReader);
 
-        $dateTimeFactory               = new DateTimeFactory();
-        $emailLogFactory               = new EmailLogFactory(
-            $recipientsFactory,
-            $emailAddressFactory,
-            $dateTimeFactory
-        );
+            $emailLog           = $getEmailLogService->get($emailLogId);
+        } catch (Throwable $e) {
+            $this->logger->alert($e->getMessage(), $e->getTrace());
 
-        $emailLogCollectionFactory     = new EmailLogCollectionFactory($emailLogFactory);
-        $listRequestFactory            = new ListRequestFactory($emailAddressFactory);
+            throw new EmailLogException('Something went wrong when reading email log.', 0, $e);
+        }
 
-        $getEmailLogService            = new GetEmailLogService(
-            $this->repositoryReader,
-            $emailLogFactory,
-            $emailLogCollectionFactory,
-            $listRequestFactory
-        );
-
-        return $getEmailLogService->get($emailLogId);
+        return $emailLog;
     }
 
     /**
@@ -155,7 +161,7 @@ class EmailLogService implements EmailLogServiceInterface
      * @param array                                    $getRequest
      *
      * @return \Psr\Http\Message\MessageInterface
-     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     *
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
@@ -164,36 +170,27 @@ class EmailLogService implements EmailLogServiceInterface
         ResponseInterface $response,
         array $getRequest
     ): MessageInterface {
-        $queryParams = $request->getQueryParams();
+        try {
+            $queryParams = $request->getQueryParams();
 
-        (new ListRequestValidator())->validate($queryParams);
+            $emailAddressFactory = new EmailAddressFactory();
+            $listRequestFactory  = new ListRequestFactory($emailAddressFactory);
+            $getEmailLogService  = new ListEmailLogService($this->repositoryReader, $listRequestFactory);
 
-        $emailAddressFactory           = new EmailAddressFactory();
-        $emailAddressCollectionFactory = new EmailAddressCollectionFactory($emailAddressFactory);
-        $recipientsFactory             = new RecipientsFactory($emailAddressCollectionFactory);
+            $emailLogCollection  = $getEmailLogService->list($queryParams);
 
-        $dateTimeFactory               = new DateTimeFactory();
-        $emailLogFactory               = new EmailLogFactory(
-            $recipientsFactory,
-            $emailAddressFactory,
-            $dateTimeFactory
-        );
+            /** @var \Slim\Http\Response $response */
+            $response = $response->withJson(['data' => $emailLogCollection])
+                                 ->withStatus(200);
+        } catch (InvalidArgumentException $e) {
+            $this->logger->warning($e->getMessage(), $e->getTrace());
 
-        $emailLogCollectionFactory     = new EmailLogCollectionFactory($emailLogFactory);
-        $listRequestFactory            = new ListRequestFactory($emailAddressFactory);
+            $response = $this->getErrorResponse($response, 400, $e->getMessage(), $e->getPrevious());
+        } catch (Throwable $e) {
+            $this->logger->alert($e->getMessage(), $e->getTrace());
 
-        $getEmailLogService            = new GetEmailLogService(
-            $this->repositoryReader,
-            $emailLogFactory,
-            $emailLogCollectionFactory,
-            $listRequestFactory
-        );
-
-        $emailLogCollection = $getEmailLogService->list($queryParams);
-
-        /** @var \Slim\Http\Response $response */
-        $response = $response->withJson(['data' => $emailLogCollection])
-                             ->withStatus(200);
+            $response = $this->getErrorResponse($response, 500, 'Something went wrong when list email logs.', $e);
+        }
 
         return $response;
     }
@@ -214,5 +211,44 @@ class EmailLogService implements EmailLogServiceInterface
         $twig = ($this->view)();
 
         return $twig->render($response, 'EmailLog/Application/View/emailLogLister.twig');
+    }
+
+    /**
+     * @return \EmailSender\EmailLog\Domain\Factory\EmailLogFactory
+     */
+    private function getEmailLogFactory(): EmailLogFactory
+    {
+        $emailAddressFactory           = new EmailAddressFactory();
+        $emailAddressCollectionFactory = new EmailAddressCollectionFactory($emailAddressFactory);
+        $recipientsFactory             = new RecipientsFactory($emailAddressCollectionFactory);
+        $dateTimeFactory               = new DateTimeFactory();
+
+        return new EmailLogFactory(
+            $recipientsFactory,
+            $emailAddressFactory,
+            $dateTimeFactory
+        );
+    }
+
+    /**
+     * @param \Psr\Http\Message\ResponseInterface $response
+     * @param int                                 $status
+     * @param string                              $message
+     * @param null|\Throwable                     $error
+     *
+     * @return \Psr\Http\Message\ResponseInterface|\Slim\Http\Response
+     */
+    private function getErrorResponse(ResponseInterface $response, int $status, string $message, ?Throwable $error)
+    {
+        $responseArray = ['message' => $message];
+
+        if ($error) {
+            $responseArray['description'] = $error->getMessage();
+        }
+
+        /** @var \Slim\Http\Response $response */
+        $response = $response->withJson($responseArray)->withStatus($status);
+
+        return $response;
     }
 }

@@ -12,7 +12,7 @@ class EmailAddressPropertyNameList
     /**
      * @var string
      */
-    const DISPLAY_NAME = 'name';
+    const NAME = 'name';
 
     /**
      * @var string

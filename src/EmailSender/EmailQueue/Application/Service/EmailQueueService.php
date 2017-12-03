@@ -4,6 +4,7 @@ namespace EmailSender\EmailQueue\Application\Service;
 
 use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
 use EmailSender\EmailQueue\Application\Contract\EmailQueueServiceInterface;
+use EmailSender\EmailQueue\Application\Exception\EmailQueueException;
 use EmailSender\EmailQueue\Domain\Aggregator\EmailQueue;
 use EmailSender\EmailQueue\Domain\Service\AddEmailQueueService;
 use EmailSender\EmailQueue\Infrastructure\Factory\AMQPMessageFactory;
@@ -11,6 +12,7 @@ use EmailSender\EmailQueue\Infrastructure\Service\EmailQueueRepositoryWriter;
 use Closure;
 use Psr\Log\LoggerInterface;
 use EmailSender\EmailQueue\Domain\Factory\EmailQueueFactory;
+use Throwable;
 
 /**
  * Class EmailQueueService
@@ -56,22 +58,28 @@ class EmailQueueService implements EmailQueueServiceInterface
      *
      * @return \EmailSender\EmailQueue\Domain\Aggregator\EmailQueue
      *
-     * @throws \Error
+     * @throws \EmailSender\EmailQueue\Application\Exception\EmailQueueException
      */
     public function add(EmailLog $emailLog): EmailQueue
     {
-        $amqpMessageFactory = new AMQPMessageFactory();
-        $queueWriter        = new EmailQueueRepositoryWriter(
-            $this->queueService,
-            $amqpMessageFactory,
-            $this->queueServiceSettings['queue'],
-            $this->queueServiceSettings['exchange']
-        );
+        try {
+            $amqpMessageFactory = new AMQPMessageFactory();
+            $queueWriter        = new EmailQueueRepositoryWriter(
+                $this->queueService,
+                $amqpMessageFactory,
+                $this->queueServiceSettings['queue'],
+                $this->queueServiceSettings['exchange']
+            );
 
-        $emailQueueFactory = new EmailQueueFactory();
+            $emailQueueFactory    = new EmailQueueFactory();
+            $addEmailQueueService = new AddEmailQueueService($queueWriter, $emailQueueFactory);
+            $emailQueue           = $addEmailQueueService->add($emailLog);
+        } catch (Throwable $e) {
+            $this->logger->alert($e->getMessage(), $e->getTrace());
 
-        $addEmailQueueService = new AddEmailQueueService($queueWriter, $emailQueueFactory);
+            throw new EmailQueueException('Something went wrong with the queue.', 0, $e);
+        }
 
-        return $addEmailQueueService->add($emailLog);
+        return $emailQueue;
     }
 }

@@ -33,7 +33,6 @@ class SMTPSender implements SMTPSenderInterface
      * @param \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail $composedEmail
      *
      * @throws \EmailSender\ComposedEmail\Infrastructure\Service\SMTPException
-     * @throws \Exception
      */
     public function send(ComposedEmail $composedEmail): void
     {
@@ -58,7 +57,7 @@ class SMTPSender implements SMTPSenderInterface
      * @param \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail $composedEmail
      * @param \SMTP                                                     $smtp
      *
-     * @throws \Exception
+     * @throws \EmailSender\ComposedEmail\Infrastructure\Service\SMTPException
      */
     private function setRecipients(ComposedEmail $composedEmail, SMTP $smtp): void
     {
@@ -82,7 +81,7 @@ class SMTPSender implements SMTPSenderInterface
      * @param \SMTP  $smtp
      * @param string $recipient
      *
-     * @throws \Exception
+     * @throws \EmailSender\ComposedEmail\Infrastructure\Service\SMTPException
      */
     private function addRecipient(SMTP $smtp, string $recipient)
     {

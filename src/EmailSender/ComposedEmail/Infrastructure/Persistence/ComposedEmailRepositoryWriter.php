@@ -8,7 +8,6 @@ use EmailSender\ComposedEmail\Domain\Contract\ComposedEmailRepositoryWriterInter
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use PDO;
 use PDOException;
-use Error;
 
 /**
  * Class ComposedEmailRepositoryWriter
@@ -42,53 +41,49 @@ class ComposedEmailRepositoryWriter implements ComposedEmailRepositoryWriterInte
      *
      * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
      *
-     * @throws \Error
+     * @throws \PDOException
      */
     public function add(ComposedEmail $composedEmail): UnsignedInteger
     {
-        try {
-            $pdo = $this->getConnection();
+        $pdo = $this->getConnection();
 
-            $sql = '
-                INSERT INTO
-                    `composedEmail` (
-                        `' . ComposedEmailFieldList::FROM . '`,
-                        `' . ComposedEmailFieldList::RECIPIENTS . '`,
-                        `' . ComposedEmailFieldList::EMAIL . '`
-                    )
-                VALUES
-                    (
-                        :' . ComposedEmailFieldList::FROM . ',
-                        :' . ComposedEmailFieldList::RECIPIENTS . ',
-                        :' . ComposedEmailFieldList::EMAIL . '
-                    ); 
-            ';
+        $sql = '
+            INSERT INTO
+                `composedEmail` (
+                    `' . ComposedEmailFieldList::FROM . '`,
+                    `' . ComposedEmailFieldList::RECIPIENTS . '`,
+                    `' . ComposedEmailFieldList::EMAIL . '`
+                )
+            VALUES
+                (
+                    :' . ComposedEmailFieldList::FROM . ',
+                    :' . ComposedEmailFieldList::RECIPIENTS . ',
+                    :' . ComposedEmailFieldList::EMAIL . '
+                ); 
+        ';
 
-            $statement = $pdo->prepare($sql);
+        $statement = $pdo->prepare($sql);
 
-            $statement->bindValue(
-                ':' . ComposedEmailFieldList::FROM,
-                $composedEmail->getFrom()->getAddress()->getValue()
-            );
+        $statement->bindValue(
+            ':' . ComposedEmailFieldList::FROM,
+            $composedEmail->getFrom()->getAddress()->getValue()
+        );
 
-            $statement->bindValue(
-                ':' . ComposedEmailFieldList::RECIPIENTS,
-                json_encode($composedEmail->getRecipients())
-            );
+        $statement->bindValue(
+            ':' . ComposedEmailFieldList::RECIPIENTS,
+            json_encode($composedEmail->getRecipients())
+        );
 
-            $statement->bindValue(
-                ':' . ComposedEmailFieldList::EMAIL,
-                $composedEmail->getEmail()->getValue()
-            );
+        $statement->bindValue(
+            ':' . ComposedEmailFieldList::EMAIL,
+            $composedEmail->getEmail()->getValue()
+        );
 
-            if (!$statement->execute()) {
-                throw new PDOException('Unable write to the database.');
-            }
-
-            $composedEmailId = (int)$pdo->lastInsertId();
-        } catch (PDOException $e) {
-            throw new Error($e->getMessage(), $e->getCode(), $e);
+        if (!$statement->execute()) {
+            throw new PDOException('Unable write to the database.');
         }
+
+        $composedEmailId = (int)$pdo->lastInsertId();
 
         return new UnsignedInteger($composedEmailId);
     }
