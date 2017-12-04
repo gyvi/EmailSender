@@ -28,7 +28,7 @@ class EmailQueueRepositoryWriter implements EmailQueueRepositoryWriterInterface
     /**
      * @var \EmailSender\EmailQueue\Infrastructure\Factory\AMQPMessageFactory
      */
-    private $amqpMessageBuilder;
+    private $amqpMessageFactory;
 
     /**
      * @var string
@@ -43,19 +43,19 @@ class EmailQueueRepositoryWriter implements EmailQueueRepositoryWriterInterface
     /**
      * EmailQueueRepositoryWriter constructor.
      *
-     * @param \Closure                                                            $queueService
-     * @param \EmailSender\EmailQueue\Infrastructure\Factory\AMQPMessageFactory $amqpMessageBuilder
-     * @param string                                                              $queue
-     * @param string                                                              $exchange
+     * @param \Closure                                                          $queueService
+     * @param \EmailSender\EmailQueue\Infrastructure\Factory\AMQPMessageFactory $amqpMessageFactory
+     * @param string                                                            $queue
+     * @param string                                                            $exchange
      */
     public function __construct(
         Closure $queueService,
-        AMQPMessageFactory $amqpMessageBuilder,
+        AMQPMessageFactory $amqpMessageFactory,
         string $queue,
         string $exchange
     ) {
         $this->queueService       = $queueService;
-        $this->amqpMessageBuilder = $amqpMessageBuilder;
+        $this->amqpMessageFactory = $amqpMessageFactory;
         $this->queue              = $queue;
         $this->exchange           = $exchange;
     }
@@ -89,7 +89,7 @@ class EmailQueueRepositoryWriter implements EmailQueueRepositoryWriterInterface
 
         $channel->queue_bind($this->queue, $this->exchange, $this->queue);
 
-        $message = $this->amqpMessageBuilder->create($emailQueue);
+        $message = $this->amqpMessageFactory->create($emailQueue);
 
         $channel->basic_publish($message, $this->exchange, $this->queue);
 

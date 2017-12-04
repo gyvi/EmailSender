@@ -4,8 +4,6 @@ namespace Test\Unit\EmailSender\EmailQueue\Application\Service;
 
 use EmailSender\EmailQueue\Application\Service\EmailQueueService;
 use PHPUnit\Framework\TestCase;
-use Closure;
-use Psr\Log\LoggerInterface;
 use Test\Helper\EmailSender\Mockery;
 
 /**

@@ -4,6 +4,10 @@ namespace Test\Helper\EmailSender;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
+use Test\Helper\EmailSender\Mockery\ComposedEmailMock;
+use Test\Helper\EmailSender\Mockery\EmailLogMock;
+use Test\Helper\EmailSender\Mockery\EmailMock;
+use Test\Helper\EmailSender\Mockery\EmailQueueMock;
 use Test\Helper\EmailSender\Mockery\ServiceMock;
 use Test\Helper\EmailSender\Mockery\ValueObjectMock;
 
@@ -16,6 +20,10 @@ class Mockery
 {
     use ValueObjectMock;
     use ServiceMock;
+    use EmailLogMock;
+    use EmailQueueMock;
+    use ComposedEmailMock;
+    use EmailMock;
 
     /**
      * @var \PHPUnit\Framework\TestCase
