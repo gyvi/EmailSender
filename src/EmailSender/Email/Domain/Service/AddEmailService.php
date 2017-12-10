@@ -2,15 +2,16 @@
 
 namespace EmailSender\Email\Domain\Service;
 
-use EmailSender\ComposedEmail\Application\Service\ComposedEmailService;
+use EmailSender\ComposedEmail\Application\Contract\ComposedEmailServiceInterface;
+use EmailSender\ComposedEmail\Application\Exception\ComposedEmailException;
 use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
 use EmailSender\Email\Domain\Factory\EmailFactory;
 use EmailSender\Core\Catalog\EmailStatusList;
-use EmailSender\EmailLog\Application\Service\EmailLogService;
+use EmailSender\EmailLog\Application\Contract\EmailLogServiceInterface;
 use EmailSender\Core\ValueObject\EmailStatus;
 use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
-use EmailSender\EmailQueue\Application\Service\EmailQueueService;
-use Throwable;
+use EmailSender\EmailQueue\Application\Contract\EmailQueueServiceInterface;
+use EmailSender\EmailQueue\Application\Exception\EmailQueueException;
 
 /**
  * Class AddEmailService
@@ -20,17 +21,17 @@ use Throwable;
 class AddEmailService
 {
     /**
-     * @var \EmailSender\ComposedEmail\Application\Service\ComposedEmailService
+     * @var \EmailSender\ComposedEmail\Application\Contract\ComposedEmailServiceInterface
      */
     private $composedEmailService;
 
     /**
-     * @var \EmailSender\EmailLog\Application\Service\EmailLogService
+     * @var \EmailSender\EmailLog\Application\Contract\EmailLogServiceInterface
      */
     private $emailLogService;
 
     /**
-     * @var \EmailSender\EmailQueue\Application\Service\EmailQueueService
+     * @var \EmailSender\EmailQueue\Application\Contract\EmailQueueServiceInterface
      */
     private $emailQueueService;
 
@@ -42,15 +43,15 @@ class AddEmailService
     /**
      * AddEmailService constructor.
      *
-     * @param \EmailSender\ComposedEmail\Application\Service\ComposedEmailService $composedEmailService
-     * @param \EmailSender\EmailLog\Application\Service\EmailLogService           $emailLogService
-     * @param \EmailSender\EmailQueue\Application\Service\EmailQueueService       $emailQueueService
-     * @param \EmailSender\Email\Domain\Factory\EmailFactory                      $emailFactory
+     * @param \EmailSender\ComposedEmail\Application\Contract\ComposedEmailServiceInterface $composedEmailService
+     * @param \EmailSender\EmailLog\Application\Contract\EmailLogServiceInterface           $emailLogService
+     * @param \EmailSender\EmailQueue\Application\Contract\EmailQueueServiceInterface       $emailQueueService
+     * @param \EmailSender\Email\Domain\Factory\EmailFactory                                $emailFactory
      */
     public function __construct(
-        ComposedEmailService $composedEmailService,
-        EmailLogService $emailLogService,
-        EmailQueueService $emailQueueService,
+        ComposedEmailServiceInterface $composedEmailService,
+        EmailLogServiceInterface $emailLogService,
+        EmailQueueServiceInterface $emailQueueService,
         EmailFactory $emailFactory
     ) {
         $this->composedEmailService = $composedEmailService;
@@ -62,14 +63,14 @@ class AddEmailService
     /**
      * @param array $request
      *
-     * @return int
+     * @return \EmailSender\Core\ValueObject\EmailStatus
+     *
      * @throws \EmailSender\ComposedEmail\Application\Exception\ComposedEmailException
      * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
      * @throws \EmailSender\EmailQueue\Application\Exception\EmailQueueException
      * @throws \InvalidArgumentException
-     * @throws \Throwable
      */
-    public function add(array $request): int
+    public function add(array $request): EmailStatus
     {
         $email         = $this->emailFactory->create($request);
         $composedEmail = $this->composedEmailService->add($email);
@@ -85,25 +86,16 @@ class AddEmailService
     /**
      * @param \EmailSender\EmailLog\Domain\Aggregate\EmailLog $emailLog
      *
-     * @return int
+     * @return \EmailSender\Core\ValueObject\EmailStatus
      *
      * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
      * @throws \EmailSender\EmailQueue\Application\Exception\EmailQueueException
-     * @throws \Throwable
      */
-    private function addToQueue(EmailLog $emailLog): int
+    private function addToQueue(EmailLog $emailLog): EmailStatus
     {
         try {
-            $this->emailQueueService->add($emailLog);
-
-            $this->emailLogService->setStatus(
-                $emailLog->getEmailLogId(),
-                new EmailStatus(EmailStatusList::STATUS_QUEUED),
-                ''
-            );
-
-            return EmailStatusList::STATUS_QUEUED;
-        } catch (Throwable $e) {
+            $emailStatus = $this->emailQueueService->add($emailLog);
+        } catch (EmailQueueException $e) {
             $this->emailLogService->setStatus(
                 $emailLog->getEmailLogId(),
                 new EmailStatus(EmailStatusList::STATUS_ERROR),
@@ -112,30 +104,30 @@ class AddEmailService
 
             throw $e;
         }
+
+        $this->emailLogService->setStatus(
+            $emailLog->getEmailLogId(),
+            $emailStatus,
+            ''
+        );
+
+        return $emailStatus;
     }
 
     /**
      * @param \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail $composedEmail
      * @param \EmailSender\EmailLog\Domain\Aggregate\EmailLog           $emailLog
      *
-     * @return int
+     * @return \EmailSender\Core\ValueObject\EmailStatus
      *
+     * @throws \EmailSender\ComposedEmail\Application\Exception\ComposedEmailException
      * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
-     * @throws \Throwable
      */
-    private function send(ComposedEmail $composedEmail, EmailLog $emailLog): int
+    private function send(ComposedEmail $composedEmail, EmailLog $emailLog): EmailStatus
     {
         try {
-            $this->composedEmailService->send($composedEmail);
-
-            $this->emailLogService->setStatus(
-                $emailLog->getEmailLogId(),
-                new EmailStatus(EmailStatusList::STATUS_SENT),
-                ''
-            );
-
-            return EmailStatusList::STATUS_SENT;
-        } catch (Throwable $e) {
+            $emailStatus = $this->composedEmailService->send($composedEmail);
+        } catch (ComposedEmailException $e) {
             $this->emailLogService->setStatus(
                 $emailLog->getEmailLogId(),
                 new EmailStatus(EmailStatusList::STATUS_ERROR),
@@ -144,5 +136,13 @@ class AddEmailService
 
             throw $e;
         }
+
+        $this->emailLogService->setStatus(
+            $emailLog->getEmailLogId(),
+            $emailStatus,
+            ''
+        );
+
+        return $emailStatus;
     }
 }

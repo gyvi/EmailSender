@@ -2,7 +2,6 @@
 
 namespace EmailSender\Email\Application\Service;
 
-use EmailSender\ComposedEmail\Application\Exception\ComposedEmailException;
 use EmailSender\ComposedEmail\Application\Service\ComposedEmailService;
 use EmailSender\Core\Catalog\EmailStatusList;
 use EmailSender\Core\Factory\EmailAddressCollectionFactory;
@@ -11,9 +10,7 @@ use EmailSender\Email\Application\Contract\EmailServiceInterface;
 use EmailSender\Email\Domain\Factory\EmailFactory;
 use EmailSender\Email\Domain\Service\AddEmailService;
 use Closure;
-use EmailSender\EmailLog\Application\Exception\EmailLogException;
 use EmailSender\EmailLog\Application\Service\EmailLogService;
-use EmailSender\EmailQueue\Application\Exception\EmailQueueException;
 use EmailSender\EmailQueue\Application\Service\EmailQueueService;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -157,7 +154,7 @@ class EmailService implements EmailServiceInterface
 
             $addResult = $addEmailService->add($postRequest);
 
-            switch ($addResult) {
+            switch ($addResult->getValue()) {
                 case EmailStatusList::STATUS_SENT:
                     $response = $response->withStatus(204);
 
@@ -172,15 +169,7 @@ class EmailService implements EmailServiceInterface
             $this->logger->warning($e->getMessage(), $e->getTrace());
 
             $response = $this->getErrorResponse($response, 400, $e->getMessage(), $e->getPrevious());
-        } catch (ComposedEmailException $e) {
-            $response = $this->getErrorResponse($response, 500, 'Something went wrong when adding a new email.', $e);
-        } catch (EmailLogException $e) {
-            $response = $this->getErrorResponse($response, 500, 'Something went wrong when adding a new email.', $e);
-        } catch (EmailQueueException $e) {
-            $response = $this->getErrorResponse($response, 500, 'Something went wrong when adding a new email.', $e);
         } catch (Throwable $e) {
-            $this->logger->alert($e->getMessage(), $e->getTrace());
-
             $response = $this->getErrorResponse($response, 500, 'Something went wrong when adding a new email.', $e);
         }
 

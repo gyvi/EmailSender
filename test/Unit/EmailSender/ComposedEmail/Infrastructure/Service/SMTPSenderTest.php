@@ -1,12 +1,14 @@
 <?php
 
-namespace Unit\EmailSender\ComposedEmail\Infrastructure\Service;
+namespace Test\Unit\EmailSender\ComposedEmail\Infrastructure\Service;
 
 use EmailSender\ComposedEmail\Infrastructure\Service\SMTPSender;
 use EmailSender\Core\Catalog\EmailAddressPropertyNameList;
 use EmailSender\Core\Catalog\RecipientsPropertyNameList;
 use PHPUnit\Framework\TestCase;
 use Test\Helper\EmailSender\Mockery;
+use EmailSender\Core\ValueObject\EmailStatus;
+use EmailSender\Core\Catalog\EmailStatusList;
 
 /**
  * Class SMTPSenderTest
@@ -20,7 +22,8 @@ class SMTPSenderTest extends TestCase
      */
     public function testSend()
     {
-        $smtp = (new Mockery($this))->getSMTPMock();
+        $expected = new EmailStatus(EmailStatusList::STATUS_SENT);
+        $smtp     = (new Mockery($this))->getSMTPMock();
 
         $smtp->expects($this->any())
             ->method('recipient')
@@ -75,9 +78,7 @@ class SMTPSenderTest extends TestCase
 
         $smtpSender = new SMTPSender($smtpService);
 
-        $smtpSender->send($composedEmail);
-
-        $this->assertTrue(true); // Test methods with void return
+        $this->assertEquals($expected, $smtpSender->send($composedEmail));
     }
 
     /**

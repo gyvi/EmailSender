@@ -5,6 +5,7 @@ namespace Test\Unit\EmailSender\ComposedEmail\Domain\Service;
 use EmailSender\ComposedEmail\Domain\Contract\ComposedEmailRepositoryReaderInterface;
 use EmailSender\ComposedEmail\Domain\Contract\SMTPSenderInterface;
 use EmailSender\ComposedEmail\Domain\Service\SendComposedEmailService;
+use EmailSender\Core\Catalog\EmailStatusList;
 use PHPUnit\Framework\TestCase;
 use Test\Helper\EmailSender\Mockery;
 
@@ -20,6 +21,7 @@ class SendComposedEmailServiceTest extends TestCase
      */
     public function testSend()
     {
+        $expected      = (new Mockery($this))->getEmailStatusMock(EmailStatusList::STATUS_SENT);
         $composedEmail = (new Mockery($this))->getComposedEmailMock();
 
         /** @var \EmailSender\ComposedEmail\Domain\Contract\SMTPSenderInterface|\PHPUnit_Framework_MockObject_MockObject $smtpSenderInterface */
@@ -29,7 +31,7 @@ class SendComposedEmailServiceTest extends TestCase
 
         $smtpSenderInterface->expects($this->once())
             ->method('send')
-            ->willReturn(null);
+            ->willReturn($expected);
 
         /** @var \EmailSender\ComposedEmail\Domain\Contract\ComposedEmailRepositoryReaderInterface|\PHPUnit_Framework_MockObject_MockObject $repositoryReader */
         $repositoryReader = $this->getMockBuilder(ComposedEmailRepositoryReaderInterface::class)
@@ -38,7 +40,7 @@ class SendComposedEmailServiceTest extends TestCase
 
         $sendComposedEmailService = new SendComposedEmailService($smtpSenderInterface, $repositoryReader);
 
-        $sendComposedEmailService->send($composedEmail);
+        $this->assertEquals($expected, $sendComposedEmailService->send($composedEmail));
     }
 
     /**
@@ -46,6 +48,7 @@ class SendComposedEmailServiceTest extends TestCase
      */
     public function testSendById()
     {
+        $expected        = (new Mockery($this))->getEmailStatusMock(EmailStatusList::STATUS_SENT);
         $composedEmailId = (new Mockery($this))->getUnSignedIntegerMock(1);
         $composedEmail   = (new Mockery($this))->getComposedEmailMock();
 
@@ -65,7 +68,7 @@ class SendComposedEmailServiceTest extends TestCase
 
         $smtpSenderInterface->expects($this->once())
             ->method('send')
-            ->willReturn(null);
+            ->willReturn($expected);
 
         $sendComposedEmailService = new SendComposedEmailService($smtpSenderInterface, $repositoryReader);
 

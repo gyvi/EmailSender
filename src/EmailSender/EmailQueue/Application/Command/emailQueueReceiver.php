@@ -13,6 +13,7 @@ use Slim\Container;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\Catalog\EmailStatusList;
 use EmailSender\Core\ValueObject\EmailStatus;
+use EmailSender\EmailQueue\Domain\Factory\EmailQueueFactory;
 
 $settings  = require dirname(__DIR__, 5) . '/config/settings.php';
 $container = new Container($settings);
@@ -40,9 +41,8 @@ $callback = function ($message) use ($container, $view, $logger) {
     /** @var \PhpAmqpLib\Channel\AMQPChannel $deliveryChannel */
     $deliveryChannel = $message->delivery_info['channel'];
 
-    $emailQueue = json_decode($message->body, true);
-
-    $emailLogId      = new UnsignedInteger($emailQueue[EmailQueuePropertyNamesList::EMAIL_LOG_ID]);
+    $emailQueueArray = json_decode($message->body, true);
+    $emailQueue      = (new EmailQueueFactory())->createFromArray($emailQueueArray);
     $emailLogService = new EmailLogService(
         $view,
         $logger,
@@ -58,12 +58,10 @@ $callback = function ($message) use ($container, $view, $logger) {
     );
 
     try {
-        $composedEmailId = new UnsignedInteger($emailQueue[EmailQueuePropertyNamesList::COMPOSED_EMAIL_ID]);
-
-        $composedEmailService->sendById($composedEmailId);
+        $composedEmailService->sendById($emailQueue->getComposedEmailId());
 
         $emailLogService->setStatus(
-            $emailLogId,
+            $emailQueue->getEmailLogId(),
             new EmailStatus(EmailStatusList::STATUS_SENT),
             ''
         );

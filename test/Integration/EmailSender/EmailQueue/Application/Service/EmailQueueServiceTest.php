@@ -2,8 +2,9 @@
 
 namespace Test\Integration\EmailSender\EmailQueue\Application\Service;
 
+use EmailSender\Core\Catalog\EmailStatusList;
+use EmailSender\Core\ValueObject\EmailStatus;
 use EmailSender\EmailQueue\Application\Service\EmailQueueService;
-use EmailSender\EmailQueue\Domain\Aggregator\EmailQueue;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PHPUnit\Framework\TestCase;
 use Test\Helper\EmailSender\Mockery;
@@ -21,14 +22,6 @@ class EmailQueueServiceTest extends TestCase
      */
     public function testAdd()
     {
-        $emailLogId      = 1;
-        $composedEmailId = 2;
-        $delay           = 3;
-
-        $emailLogIdMock      = (new Mockery($this))->getUnSignedIntegerMock($emailLogId);
-        $composedEmailIdMock = (new Mockery($this))->getUnSignedIntegerMock($composedEmailId);
-        $delayMock           = (new Mockery($this))->getUnSignedIntegerMock($delay);
-
         /** @var \PhpAmqpLib\Channel\AMQPChannel|\PHPUnit_Framework_MockObject_MockObject $channel */
         $channel = $this->getMockBuilder(AMQPChannel::class)
             ->disableOriginalConstructor()
@@ -58,23 +51,9 @@ class EmailQueueServiceTest extends TestCase
             'exchange' => 'emailSender',
         ];
 
-        $emailLog = (new Mockery($this))->getEmailLogMock(
-            $emailLogId,
-            $composedEmailId,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            $delay
-        );
+        $emailLog = (new Mockery($this))->getEmailLogMock();
 
-        $expected = new EmailQueue(
-            $emailLogIdMock,
-            $composedEmailIdMock,
-            $delayMock
-        );
+        $expected = new EmailStatus(EmailStatusList::STATUS_QUEUED);
 
         $emailQueueService = new EmailQueueService($logger, $queueService, $queueServiceSettings);
 

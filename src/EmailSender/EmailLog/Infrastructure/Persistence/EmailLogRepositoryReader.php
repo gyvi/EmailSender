@@ -222,7 +222,8 @@ class EmailLogRepositoryReader implements EmailLogRepositoryReaderInterface
         $listLimitSQL = 'LIMIT :' . ListRequestPropertyNameList::PER_PAGE;
 
         if ($listRequest->getPage()) {
-            $listLimitSQL = 'LIMIT :' . ListRequestPropertyNameList::PAGE . ', :' . ListRequestPropertyNameList::PER_PAGE;
+            $listLimitSQL = 'LIMIT :' . ListRequestPropertyNameList::PAGE . ', :'
+                . ListRequestPropertyNameList::PER_PAGE;
         }
 
         return $listLimitSQL;

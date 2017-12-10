@@ -7,14 +7,13 @@ use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\ValueObject\EmailAddress;
 use EmailSender\Core\ValueObject\Subject;
 use EmailSender\Email\Domain\ValueObject\Body;
-use JsonSerializable;
 
 /**
  * Class Email
  *
  * @package EmailSender\Email
  */
-class Email implements JsonSerializable
+class Email
 {
     /**
      * @var \EmailSender\Core\ValueObject\EmailAddress
@@ -150,13 +149,5 @@ class Email implements JsonSerializable
     public function getDelay(): UnsignedInteger
     {
         return $this->delay;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return get_object_vars($this);
     }
 }

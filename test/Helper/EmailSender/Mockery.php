@@ -10,6 +10,7 @@ use Test\Helper\EmailSender\Mockery\DateTimeMock;
 use Test\Helper\EmailSender\Mockery\EmailLogMock;
 use Test\Helper\EmailSender\Mockery\EmailMock;
 use Test\Helper\EmailSender\Mockery\EmailQueueMock;
+use Test\Helper\EmailSender\Mockery\PsrMessageMock;
 use Test\Helper\EmailSender\Mockery\RecipientsMock;
 use Test\Helper\EmailSender\Mockery\ServiceMock;
 use Test\Helper\EmailSender\Mockery\ValueObjectMock;
@@ -31,6 +32,7 @@ class Mockery
     use CollectionMock;
     use RecipientsMock;
     use DateTimeMock;
+    use PsrMessageMock;
 
     /**
      * @var \PHPUnit\Framework\TestCase

@@ -32,23 +32,25 @@ trait ValueObjectMock
     }
 
     /**
-     * @param string $value
+     * @param null|string $value
      *
      * @return \PHPUnit_Framework_MockObject_MockObject|\EmailSender\Core\ValueObject\Address
      */
-    public function getAddressMock(string $value): PHPUnit_Framework_MockObject_MockObject
+    public function getAddressMock(?string $value): PHPUnit_Framework_MockObject_MockObject
     {
         return $this->getValueObjectMock(Address::class, $value);
     }
 
     /**
-     * @param string      $address
+     * @param null|string $address
      * @param null|string $name
      *
      * @return \PHPUnit_Framework_MockObject_MockObject|\EmailSender\Core\ValueObject\EmailAddress
      */
-    public function getEmailAddressMock(string $address, ?string $name = null): PHPUnit_Framework_MockObject_MockObject
-    {
+    public function getEmailAddressMock(
+        ?string $address = null,
+        ?string $name = null
+    ): PHPUnit_Framework_MockObject_MockObject {
         /** @var \PHPUnit\Framework\TestCase $testCase */
         $testCase = $this->testCase;
 

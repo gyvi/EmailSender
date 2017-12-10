@@ -69,19 +69,19 @@ trait ServiceMock
             ->willReturn(true);
 
         if ($execute !== null) {
-            $pdoStatement->expects($testCase->once())
+            $pdoStatement->expects($testCase->any())
                 ->method('execute')
                 ->willReturn($execute);
         }
 
         if ($fetch !== null) {
-            $pdoStatement->expects($testCase->once())
+            $pdoStatement->expects($testCase->any())
                 ->method('fetch')
                 ->willReturn($fetch);
         }
 
         if ($fetchAll !== null) {
-            $pdoStatement->expects($testCase->once())
+            $pdoStatement->expects($testCase->any())
                 ->method('fetchAll')
                 ->willReturn($fetchAll);
         }
@@ -90,12 +90,12 @@ trait ServiceMock
             ->disableOriginalConstructor()
             ->getMock();
 
-        $pdo->expects($testCase->once())
+        $pdo->expects($testCase->any())
             ->method('prepare')
             ->willReturn($pdoStatement);
 
         if ($lastInsertId !== null) {
-            $pdo->expects($testCase->once())
+            $pdo->expects($testCase->any())
                 ->method('lastInsertId')
                 ->willReturn($lastInsertId);
         }

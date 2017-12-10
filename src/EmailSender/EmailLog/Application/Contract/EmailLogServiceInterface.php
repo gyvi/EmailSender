@@ -23,6 +23,8 @@ interface EmailLogServiceInterface
      * @param \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail $composedEmail
      *
      * @return \EmailSender\EmailLog\Domain\Aggregate\EmailLog
+     *
+     * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
      */
     public function add(Email $email, ComposedEmail $composedEmail): EmailLog;
 
@@ -30,6 +32,8 @@ interface EmailLogServiceInterface
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $emailLogId
      * @param \EmailSender\Core\ValueObject\EmailStatus                                $emailLogStatus
      * @param null|string                                                              $errorMessage
+     *
+     * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
      */
     public function setStatus(
         UnsignedInteger $emailLogId,
@@ -41,8 +45,8 @@ interface EmailLogServiceInterface
      * @param int $emailLogIdInt
      *
      * @return \EmailSender\EmailLog\Domain\Aggregate\EmailLog
-     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
-     * @throws \InvalidArgumentException
+     *
+     * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
      */
     public function get(int $emailLogIdInt): EmailLog;
 
@@ -52,9 +56,6 @@ interface EmailLogServiceInterface
      * @param array                                    $getRequest
      *
      * @return \Psr\Http\Message\MessageInterface
-     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      */
     public function list(
         ServerRequestInterface $request,

@@ -31,7 +31,11 @@ abstract class RequestValidator
     public function validate($request): void
     {
         if (!is_array($request)) {
-            throw new InvalidArgumentException('Empty or invalid request.');
+            throw new InvalidArgumentException('Invalid request.');
+        }
+
+        if (empty($request) && !empty($this->requiredProperties)) {
+            throw new InvalidArgumentException('Empty request.');
         }
 
         foreach (array_keys($request) as $propertyName) {

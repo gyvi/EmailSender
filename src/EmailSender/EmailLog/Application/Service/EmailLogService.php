@@ -137,6 +137,7 @@ class EmailLogService implements EmailLogServiceInterface
      * @param int $emailLogIdInt
      *
      * @return \EmailSender\EmailLog\Domain\Aggregate\EmailLog
+     *
      * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
      */
     public function get(int $emailLogIdInt): EmailLog
@@ -161,9 +162,6 @@ class EmailLogService implements EmailLogServiceInterface
      * @param array                                    $getRequest
      *
      * @return \Psr\Http\Message\MessageInterface
-     *
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
      */
     public function list(
         ServerRequestInterface $request,
