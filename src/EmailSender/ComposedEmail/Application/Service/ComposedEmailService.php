@@ -3,7 +3,6 @@
 namespace EmailSender\ComposedEmail\Application\Service;
 
 use EmailSender\ComposedEmail\Application\Exception\ComposedEmailException;
-use EmailSender\ComposedEmail\Domain\Service\SendComposedEmailByIdService;
 use EmailSender\ComposedEmail\Domain\Service\SendComposedEmailService;
 use EmailSender\ComposedEmail\Infrastructure\Service\SMTPSender;
 use EmailSender\Core\Factory\EmailAddressCollectionFactory;
@@ -130,7 +129,7 @@ class ComposedEmailService implements ComposedEmailServiceInterface
     {
         try {
             $smtpSender               = new SMTPSender($this->smtpSenderService);
-            $sendComposedEmailService = new SendComposedEmailService($smtpSender);
+            $sendComposedEmailService = new SendComposedEmailService($smtpSender, $this->repositoryReader);
 
             $sendComposedEmailService->send($composedEmail);
         } catch (Throwable $e) {
@@ -148,10 +147,10 @@ class ComposedEmailService implements ComposedEmailServiceInterface
     public function sendById(UnsignedInteger $composedEmailId): void
     {
         try {
-            $smtpSender                   = new SMTPSender($this->smtpSenderService);
-            $sendComposedEmailByIdService = new SendComposedEmailByIdService($smtpSender, $this->repositoryReader);
+            $smtpSender               = new SMTPSender($this->smtpSenderService);
+            $sendComposedEmailService = new SendComposedEmailService($smtpSender, $this->repositoryReader);
 
-            $sendComposedEmailByIdService->send($composedEmailId);
+            $sendComposedEmailService->sendById($composedEmailId);
         } catch (Throwable $e) {
             $this->logger->alert($e->getMessage(), $e->getTrace());
 

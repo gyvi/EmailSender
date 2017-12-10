@@ -2,10 +2,10 @@
 
 namespace Test\Unit\EmailSender\ComposedEmail\Domain\Factory;
 
+use EmailSender\ComposedEmail\Application\Catalog\ComposedEmailPropertyNameList;
 use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
 use EmailSender\ComposedEmail\Domain\Contract\EmailComposerInterface;
 use EmailSender\ComposedEmail\Domain\Factory\ComposedEmailFactory;
-use EmailSender\ComposedEmail\Infrastructure\Persistence\ComposedEmailRepositoryFieldList;
 use EmailSender\Core\Catalog\EmailAddressPropertyNameList;
 use EmailSender\Core\Factory\EmailAddressFactory;
 use EmailSender\Core\Factory\RecipientsFactory;
@@ -68,10 +68,10 @@ class ComposedEmailFactoryTest extends TestCase
     public function testCreateFromArray()
     {
         $composedEmailArray = [
-            ComposedEmailRepositoryFieldList::RECIPIENTS        => json_encode([]),
-            ComposedEmailRepositoryFieldList::FROM              => 'emailaddress',
-            ComposedEmailRepositoryFieldList::EMAIL             => 'composed email string',
-            ComposedEmailRepositoryFieldList::COMPOSED_EMAIL_ID => 1,
+            ComposedEmailPropertyNameList::RECIPIENTS        => json_encode([]),
+            ComposedEmailPropertyNameList::FROM              => 'emailaddress',
+            ComposedEmailPropertyNameList::EMAIL             => 'composed email string',
+            ComposedEmailPropertyNameList::COMPOSED_EMAIL_ID => 1,
         ];
         $recipients         = (new Mockery($this))->getRecipientsMock();
         $from               = (new Mockery($this))->getEmailAddressMock('emailaddress');

@@ -3,6 +3,7 @@
 namespace EmailSender\ComposedEmail\Infrastructure\Persistence;
 
 use Closure;
+use EmailSender\ComposedEmail\Application\Catalog\ComposedEmailPropertyNameList;
 use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
 use EmailSender\ComposedEmail\Domain\Factory\ComposedEmailFactory;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
@@ -58,15 +59,19 @@ class ComposedEmailRepositoryReader implements ComposedEmailRepositoryReaderInte
 
         $sql = '
             SELECT
-                `' . ComposedEmailRepositoryFieldList::COMPOSED_EMAIL_ID . '`,
-                `' . ComposedEmailRepositoryFieldList::FROM . '`,
-                `' . ComposedEmailRepositoryFieldList::RECIPIENTS . '`,
-                `' . ComposedEmailRepositoryFieldList::EMAIL . '`
+                `' . ComposedEmailRepositoryFieldList::COMPOSED_EMAIL_ID . '` as `' .
+                    ComposedEmailPropertyNameList::COMPOSED_EMAIL_ID . '`,
+                `' . ComposedEmailRepositoryFieldList::FROM . '` as `' .
+                    ComposedEmailPropertyNameList::FROM . '`,
+                `' . ComposedEmailRepositoryFieldList::RECIPIENTS . '` as `' .
+                    ComposedEmailPropertyNameList::RECIPIENTS . '`,
+                `' . ComposedEmailRepositoryFieldList::EMAIL . '` as `' .
+                    ComposedEmailPropertyNameList::EMAIL . '`,
             FROM
                 `composedEmail`
             WHERE
-                `' . ComposedEmailRepositoryFieldList::COMPOSED_EMAIL_ID . '` =
-                    :' .  ComposedEmailRepositoryFieldList::COMPOSED_EMAIL_ID . '; 
+                `' . ComposedEmailRepositoryFieldList::COMPOSED_EMAIL_ID . '` = :' .
+                    ComposedEmailRepositoryFieldList::COMPOSED_EMAIL_ID . '; 
         ';
 
         $statement = $pdo->prepare($sql);

@@ -6,7 +6,7 @@ use EmailSender\Core\Factory\EmailAddressFactory;
 use EmailSender\Core\Scalar\Application\Exception\ValueObjectException;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\ValueObject\EmailAddress;
-use EmailSender\EmailLog\Application\Catalog\ListRequestPropertyNames;
+use EmailSender\EmailLog\Application\Catalog\ListRequestPropertyNameList;
 use EmailSender\EmailLog\Domain\Entity\ListRequest;
 use Throwable;
 use InvalidArgumentException;
@@ -64,12 +64,12 @@ class ListRequestFactory
         $from = null;
 
         try {
-            if (!empty($listRequestArray[ListRequestPropertyNames::FROM])) {
-                $from = $this->emailAddressFactory->create($listRequestArray[ListRequestPropertyNames::FROM]);
+            if (!empty($listRequestArray[ListRequestPropertyNameList::FROM])) {
+                $from = $this->emailAddressFactory->create($listRequestArray[ListRequestPropertyNameList::FROM]);
             }
         } catch (Throwable $e) {
             throw new InvalidArgumentException(
-                "Wrong property: '"  . ListRequestPropertyNames::FROM . "'",
+                "Wrong property: '"  . ListRequestPropertyNameList::FROM . "'",
                 0,
                 $e
             );
@@ -90,12 +90,12 @@ class ListRequestFactory
         $perPage = null;
 
         try {
-            if (!empty($listRequestArray[ListRequestPropertyNames::PER_PAGE])) {
-                $perPage = $this->getUnsignedInteger($listRequestArray[ListRequestPropertyNames::PER_PAGE]);
+            if (!empty($listRequestArray[ListRequestPropertyNameList::PER_PAGE])) {
+                $perPage = $this->getUnsignedInteger($listRequestArray[ListRequestPropertyNameList::PER_PAGE]);
             }
         } catch (Throwable $e) {
             throw new InvalidArgumentException(
-                "Wrong property: '"  . ListRequestPropertyNames::PER_PAGE . "'",
+                "Wrong property: '"  . ListRequestPropertyNameList::PER_PAGE . "'",
                 0,
                 $e
             );
@@ -116,12 +116,12 @@ class ListRequestFactory
         $page = null;
 
         try {
-            if (!empty($listRequestArray[ListRequestPropertyNames::PAGE])) {
-                $page = $this->getUnsignedInteger($listRequestArray[ListRequestPropertyNames::PAGE]);
+            if (!empty($listRequestArray[ListRequestPropertyNameList::PAGE])) {
+                $page = $this->getUnsignedInteger($listRequestArray[ListRequestPropertyNameList::PAGE]);
             }
         } catch (Throwable $e) {
             throw new InvalidArgumentException(
-                "Wrong property: '"  . ListRequestPropertyNames::PAGE . "'",
+                "Wrong property: '"  . ListRequestPropertyNameList::PAGE . "'",
                 0,
                 $e
             );
@@ -142,14 +142,14 @@ class ListRequestFactory
         $lastComposedEmailId = null;
 
         try {
-            if (!empty($listRequestArray[ListRequestPropertyNames::LAST_EMAIL_LOG_ID])) {
+            if (!empty($listRequestArray[ListRequestPropertyNameList::LAST_EMAIL_LOG_ID])) {
                 $lastComposedEmailId = $this->getUnsignedInteger(
-                    $listRequestArray[ListRequestPropertyNames::LAST_EMAIL_LOG_ID]
+                    $listRequestArray[ListRequestPropertyNameList::LAST_EMAIL_LOG_ID]
                 );
             }
         } catch (Throwable $e) {
             throw new InvalidArgumentException(
-                "Wrong property: '"  . ListRequestPropertyNames::LAST_EMAIL_LOG_ID . "'",
+                "Wrong property: '"  . ListRequestPropertyNameList::LAST_EMAIL_LOG_ID . "'",
                 0,
                 $e
             );

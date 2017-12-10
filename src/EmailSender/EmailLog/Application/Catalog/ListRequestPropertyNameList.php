@@ -7,7 +7,7 @@ namespace EmailSender\EmailLog\Application\Catalog;
  *
  * @package EmailSender\EmailLog
  */
-class ListRequestPropertyNames
+class ListRequestPropertyNameList
 {
     /**
      * Sender email address.

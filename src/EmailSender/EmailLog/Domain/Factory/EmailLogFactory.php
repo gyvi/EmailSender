@@ -10,8 +10,8 @@ use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\Core\ValueObject\Subject;
 use EmailSender\Email\Domain\Aggregate\Email;
+use EmailSender\EmailLog\Application\Catalog\EmailLogPropertyNamesList;
 use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
-use EmailSender\EmailLog\Infrastructure\Persistence\EmailLogFieldList;
 use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
 
 /**
@@ -80,35 +80,39 @@ class EmailLogFactory
     public function createFromArray(array $emailLogArray): EmailLog
     {
         $emailLog = new EmailLog(
-            new UnsignedInteger($emailLogArray[EmailLogFieldList::COMPOSED_EMAIL_ID]),
-            $this->emailAddressFactory->create($emailLogArray[EmailLogFieldList::FROM]),
+            new UnsignedInteger($emailLogArray[EmailLogPropertyNamesList::COMPOSED_EMAIL_ID]),
+            $this->emailAddressFactory->create($emailLogArray[EmailLogPropertyNamesList::FROM]),
             $this->recipientsFactory->createFromArray(
-                json_decode($emailLogArray[EmailLogFieldList::RECIPIENTS], true)
+                json_decode($emailLogArray[EmailLogPropertyNamesList::RECIPIENTS], true)
             ),
-            new Subject($emailLogArray[EmailLogFieldList::SUBJECT]),
-            new UnsignedInteger($emailLogArray[EmailLogFieldList::DELAY])
+            new Subject($emailLogArray[EmailLogPropertyNamesList::SUBJECT]),
+            new UnsignedInteger($emailLogArray[EmailLogPropertyNamesList::DELAY])
         );
 
-        $emailLog->setEmailLogId(new UnsignedInteger($emailLogArray[EmailLogFieldList::EMAIL_LOG_ID]));
-        $emailLog->setStatus(new SignedInteger((int)$emailLogArray[EmailLogFieldList::STATUS]));
+        $emailLog->setEmailLogId(new UnsignedInteger($emailLogArray[EmailLogPropertyNamesList::EMAIL_LOG_ID]));
+        $emailLog->setStatus(new SignedInteger((int)$emailLogArray[EmailLogPropertyNamesList::STATUS]));
         $emailLog->setLogged(
-            $this->dateTimeFactory->createFromDateTime(new \DateTime($emailLogArray[EmailLogFieldList::LOGGED]))
+            $this->dateTimeFactory->createFromDateTime(new \DateTime($emailLogArray[EmailLogPropertyNamesList::LOGGED]))
         );
 
-        if (!empty($emailLogArray[EmailLogFieldList::QUEUED])) {
+        if (!empty($emailLogArray[EmailLogPropertyNamesList::QUEUED])) {
             $emailLog->setQueued(
-                $this->dateTimeFactory->createFromDateTime(new \DateTime($emailLogArray[EmailLogFieldList::QUEUED]))
+                $this->dateTimeFactory->createFromDateTime(
+                    new \DateTime($emailLogArray[EmailLogPropertyNamesList::QUEUED])
+                )
             );
         }
 
-        if (!empty($emailLogArray[EmailLogFieldList::SENT])) {
+        if (!empty($emailLogArray[EmailLogPropertyNamesList::SENT])) {
             $emailLog->setSent(
-                $this->dateTimeFactory->createFromDateTime(new \DateTime($emailLogArray[EmailLogFieldList::SENT]))
+                $this->dateTimeFactory->createFromDateTime(
+                    new \DateTime($emailLogArray[EmailLogPropertyNamesList::SENT])
+                )
             );
         }
 
-        if (!empty($emailLogArray[EmailLogFieldList::ERROR_MESSAGE])) {
-            $emailLog->setErrorMessage(new StringLiteral($emailLogArray[EmailLogFieldList::ERROR_MESSAGE]));
+        if (!empty($emailLogArray[EmailLogPropertyNamesList::ERROR_MESSAGE])) {
+            $emailLog->setErrorMessage(new StringLiteral($emailLogArray[EmailLogPropertyNamesList::ERROR_MESSAGE]));
         }
 
         return $emailLog;

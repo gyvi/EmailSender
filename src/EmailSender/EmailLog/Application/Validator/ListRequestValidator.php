@@ -3,7 +3,7 @@
 namespace EmailSender\EmailLog\Application\Validator;
 
 use EmailSender\Core\Validator\RequestValidator;
-use EmailSender\EmailLog\Application\Catalog\ListRequestPropertyNames;
+use EmailSender\EmailLog\Application\Catalog\ListRequestPropertyNameList;
 
 /**
  * Class EmailLogListRequestValidator
@@ -16,9 +16,9 @@ class ListRequestValidator extends RequestValidator
      * @var array
      */
     protected $optionalProperties = [
-        ListRequestPropertyNames::FROM,
-        ListRequestPropertyNames::PER_PAGE,
-        ListRequestPropertyNames::PAGE,
-        ListRequestPropertyNames::LAST_EMAIL_LOG_ID,
+        ListRequestPropertyNameList::FROM,
+        ListRequestPropertyNameList::PER_PAGE,
+        ListRequestPropertyNameList::PAGE,
+        ListRequestPropertyNameList::LAST_EMAIL_LOG_ID,
     ];
 }

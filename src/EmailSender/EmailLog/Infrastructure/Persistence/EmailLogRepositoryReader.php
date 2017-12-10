@@ -3,7 +3,8 @@
 namespace EmailSender\EmailLog\Infrastructure\Persistence;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
-use EmailSender\EmailLog\Application\Catalog\ListRequestPropertyNames;
+use EmailSender\EmailLog\Application\Catalog\EmailLogPropertyNamesList;
+use EmailSender\EmailLog\Application\Catalog\ListRequestPropertyNameList;
 use EmailSender\EmailLog\Application\Collection\EmailLogCollection;
 use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
 use EmailSender\EmailLog\Domain\Contract\EmailLogRepositoryReaderInterface;
@@ -78,17 +79,17 @@ class EmailLogRepositoryReader implements EmailLogRepositoryReaderInterface
 
         $sql = '
             SELECT
-                `' . EmailLogFieldList::EMAIL_LOG_ID . '`,
-                `' . EmailLogFieldList::COMPOSED_EMAIL_ID . '`,
-                `' . EmailLogFieldList::FROM . '`,
-                `' . EmailLogFieldList::RECIPIENTS . '`,
-                `' . EmailLogFieldList::SUBJECT . '`,
-                `' . EmailLogFieldList::LOGGED . '`,
-                `' . EmailLogFieldList::QUEUED . '`,
-                `' . EmailLogFieldList::SENT . '`,
-                `' . EmailLogFieldList::DELAY . '`,
-                `' . EmailLogFieldList::STATUS . '`,
-                `' . EmailLogFieldList::ERROR_MESSAGE . '`
+                `' . EmailLogFieldList::EMAIL_LOG_ID . '` as `'      . EmailLogPropertyNamesList::EMAIL_LOG_ID . '`,
+                `' . EmailLogFieldList::COMPOSED_EMAIL_ID . '` as `' . EmailLogPropertyNamesList::COMPOSED_EMAIL_ID .'`,
+                `' . EmailLogFieldList::FROM . '` as `'              . EmailLogPropertyNamesList::FROM . '`,
+                `' . EmailLogFieldList::RECIPIENTS . '` as `'        . EmailLogPropertyNamesList::RECIPIENTS . '`,
+                `' . EmailLogFieldList::SUBJECT . '` as `'           . EmailLogPropertyNamesList::SUBJECT . '`,
+                `' . EmailLogFieldList::LOGGED . '` as `'            . EmailLogPropertyNamesList::LOGGED . '`,
+                `' . EmailLogFieldList::QUEUED . '` as `'            . EmailLogPropertyNamesList::QUEUED . '`,
+                `' . EmailLogFieldList::SENT . '` as `'              . EmailLogPropertyNamesList::SENT . '`,
+                `' . EmailLogFieldList::DELAY . '` as `'             . EmailLogPropertyNamesList::DELAY . '`,
+                `' . EmailLogFieldList::STATUS . '` as `'            . EmailLogPropertyNamesList::STATUS . '`,
+                `' . EmailLogFieldList::ERROR_MESSAGE . '` as `'     . EmailLogPropertyNamesList::ERROR_MESSAGE . '`
             FROM
                 `emailLog`
             WHERE
@@ -123,17 +124,17 @@ class EmailLogRepositoryReader implements EmailLogRepositoryReaderInterface
 
         $sql = '
             SELECT
-                `' . EmailLogFieldList::EMAIL_LOG_ID . '`,
-                `' . EmailLogFieldList::COMPOSED_EMAIL_ID . '`,
-                `' . EmailLogFieldList::FROM . '`,
-                `' . EmailLogFieldList::RECIPIENTS . '`,
-                `' . EmailLogFieldList::SUBJECT . '`,
-                `' . EmailLogFieldList::LOGGED . '`,
-                `' . EmailLogFieldList::QUEUED . '`,
-                `' . EmailLogFieldList::SENT . '`,
-                `' . EmailLogFieldList::DELAY . '`,
-                `' . EmailLogFieldList::STATUS . '`,
-                `' . EmailLogFieldList::ERROR_MESSAGE . '`
+                `' . EmailLogFieldList::EMAIL_LOG_ID . '` as `'      . EmailLogPropertyNamesList::EMAIL_LOG_ID . '`,
+                `' . EmailLogFieldList::COMPOSED_EMAIL_ID . '` as `' . EmailLogPropertyNamesList::COMPOSED_EMAIL_ID .'`,
+                `' . EmailLogFieldList::FROM . '` as `'              . EmailLogPropertyNamesList::FROM . '`,
+                `' . EmailLogFieldList::RECIPIENTS . '` as `'        . EmailLogPropertyNamesList::RECIPIENTS . '`,
+                `' . EmailLogFieldList::SUBJECT . '` as `'           . EmailLogPropertyNamesList::SUBJECT . '`,
+                `' . EmailLogFieldList::LOGGED . '` as `'            . EmailLogPropertyNamesList::LOGGED . '`,
+                `' . EmailLogFieldList::QUEUED . '` as `'            . EmailLogPropertyNamesList::QUEUED . '`,
+                `' . EmailLogFieldList::SENT . '` as `'              . EmailLogPropertyNamesList::SENT . '`,
+                `' . EmailLogFieldList::DELAY . '` as `'             . EmailLogPropertyNamesList::DELAY . '`,
+                `' . EmailLogFieldList::STATUS . '` as `'            . EmailLogPropertyNamesList::STATUS . '`,
+                `' . EmailLogFieldList::ERROR_MESSAGE . '` as `'     . EmailLogPropertyNamesList::ERROR_MESSAGE . '`
             FROM
                 `emailLog`
             ' . $this->getListWhereSQL($listRequest) . '
@@ -152,7 +153,7 @@ class EmailLogRepositoryReader implements EmailLogRepositoryReaderInterface
         }
 
         $statement->bindValue(
-            ':' . ListRequestPropertyNames::PER_PAGE,
+            ':' . ListRequestPropertyNameList::PER_PAGE,
             $perPage,
             PDO::PARAM_INT
         );
@@ -167,7 +168,7 @@ class EmailLogRepositoryReader implements EmailLogRepositoryReaderInterface
 
         if ($listRequest->getPage()) {
             $statement->bindValue(
-                ':' . ListRequestPropertyNames::PAGE,
+                ':' . ListRequestPropertyNameList::PAGE,
                 ($listRequest->getPage()->getValue() > 0
                     ? $listRequest->getPage()->getValue() - 1
                     : 0
@@ -218,10 +219,10 @@ class EmailLogRepositoryReader implements EmailLogRepositoryReaderInterface
      */
     private function getListLimitSQL(ListRequest $listRequest): string
     {
-        $listLimitSQL = 'LIMIT :' . ListRequestPropertyNames::PER_PAGE;
+        $listLimitSQL = 'LIMIT :' . ListRequestPropertyNameList::PER_PAGE;
 
         if ($listRequest->getPage()) {
-            $listLimitSQL = 'LIMIT :' . ListRequestPropertyNames::PAGE . ', :' . ListRequestPropertyNames::PER_PAGE;
+            $listLimitSQL = 'LIMIT :' . ListRequestPropertyNameList::PAGE . ', :' . ListRequestPropertyNameList::PER_PAGE;
         }
 
         return $listLimitSQL;
