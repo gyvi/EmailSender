@@ -38,8 +38,7 @@ class EmailQueueRepositoryWriterTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var \EmailSender\EmailQueue\Infrastructure\Factory\AMQPMessageFactory|
-         * \PHPUnit_Framework_MockObject_MockObject $amqpMessageFactory */
+        /** @var \EmailSender\EmailQueue\Infrastructure\Factory\AMQPMessageFactory|\PHPUnit_Framework_MockObject_MockObject $amqpMessageFactory */
         $amqpMessageFactory = $this->getMockBuilder(AMQPMessageFactory::class)
             ->disableOriginalConstructor()
             ->getMock();

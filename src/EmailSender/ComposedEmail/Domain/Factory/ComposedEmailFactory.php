@@ -9,7 +9,7 @@ use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\Email\Domain\Aggregate\Email;
 use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
 use EmailSender\ComposedEmail\Domain\Contract\EmailComposerInterface;
-use EmailSender\ComposedEmail\Infrastructure\Persistence\ComposedEmailFieldList;
+use EmailSender\ComposedEmail\Infrastructure\Persistence\ComposedEmailRepositoryFieldList;
 
 /**
  * Class ComposedEmailFactory
@@ -77,17 +77,17 @@ class ComposedEmailFactory
     public function createFromArray(array $composedEmailArray): ComposedEmail
     {
         $recipients = $this->recipientsFactory->createFromArray(
-            json_decode($composedEmailArray[ComposedEmailFieldList::RECIPIENTS], true)
+            json_decode($composedEmailArray[ComposedEmailRepositoryFieldList::RECIPIENTS], true)
         );
 
         $composedEmail = new ComposedEmail(
-            $this->emailAddressFactory->create($composedEmailArray[ComposedEmailFieldList::FROM]),
+            $this->emailAddressFactory->create($composedEmailArray[ComposedEmailRepositoryFieldList::FROM]),
             $recipients,
-            new StringLiteral($composedEmailArray[ComposedEmailFieldList::EMAIL])
+            new StringLiteral($composedEmailArray[ComposedEmailRepositoryFieldList::EMAIL])
         );
 
         $composedEmail->setComposedEmailId(
-            new UnsignedInteger($composedEmailArray[ComposedEmailFieldList::COMPOSED_EMAIL_ID])
+            new UnsignedInteger($composedEmailArray[ComposedEmailRepositoryFieldList::COMPOSED_EMAIL_ID])
         );
 
         return $composedEmail;

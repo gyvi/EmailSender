@@ -3,7 +3,7 @@
 namespace Test\Unit\EmailSender\EmailQueue\Domain\Aggregator;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
-use EmailSender\EmailQueue\Application\Catalog\EmailQueuePropertyNames;
+use EmailSender\EmailQueue\Application\Catalog\EmailQueuePropertyNamesList;
 use EmailSender\EmailQueue\Domain\Aggregator\EmailQueue;
 use PHPUnit\Framework\TestCase;
 use Test\Helper\EmailSender\Mockery;
@@ -87,9 +87,9 @@ class EmailQueueTest extends TestCase
         );
 
         $expected = json_encode([
-            EmailQueuePropertyNames::EMAIL_LOG_ID      => $intValue,
-            EmailQueuePropertyNames::COMPOSED_EMAIL_ID => $intValue,
-            EmailQueuePropertyNames::DELAY             => $intValue,
+            EmailQueuePropertyNamesList::EMAIL_LOG_ID      => $intValue,
+            EmailQueuePropertyNamesList::COMPOSED_EMAIL_ID => $intValue,
+            EmailQueuePropertyNamesList::DELAY             => $intValue,
         ]);
 
         $this->assertEquals($expected, json_encode($emailQueue));

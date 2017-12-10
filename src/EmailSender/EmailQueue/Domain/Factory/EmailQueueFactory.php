@@ -4,7 +4,7 @@ namespace EmailSender\EmailQueue\Domain\Factory;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
-use EmailSender\EmailQueue\Application\Catalog\EmailQueuePropertyNames;
+use EmailSender\EmailQueue\Application\Catalog\EmailQueuePropertyNamesList;
 use EmailSender\EmailQueue\Domain\Aggregator\EmailQueue;
 
 /**
@@ -32,9 +32,9 @@ class EmailQueueFactory
     public function createFromArray(array $emailQueue): EmailQueue
     {
         return new EmailQueue(
-            new UnsignedInteger($emailQueue[EmailQueuePropertyNames::EMAIL_LOG_ID]),
-            new UnsignedInteger($emailQueue[EmailQueuePropertyNames::COMPOSED_EMAIL_ID]),
-            new UnsignedInteger($emailQueue[EmailQueuePropertyNames::DELAY])
+            new UnsignedInteger($emailQueue[EmailQueuePropertyNamesList::EMAIL_LOG_ID]),
+            new UnsignedInteger($emailQueue[EmailQueuePropertyNamesList::COMPOSED_EMAIL_ID]),
+            new UnsignedInteger($emailQueue[EmailQueuePropertyNamesList::DELAY])
         );
     }
 }

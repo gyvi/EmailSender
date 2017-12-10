@@ -58,21 +58,21 @@ class ComposedEmailRepositoryReader implements ComposedEmailRepositoryReaderInte
 
         $sql = '
             SELECT
-                `' . ComposedEmailFieldList::COMPOSED_EMAIL_ID . '`,
-                `' . ComposedEmailFieldList::FROM . '`,
-                `' . ComposedEmailFieldList::RECIPIENTS . '`,
-                `' . ComposedEmailFieldList::EMAIL . '`
+                `' . ComposedEmailRepositoryFieldList::COMPOSED_EMAIL_ID . '`,
+                `' . ComposedEmailRepositoryFieldList::FROM . '`,
+                `' . ComposedEmailRepositoryFieldList::RECIPIENTS . '`,
+                `' . ComposedEmailRepositoryFieldList::EMAIL . '`
             FROM
                 `composedEmail`
             WHERE
-                `' . ComposedEmailFieldList::COMPOSED_EMAIL_ID . '` =
-                    :' .  ComposedEmailFieldList::COMPOSED_EMAIL_ID . '; 
+                `' . ComposedEmailRepositoryFieldList::COMPOSED_EMAIL_ID . '` =
+                    :' .  ComposedEmailRepositoryFieldList::COMPOSED_EMAIL_ID . '; 
         ';
 
         $statement = $pdo->prepare($sql);
 
         $statement->bindValue(
-            ':' . ComposedEmailFieldList::COMPOSED_EMAIL_ID,
+            ':' . ComposedEmailRepositoryFieldList::COMPOSED_EMAIL_ID,
             $composedEmailId->getValue(),
             PDO::PARAM_INT
         );
@@ -81,9 +81,7 @@ class ComposedEmailRepositoryReader implements ComposedEmailRepositoryReaderInte
             throw new PDOException('Unable read from the database.');
         }
 
-        $composedEmailArray = $statement->fetch(PDO::FETCH_ASSOC);
-
-        return $this->composedEmailFactory->createFromArray($composedEmailArray);
+        return $this->composedEmailFactory->createFromArray($statement->fetch(PDO::FETCH_ASSOC));
     }
 
     /**

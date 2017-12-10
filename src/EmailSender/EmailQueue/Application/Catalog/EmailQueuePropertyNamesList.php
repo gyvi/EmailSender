@@ -7,7 +7,7 @@ namespace EmailSender\EmailQueue\Application\Catalog;
  *
  * @package EmailSender\EmailQueue
  */
-class EmailQueuePropertyNames
+class EmailQueuePropertyNamesList
 {
     /**
      * EmailQueue emailLogId property name.

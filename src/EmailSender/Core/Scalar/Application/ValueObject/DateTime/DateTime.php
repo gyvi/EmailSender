@@ -39,7 +39,7 @@ class DateTime implements ValueObjectInterface, JsonSerializable
      */
     public function getDate(): Date
     {
-        return clone $this->date;
+        return $this->date;
     }
 
     /**

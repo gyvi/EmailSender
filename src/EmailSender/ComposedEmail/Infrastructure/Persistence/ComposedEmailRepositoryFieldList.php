@@ -3,11 +3,11 @@
 namespace EmailSender\ComposedEmail\Infrastructure\Persistence;
 
 /**
- * Class ComposedEmailFieldList
+ * Class ComposedEmailRepositoryFieldList
  *
  * @package EmailSender\ComposedEmail
  */
-class ComposedEmailFieldList
+class ComposedEmailRepositoryFieldList
 {
     /**
      * Primary key of the composedEmail SQL table.

@@ -20,8 +20,7 @@ class AMQPMessageFactoryTest extends TestCase
      */
     public function testCreate()
     {
-        $delay = 1;
-
+        $delay            = 1;
         $emailQueueToJson = ['delay' => 1];
 
         $messageProperties = [
@@ -31,19 +30,8 @@ class AMQPMessageFactoryTest extends TestCase
             ]),
         ];
 
-        $delayMock  = (new Mockery($this))->getUnSignedIntegerMock($delay);
-
-        $emailQueue = (new Mockery($this))->getEmailQueueMock();
-
-        $emailQueue->expects($this->once())
-            ->method('jsonSerialize')
-            ->willReturn($emailQueueToJson);
-
-        $emailQueue->expects($this->once())
-            ->method('getDelay')
-            ->willReturn($delayMock);
-
-        $expected = new AMQPMessage(json_encode($emailQueueToJson), $messageProperties);
+        $emailQueue = (new Mockery($this))->getEmailQueueMock(null, null, $delay, $emailQueueToJson);
+        $expected   = new AMQPMessage(json_encode($emailQueueToJson), $messageProperties);
 
         $amqpMessageFactory = new AMQPMessageFactory();
 

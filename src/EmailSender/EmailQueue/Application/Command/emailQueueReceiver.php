@@ -8,7 +8,7 @@ use EmailSender\Core\Services\ServiceList;
 use EmailSender\Core\Framework\BootstrapCli;
 use EmailSender\ComposedEmail\Application\Service\ComposedEmailService;
 use EmailSender\EmailLog\Application\Service\EmailLogService;
-use EmailSender\EmailQueue\Application\Catalog\EmailQueuePropertyNames;
+use EmailSender\EmailQueue\Application\Catalog\EmailQueuePropertyNamesList;
 use Slim\Container;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\Catalog\EmailStatusList;
@@ -42,7 +42,7 @@ $callback = function ($message) use ($container, $view, $logger) {
 
     $emailQueue = json_decode($message->body, true);
 
-    $emailLogId      = new UnsignedInteger($emailQueue[EmailQueuePropertyNames::EMAIL_LOG_ID]);
+    $emailLogId      = new UnsignedInteger($emailQueue[EmailQueuePropertyNamesList::EMAIL_LOG_ID]);
     $emailLogService = new EmailLogService(
         $view,
         $logger,
@@ -58,7 +58,7 @@ $callback = function ($message) use ($container, $view, $logger) {
     );
 
     try {
-        $composedEmailId = new UnsignedInteger($emailQueue[EmailQueuePropertyNames::COMPOSED_EMAIL_ID]);
+        $composedEmailId = new UnsignedInteger($emailQueue[EmailQueuePropertyNamesList::COMPOSED_EMAIL_ID]);
 
         $composedEmailService->sendById($composedEmailId);
 
@@ -78,7 +78,7 @@ $callback = function ($message) use ($container, $view, $logger) {
         );
 
         $emailLogService->setStatus(
-            new UnsignedInteger($emailQueue[EmailQueuePropertyNames::EMAIL_LOG_ID]),
+            new UnsignedInteger($emailQueue[EmailQueuePropertyNamesList::EMAIL_LOG_ID]),
             new EmailStatus(EmailStatusList::STATUS_ERROR),
             $e->getMessage()
         );

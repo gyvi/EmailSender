@@ -48,7 +48,7 @@ class Date implements ValueObjectInterface
      */
     public function getYear(): Year
     {
-        return clone $this->year;
+        return $this->year;
     }
 
     /**
@@ -64,7 +64,7 @@ class Date implements ValueObjectInterface
      */
     public function getDay(): Day
     {
-        return clone $this->day;
+        return $this->day;
     }
 
     /**

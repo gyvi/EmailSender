@@ -11,6 +11,7 @@ use EmailSender\Core\ValueObject\EmailAddress;
 use EmailSender\Core\ValueObject\EmailStatus;
 use EmailSender\Core\ValueObject\Name;
 use EmailSender\Core\ValueObject\Subject;
+use EmailSender\Email\Domain\ValueObject\Body;
 use PHPUnit_Framework_MockObject_MockObject;
 
 /**
@@ -62,7 +63,7 @@ trait ValueObjectMock
 
         $emailAddressMock->expects($testCase->any())
             ->method('getAddress')
-            ->willReturn($this->getNameMock($address));
+            ->willReturn($this->getAddressMock($address));
 
         return $emailAddressMock;
     }
@@ -75,6 +76,16 @@ trait ValueObjectMock
     public function getSubjectMock(string $value): PHPUnit_Framework_MockObject_MockObject
     {
         return $this->getValueObjectMock(Subject::class, $value);
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject|\EmailSender\Email\Domain\ValueObject\Body
+     */
+    public function getBodyMock(string $value): PHPUnit_Framework_MockObject_MockObject
+    {
+        return $this->getValueObjectMock(Body::class, $value);
     }
 
     /**

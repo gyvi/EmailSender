@@ -6,14 +6,13 @@ use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\Core\Entity\Recipients;
 use EmailSender\Core\ValueObject\EmailAddress;
-use JsonSerializable;
 
 /**
  * Class ComposedEmail
  *
  * @package EmailSender\ComposedEmail
  */
-class ComposedEmail implements JsonSerializable
+class ComposedEmail
 {
     /**
      * @var \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
@@ -84,16 +83,8 @@ class ComposedEmail implements JsonSerializable
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $composedEmailId
      */
-    public function setComposedEmailId(UnsignedInteger $composedEmailId)
+    public function setComposedEmailId(UnsignedInteger $composedEmailId): void
     {
         $this->composedEmailId = $composedEmailId;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize(): array
-    {
-        return get_object_vars($this);
     }
 }

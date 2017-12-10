@@ -50,32 +50,32 @@ class ComposedEmailRepositoryWriter implements ComposedEmailRepositoryWriterInte
         $sql = '
             INSERT INTO
                 `composedEmail` (
-                    `' . ComposedEmailFieldList::FROM . '`,
-                    `' . ComposedEmailFieldList::RECIPIENTS . '`,
-                    `' . ComposedEmailFieldList::EMAIL . '`
+                    `' . ComposedEmailRepositoryFieldList::FROM . '`,
+                    `' . ComposedEmailRepositoryFieldList::RECIPIENTS . '`,
+                    `' . ComposedEmailRepositoryFieldList::EMAIL . '`
                 )
             VALUES
                 (
-                    :' . ComposedEmailFieldList::FROM . ',
-                    :' . ComposedEmailFieldList::RECIPIENTS . ',
-                    :' . ComposedEmailFieldList::EMAIL . '
+                    :' . ComposedEmailRepositoryFieldList::FROM . ',
+                    :' . ComposedEmailRepositoryFieldList::RECIPIENTS . ',
+                    :' . ComposedEmailRepositoryFieldList::EMAIL . '
                 ); 
         ';
 
         $statement = $pdo->prepare($sql);
 
         $statement->bindValue(
-            ':' . ComposedEmailFieldList::FROM,
+            ':' . ComposedEmailRepositoryFieldList::FROM,
             $composedEmail->getFrom()->getAddress()->getValue()
         );
 
         $statement->bindValue(
-            ':' . ComposedEmailFieldList::RECIPIENTS,
+            ':' . ComposedEmailRepositoryFieldList::RECIPIENTS,
             json_encode($composedEmail->getRecipients())
         );
 
         $statement->bindValue(
-            ':' . ComposedEmailFieldList::EMAIL,
+            ':' . ComposedEmailRepositoryFieldList::EMAIL,
             $composedEmail->getEmail()->getValue()
         );
 
