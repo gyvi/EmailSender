@@ -79,26 +79,38 @@ class EmailLogRepositoryReader implements EmailLogRepositoryReaderInterface
 
         $sql = '
             SELECT
-                `' . EmailLogFieldList::EMAIL_LOG_ID . '` as `'      . EmailLogPropertyNamesList::EMAIL_LOG_ID . '`,
-                `' . EmailLogFieldList::COMPOSED_EMAIL_ID . '` as `' . EmailLogPropertyNamesList::COMPOSED_EMAIL_ID .'`,
-                `' . EmailLogFieldList::FROM . '` as `'              . EmailLogPropertyNamesList::FROM . '`,
-                `' . EmailLogFieldList::RECIPIENTS . '` as `'        . EmailLogPropertyNamesList::RECIPIENTS . '`,
-                `' . EmailLogFieldList::SUBJECT . '` as `'           . EmailLogPropertyNamesList::SUBJECT . '`,
-                `' . EmailLogFieldList::LOGGED . '` as `'            . EmailLogPropertyNamesList::LOGGED . '`,
-                `' . EmailLogFieldList::QUEUED . '` as `'            . EmailLogPropertyNamesList::QUEUED . '`,
-                `' . EmailLogFieldList::SENT . '` as `'              . EmailLogPropertyNamesList::SENT . '`,
-                `' . EmailLogFieldList::DELAY . '` as `'             . EmailLogPropertyNamesList::DELAY . '`,
-                `' . EmailLogFieldList::STATUS . '` as `'            . EmailLogPropertyNamesList::STATUS . '`,
-                `' . EmailLogFieldList::ERROR_MESSAGE . '` as `'     . EmailLogPropertyNamesList::ERROR_MESSAGE . '`
+                `' . EmailLogRepositoryFieldList::EMAIL_LOG_ID . '` as `' .
+                    EmailLogPropertyNamesList::EMAIL_LOG_ID . '`,
+                `' . EmailLogRepositoryFieldList::COMPOSED_EMAIL_ID . '` as `' .
+                    EmailLogPropertyNamesList::COMPOSED_EMAIL_ID .'`,
+                `' . EmailLogRepositoryFieldList::FROM . '` as `' .
+                    EmailLogPropertyNamesList::FROM . '`,
+                `' . EmailLogRepositoryFieldList::RECIPIENTS . '` as `' .
+                    EmailLogPropertyNamesList::RECIPIENTS . '`,
+                `' . EmailLogRepositoryFieldList::SUBJECT . '` as `' .
+                    EmailLogPropertyNamesList::SUBJECT . '`,
+                `' . EmailLogRepositoryFieldList::LOGGED . '` as `' .
+                    EmailLogPropertyNamesList::LOGGED . '`,
+                `' . EmailLogRepositoryFieldList::QUEUED . '` as `' .
+                    EmailLogPropertyNamesList::QUEUED . '`,
+                `' . EmailLogRepositoryFieldList::SENT . '` as `' .
+                    EmailLogPropertyNamesList::SENT . '`,
+                `' . EmailLogRepositoryFieldList::DELAY . '` as `' .
+                    EmailLogPropertyNamesList::DELAY . '`,
+                `' . EmailLogRepositoryFieldList::STATUS . '` as `' .
+                    EmailLogPropertyNamesList::STATUS . '`,
+                `' . EmailLogRepositoryFieldList::ERROR_MESSAGE . '` as `' .
+                    EmailLogPropertyNamesList::ERROR_MESSAGE . '`
             FROM
                 `emailLog`
             WHERE
-                `' .  EmailLogFieldList::EMAIL_LOG_ID . '` = :' .  EmailLogFieldList::EMAIL_LOG_ID . '; 
+                `' . EmailLogRepositoryFieldList::EMAIL_LOG_ID . '` = :' .
+                    EmailLogRepositoryFieldList::EMAIL_LOG_ID . '; 
         ';
 
         $statement = $pdo->prepare($sql);
 
-        $statement->bindValue(':' . EmailLogFieldList::EMAIL_LOG_ID, $emailLogId->getValue(), PDO::PARAM_INT);
+        $statement->bindValue(':' . EmailLogRepositoryFieldList::EMAIL_LOG_ID, $emailLogId->getValue(), PDO::PARAM_INT);
 
         if (!$statement->execute()) {
             throw new PDOException(static::SQL_ERROR_MESSAGE);
@@ -124,22 +136,33 @@ class EmailLogRepositoryReader implements EmailLogRepositoryReaderInterface
 
         $sql = '
             SELECT
-                `' . EmailLogFieldList::EMAIL_LOG_ID . '` as `'      . EmailLogPropertyNamesList::EMAIL_LOG_ID . '`,
-                `' . EmailLogFieldList::COMPOSED_EMAIL_ID . '` as `' . EmailLogPropertyNamesList::COMPOSED_EMAIL_ID .'`,
-                `' . EmailLogFieldList::FROM . '` as `'              . EmailLogPropertyNamesList::FROM . '`,
-                `' . EmailLogFieldList::RECIPIENTS . '` as `'        . EmailLogPropertyNamesList::RECIPIENTS . '`,
-                `' . EmailLogFieldList::SUBJECT . '` as `'           . EmailLogPropertyNamesList::SUBJECT . '`,
-                `' . EmailLogFieldList::LOGGED . '` as `'            . EmailLogPropertyNamesList::LOGGED . '`,
-                `' . EmailLogFieldList::QUEUED . '` as `'            . EmailLogPropertyNamesList::QUEUED . '`,
-                `' . EmailLogFieldList::SENT . '` as `'              . EmailLogPropertyNamesList::SENT . '`,
-                `' . EmailLogFieldList::DELAY . '` as `'             . EmailLogPropertyNamesList::DELAY . '`,
-                `' . EmailLogFieldList::STATUS . '` as `'            . EmailLogPropertyNamesList::STATUS . '`,
-                `' . EmailLogFieldList::ERROR_MESSAGE . '` as `'     . EmailLogPropertyNamesList::ERROR_MESSAGE . '`
+                `' . EmailLogRepositoryFieldList::EMAIL_LOG_ID . '` as `' .
+                    EmailLogPropertyNamesList::EMAIL_LOG_ID . '`,
+                `' . EmailLogRepositoryFieldList::COMPOSED_EMAIL_ID . '` as `' .
+                    EmailLogPropertyNamesList::COMPOSED_EMAIL_ID .'`,
+                `' . EmailLogRepositoryFieldList::FROM . '` as `' .
+                    EmailLogPropertyNamesList::FROM . '`,
+                `' . EmailLogRepositoryFieldList::RECIPIENTS . '` as `' .
+                    EmailLogPropertyNamesList::RECIPIENTS . '`,
+                `' . EmailLogRepositoryFieldList::SUBJECT . '` as `' .
+                    EmailLogPropertyNamesList::SUBJECT . '`,
+                `' . EmailLogRepositoryFieldList::LOGGED . '` as `' .
+                    EmailLogPropertyNamesList::LOGGED . '`,
+                `' . EmailLogRepositoryFieldList::QUEUED . '` as `' .
+                    EmailLogPropertyNamesList::QUEUED . '`,
+                `' . EmailLogRepositoryFieldList::SENT . '` as `' .
+                    EmailLogPropertyNamesList::SENT . '`,
+                `' . EmailLogRepositoryFieldList::DELAY . '` as `' .
+                    EmailLogPropertyNamesList::DELAY . '`,
+                `' . EmailLogRepositoryFieldList::STATUS . '` as `' .
+                    EmailLogPropertyNamesList::STATUS . '`,
+                `' . EmailLogRepositoryFieldList::ERROR_MESSAGE . '` as `' .
+                    EmailLogPropertyNamesList::ERROR_MESSAGE . '`
             FROM
                 `emailLog`
             ' . $this->getListWhereSQL($listRequest) . '
             ORDER BY
-                `' . EmailLogFieldList::EMAIL_LOG_ID . '` DESC
+                `' . EmailLogRepositoryFieldList::EMAIL_LOG_ID . '` DESC
             ' . $this->getListLimitSQL($listRequest) . '; 
         ';
 
@@ -147,7 +170,7 @@ class EmailLogRepositoryReader implements EmailLogRepositoryReaderInterface
 
         if ($listRequest->getFrom()) {
             $statement->bindValue(
-                ':' . EmailLogFieldList::FROM,
+                ':' . EmailLogRepositoryFieldList::FROM,
                 $listRequest->getFrom()->getAddress()->getValue()
             );
         }
@@ -160,7 +183,7 @@ class EmailLogRepositoryReader implements EmailLogRepositoryReaderInterface
 
         if ($listRequest->getLastComposedEmailId()) {
             $statement->bindValue(
-                ':' . EmailLogFieldList::COMPOSED_EMAIL_ID,
+                ':' . EmailLogRepositoryFieldList::COMPOSED_EMAIL_ID,
                 $listRequest->getLastComposedEmailId()->getValue(),
                 PDO::PARAM_INT
             );
@@ -196,11 +219,12 @@ class EmailLogRepositoryReader implements EmailLogRepositoryReaderInterface
         $expressions = [];
 
         if ($listRequest->getFrom()) {
-            $expressions[]= '`' . EmailLogFieldList::FROM . '` = :' . EmailLogFieldList::FROM;
+            $expressions[]= '`' . EmailLogRepositoryFieldList::FROM . '` = :' . EmailLogRepositoryFieldList::FROM;
         }
 
         if ($listRequest->getLastComposedEmailId()) {
-            $expressions[]= '`' . EmailLogFieldList::COMPOSED_EMAIL_ID . '` < :' . EmailLogFieldList::COMPOSED_EMAIL_ID;
+            $expressions[]= '`' . EmailLogRepositoryFieldList::COMPOSED_EMAIL_ID .
+                '` < :' . EmailLogRepositoryFieldList::COMPOSED_EMAIL_ID;
         }
 
         if (!empty($expressions)) {

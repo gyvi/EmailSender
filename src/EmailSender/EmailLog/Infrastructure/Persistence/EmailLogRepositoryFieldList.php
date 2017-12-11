@@ -3,11 +3,11 @@
 namespace EmailSender\EmailLog\Infrastructure\Persistence;
 
 /**
- * Class EmailLogFieldList
+ * Class EmailLogRepositoryFieldList
  *
  * @package EmailSender\EmailLog
  */
-class EmailLogFieldList
+class EmailLogRepositoryFieldList
 {
     /**
      * Primary key of the emailLog SQL table.

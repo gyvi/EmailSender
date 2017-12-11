@@ -23,12 +23,12 @@ interface EmailLogRepositoryWriterInterface
 
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $emailLogId
-     * @param \EmailSender\Core\ValueObject\EmailStatus                                $emailLogStatus
+     * @param \EmailSender\Core\ValueObject\EmailStatus                                $emailStatus
      * @param \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral    $errorMessage
      */
     public function setStatus(
         UnsignedInteger $emailLogId,
-        EmailStatus $emailLogStatus,
+        EmailStatus $emailStatus,
         StringLiteral $errorMessage
     ): void;
 }
