@@ -47,7 +47,6 @@ class EmailQueueServiceTest extends TestCase
             ->method('close')
             ->willReturn(null);
 
-        $logger               = (new Mockery($this))->getLoggerMock();
         $queueService         = (new Mockery($this))->getQueueServiceMock($queueConnection);
         $queueServiceSettings = [
             'queue'    => 'emailSendQueue',
@@ -58,7 +57,11 @@ class EmailQueueServiceTest extends TestCase
 
         $expected = new EmailStatus(EmailStatusList::STATUS_QUEUED);
 
-        $emailQueueService = new EmailQueueService($logger, $queueService, $queueServiceSettings);
+        $emailQueueService = new EmailQueueService(
+            (new Mockery($this))->getLoggerMock(),
+            $queueService,
+            $queueServiceSettings
+        );
 
         $this->assertEquals($expected, $emailQueueService->add($emailLog));
     }
@@ -100,10 +103,6 @@ class EmailQueueServiceTest extends TestCase
      */
     public function testGet()
     {
-        $logger               = (new Mockery($this))->getLoggerMock();
-        $queueService         = (new Mockery($this))->getQueueServiceMock();
-        $queueServiceSettings = [];
-
         $emailLogId      = 1;
         $composedEmailId = 1;
         $delay           = 1;
@@ -120,7 +119,11 @@ class EmailQueueServiceTest extends TestCase
             new UnsignedInteger($emailQueueArray[EmailQueuePropertyNamesList::DELAY])
         );
 
-        $emailQueueService = new EmailQueueService($logger, $queueService, $queueServiceSettings);
+        $emailQueueService = new EmailQueueService(
+            (new Mockery($this))->getLoggerMock(),
+            (new Mockery($this))->getQueueServiceMock(),
+            []
+        );
 
         $this->assertEquals($expected, $emailQueueService->get($emailQueueArray));
     }
@@ -139,10 +142,11 @@ class EmailQueueServiceTest extends TestCase
             ->method('alert')
             ->willReturn(null);
 
-        $queueService         = (new Mockery($this))->getQueueServiceMock();
-        $queueServiceSettings = [];
-
-        $emailQueueService = new EmailQueueService($logger, $queueService, $queueServiceSettings);
+        $emailQueueService = new EmailQueueService(
+            $logger,
+            (new Mockery($this))->getQueueServiceMock(),
+            []
+        );
 
         $emailQueueService->get([]);
     }

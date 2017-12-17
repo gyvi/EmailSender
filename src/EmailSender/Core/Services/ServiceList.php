@@ -56,7 +56,7 @@ class ServiceList
      *
      * @var string
      */
-    const EMAIL_LOG_WRITER =  'emailLogReader';
+    const EMAIL_LOG_WRITER =  'emailLogWriter';
 
     /**
      * Queue writer.

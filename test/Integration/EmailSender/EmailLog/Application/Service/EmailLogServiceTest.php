@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Integration\EmailSender\EmailLog\Application;
+namespace Test\Integration\EmailSender\EmailLog\Application\Service;
 
 use EmailSender\Core\Catalog\EmailAddressPropertyNameList;
 use EmailSender\Core\Catalog\EmailStatusList;
@@ -16,7 +16,7 @@ use Test\Helper\EmailSender\Mockery;
 /**
  * Class EmailLogServiceTest
  *
- * @package Test\Integration\EmailSender
+ * @package Test\Integration\EmailSender\EmailLog
  */
 class EmailLogServiceTest extends TestCase
 {
@@ -26,9 +26,6 @@ class EmailLogServiceTest extends TestCase
     public function testAdd()
     {
         $emailLogId               = 1;
-        $viewService              = (new Mockery($this))->getViewServiceMock();
-        $logger                   = (new Mockery($this))->getLoggerMock();
-        $emailLogReaderService    = (new Mockery($this))->getRepositoryServiceMock();
         $emailLogRepositoryWriter = (new Mockery($this))->getRepositoryMock(true, null, null, $emailLogId);
         $emailLogWriterService    = (new Mockery($this))->getRepositoryServiceMock($emailLogRepositoryWriter);
 
@@ -56,7 +53,12 @@ class EmailLogServiceTest extends TestCase
             ]
         );
 
-        $emailLogService = new EmailLogService($viewService, $logger, $emailLogReaderService, $emailLogWriterService);
+        $emailLogService = new EmailLogService(
+            (new Mockery($this))->getViewServiceMock(),
+            (new Mockery($this))->getLoggerMock(),
+            (new Mockery($this))->getRepositoryServiceMock(),
+            $emailLogWriterService
+        );
 
         $this->assertInstanceOf(EmailLog::class, $emailLogService->add($email, $composedEmail));
     }
@@ -69,9 +71,6 @@ class EmailLogServiceTest extends TestCase
      */
     public function testAddWithRepositoryException()
     {
-        $viewService              = (new Mockery($this))->getViewServiceMock();
-        $logger                   = (new Mockery($this))->getLoggerMock();
-        $emailLogReaderService    = (new Mockery($this))->getRepositoryServiceMock();
         $emailLogRepositoryWriter = (new Mockery($this))->getRepositoryMock(false);
         $emailLogWriterService    = (new Mockery($this))->getRepositoryServiceMock($emailLogRepositoryWriter);
 
@@ -99,7 +98,12 @@ class EmailLogServiceTest extends TestCase
             ]
         );
 
-        $emailLogService = new EmailLogService($viewService, $logger, $emailLogReaderService, $emailLogWriterService);
+        $emailLogService = new EmailLogService(
+            (new Mockery($this))->getViewServiceMock(),
+            (new Mockery($this))->getLoggerMock(),
+            (new Mockery($this))->getRepositoryServiceMock(),
+            $emailLogWriterService
+        );
 
         $emailLogService->add($email, $composedEmail);
     }
@@ -109,9 +113,6 @@ class EmailLogServiceTest extends TestCase
      */
     public function testSetStatus()
     {
-        $viewService              = (new Mockery($this))->getViewServiceMock();
-        $logger                   = (new Mockery($this))->getLoggerMock();
-        $emailLogReaderService    = (new Mockery($this))->getRepositoryServiceMock();
         $emailLogRepositoryWriter = (new Mockery($this))->getRepositoryMock(true);
         $emailLogWriterService    = (new Mockery($this))->getRepositoryServiceMock($emailLogRepositoryWriter);
 
@@ -119,7 +120,12 @@ class EmailLogServiceTest extends TestCase
         $emailLogStatus = (new Mockery($this))->getEmailStatusMock(EmailStatusList::STATUS_SENT);
         $errorMessage   = '';
 
-        $emailLogService = new EmailLogService($viewService, $logger, $emailLogReaderService, $emailLogWriterService);
+        $emailLogService = new EmailLogService(
+            (new Mockery($this))->getViewServiceMock(),
+            (new Mockery($this))->getLoggerMock(),
+            (new Mockery($this))->getRepositoryServiceMock(),
+            $emailLogWriterService
+        );
 
         $emailLogService->setStatus($emailLogId, $emailLogStatus, $errorMessage);
 
@@ -134,9 +140,6 @@ class EmailLogServiceTest extends TestCase
      */
     public function testSetStatusWithRepositoryException()
     {
-        $viewService              = (new Mockery($this))->getViewServiceMock();
-        $logger                   = (new Mockery($this))->getLoggerMock();
-        $emailLogReaderService    = (new Mockery($this))->getRepositoryServiceMock();
         $emailLogRepositoryWriter = (new Mockery($this))->getRepositoryMock(false);
         $emailLogWriterService    = (new Mockery($this))->getRepositoryServiceMock($emailLogRepositoryWriter);
 
@@ -144,7 +147,12 @@ class EmailLogServiceTest extends TestCase
         $emailLogStatus = (new Mockery($this))->getEmailStatusMock(EmailStatusList::STATUS_SENT);
         $errorMessage   = '';
 
-        $emailLogService = new EmailLogService($viewService, $logger, $emailLogReaderService, $emailLogWriterService);
+        $emailLogService = new EmailLogService(
+            (new Mockery($this))->getViewServiceMock(),
+            (new Mockery($this))->getLoggerMock(),
+            (new Mockery($this))->getRepositoryServiceMock(),
+            $emailLogWriterService
+        );
 
         $emailLogService->setStatus($emailLogId, $emailLogStatus, $errorMessage);
     }
@@ -154,13 +162,15 @@ class EmailLogServiceTest extends TestCase
      */
     public function testList()
     {
-        $viewService              = (new Mockery($this))->getViewServiceMock();
-        $logger                   = (new Mockery($this))->getLoggerMock();
         $emailLogRepositoryReader = (new Mockery($this))->getRepositoryMock(true, null, []);
         $emailLogReaderService    = (new Mockery($this))->getRepositoryServiceMock($emailLogRepositoryReader);
-        $emailLogWriterService    = (new Mockery($this))->getRepositoryServiceMock();
 
-        $emailLogService = new EmailLogService($viewService, $logger, $emailLogReaderService, $emailLogWriterService);
+        $emailLogService = new EmailLogService(
+            (new Mockery($this))->getViewServiceMock(),
+            (new Mockery($this))->getLoggerMock(),
+            $emailLogReaderService,
+            (new Mockery($this))->getRepositoryServiceMock()
+        );
 
         $get = [];
 
@@ -183,12 +193,12 @@ class EmailLogServiceTest extends TestCase
      */
     public function testListWithInvalidRequest()
     {
-        $viewService           = (new Mockery($this))->getViewServiceMock();
-        $logger                = (new Mockery($this))->getLoggerMock();
-        $emailLogReaderService = (new Mockery($this))->getRepositoryServiceMock();
-        $emailLogWriterService = (new Mockery($this))->getRepositoryServiceMock();
-
-        $emailLogService = new EmailLogService($viewService, $logger, $emailLogReaderService, $emailLogWriterService);
+        $emailLogService = new EmailLogService(
+            (new Mockery($this))->getViewServiceMock(),
+            (new Mockery($this))->getLoggerMock(),
+            (new Mockery($this))->getRepositoryServiceMock(),
+            (new Mockery($this))->getRepositoryServiceMock()
+        );
 
         $get = [
             ListEmailLogRequestPropertyNameList::LAST_COMPOSED_EMAIL_ID => 'something'
@@ -213,13 +223,15 @@ class EmailLogServiceTest extends TestCase
      */
     public function testListWithRepositoryException()
     {
-        $viewService              = (new Mockery($this))->getViewServiceMock();
-        $logger                   = (new Mockery($this))->getLoggerMock();
         $emailLogRepositoryReader = (new Mockery($this))->getRepositoryMock(false);
         $emailLogReaderService    = (new Mockery($this))->getRepositoryServiceMock($emailLogRepositoryReader);
-        $emailLogWriterService    = (new Mockery($this))->getRepositoryServiceMock();
 
-        $emailLogService = new EmailLogService($viewService, $logger, $emailLogReaderService, $emailLogWriterService);
+        $emailLogService = new EmailLogService(
+            (new Mockery($this))->getViewServiceMock(),
+            (new Mockery($this))->getLoggerMock(),
+            $emailLogReaderService,
+            (new Mockery($this))->getRepositoryServiceMock()
+        );
 
         $get = [];
 
@@ -250,12 +262,14 @@ class EmailLogServiceTest extends TestCase
             ->method('render')
             ->willReturn($expected);
 
-        $viewService           = (new Mockery($this))->getViewServiceMock($view);
-        $logger                = (new Mockery($this))->getLoggerMock();
-        $emailLogReaderService = (new Mockery($this))->getRepositoryServiceMock();
-        $emailLogWriterService = (new Mockery($this))->getRepositoryServiceMock();
+        $viewService = (new Mockery($this))->getViewServiceMock($view);
 
-        $emailLogService = new EmailLogService($viewService, $logger, $emailLogReaderService, $emailLogWriterService);
+        $emailLogService = new EmailLogService(
+            $viewService,
+            (new Mockery($this))->getLoggerMock(),
+            (new Mockery($this))->getRepositoryServiceMock(),
+            (new Mockery($this))->getRepositoryServiceMock()
+        );
 
         $request  = (new Mockery($this))->getServerRequestMock();
         $response = new Response();

@@ -22,18 +22,10 @@ class EmailServiceTest extends TestCase
      */
     public function testAddWithSent()
     {
-        $view                       = (new Mockery($this))->getViewServiceMock();
-        $logger                     = (new Mockery($this))->getLoggerMock();
-        $queueService               = (new Mockery($this))->getQueueServiceMock();
-        $queueServiceSettings       = [];
-        $composedEmailReaderService = (new Mockery($this))->getRepositoryServiceMock();
-
         $composedEmailRepositoryWriter = (new Mockery($this))->getRepositoryMock(true, null, null, 1);
         $composedEmailWriterService    = (new Mockery($this))->getRepositoryServiceMock($composedEmailRepositoryWriter);
-
-        $emailLogReaderService    = (new Mockery($this))->getRepositoryServiceMock();
-        $emailLogRepositoryWriter = (new Mockery($this))->getRepositoryMock(true, null, null, 1);
-        $emailLogWriterService    = (new Mockery($this))->getRepositoryServiceMock($emailLogRepositoryWriter);
+        $emailLogRepositoryWriter      = (new Mockery($this))->getRepositoryMock(true, null, null, 1);
+        $emailLogWriterService         = (new Mockery($this))->getRepositoryServiceMock($emailLogRepositoryWriter);
 
         $smtp = (new Mockery($this))->getSMTPMock();
         $smtp->expects($this->once())
@@ -66,13 +58,13 @@ class EmailServiceTest extends TestCase
         $response = new Response();
 
         $emailService = new EmailService(
-            $view,
-            $logger,
-            $queueService,
-            $queueServiceSettings,
-            $composedEmailReaderService,
+            (new Mockery($this))->getViewServiceMock(),
+            (new Mockery($this))->getLoggerMock(),
+            (new Mockery($this))->getQueueServiceMock(),
+            [],
+            (new Mockery($this))->getRepositoryServiceMock(),
             $composedEmailWriterService,
-            $emailLogReaderService,
+            (new Mockery($this))->getRepositoryServiceMock(),
             $emailLogWriterService,
             $smtpService
         );
@@ -89,21 +81,15 @@ class EmailServiceTest extends TestCase
      */
     public function testAddWithQueued()
     {
-        $view                       = (new Mockery($this))->getViewServiceMock();
-        $logger                     = (new Mockery($this))->getLoggerMock();
-        $queueServiceSettings       = [
+        $queueServiceSettings = [
             'queue'    => 'emailSendQueue',
             'exchange' => 'emailSender',
         ];
-        $composedEmailReaderService = (new Mockery($this))->getRepositoryServiceMock();
 
         $composedEmailRepositoryWriter = (new Mockery($this))->getRepositoryMock(true, null, null, 1);
         $composedEmailWriterService    = (new Mockery($this))->getRepositoryServiceMock($composedEmailRepositoryWriter);
-
-        $emailLogReaderService    = (new Mockery($this))->getRepositoryServiceMock();
-        $emailLogRepositoryWriter = (new Mockery($this))->getRepositoryMock(true, null, null, 1);
-        $emailLogWriterService    = (new Mockery($this))->getRepositoryServiceMock($emailLogRepositoryWriter);
-        $smtpService              = (new Mockery($this))->getSMTPServiceMock();
+        $emailLogRepositoryWriter      = (new Mockery($this))->getRepositoryMock(true, null, null, 1);
+        $emailLogWriterService         = (new Mockery($this))->getRepositoryServiceMock($emailLogRepositoryWriter);
 
         /** @var \PhpAmqpLib\Channel\AMQPChannel|\PHPUnit_Framework_MockObject_MockObject $channel */
         $channel = $this->getMockBuilder(AMQPChannel::class)
@@ -145,15 +131,15 @@ class EmailServiceTest extends TestCase
         $response = new Response();
 
         $emailService = new EmailService(
-            $view,
-            $logger,
+            (new Mockery($this))->getViewServiceMock(),
+            (new Mockery($this))->getLoggerMock(),
             $queueService,
             $queueServiceSettings,
-            $composedEmailReaderService,
+            (new Mockery($this))->getRepositoryServiceMock(),
             $composedEmailWriterService,
-            $emailLogReaderService,
+            (new Mockery($this))->getRepositoryServiceMock(),
             $emailLogWriterService,
-            $smtpService
+            (new Mockery($this))->getSMTPServiceMock()
         );
 
         /** @var \Slim\Http\Response $result */
@@ -168,15 +154,11 @@ class EmailServiceTest extends TestCase
      */
     public function testAddWithInvalidRequestProperty()
     {
-        $view                       = (new Mockery($this))->getViewServiceMock();
-        $logger                     = (new Mockery($this))->getLoggerMock();
-        $queueService               = (new Mockery($this))->getQueueServiceMock();
-        $queueServiceSettings       = [];
-        $composedEmailReaderService = (new Mockery($this))->getRepositoryServiceMock();
-        $composedEmailWriterService = (new Mockery($this))->getRepositoryServiceMock();
-        $emailLogReaderService      = (new Mockery($this))->getRepositoryServiceMock();
-        $emailLogWriterService      = (new Mockery($this))->getRepositoryServiceMock();
-        $smtpService                = (new Mockery($this))->getSMTPServiceMock();
+        $logger = (new Mockery($this))->getLoggerMock();
+
+        $logger->expects($this->once())
+            ->method('warning')
+            ->willReturn(null);
 
         $post = [
             EmailPropertyNameList::FROM    => 'wrongEmailAddress',
@@ -194,15 +176,15 @@ class EmailServiceTest extends TestCase
         $response = new Response();
 
         $emailService = new EmailService(
-            $view,
+            (new Mockery($this))->getViewServiceMock(),
             $logger,
-            $queueService,
-            $queueServiceSettings,
-            $composedEmailReaderService,
-            $composedEmailWriterService,
-            $emailLogReaderService,
-            $emailLogWriterService,
-            $smtpService
+            (new Mockery($this))->getQueueServiceMock(),
+            [],
+            (new Mockery($this))->getRepositoryServiceMock(),
+            (new Mockery($this))->getRepositoryServiceMock(),
+            (new Mockery($this))->getRepositoryServiceMock(),
+            (new Mockery($this))->getRepositoryServiceMock(),
+            (new Mockery($this))->getSMTPServiceMock()
         );
 
         /** @var \Slim\Http\Response $result */
@@ -217,15 +199,6 @@ class EmailServiceTest extends TestCase
      */
     public function testAddWithServiceError()
     {
-        $view                       = (new Mockery($this))->getViewServiceMock();
-        $logger                     = (new Mockery($this))->getLoggerMock();
-        $queueService               = (new Mockery($this))->getQueueServiceMock();
-        $queueServiceSettings       = [];
-        $composedEmailReaderService = (new Mockery($this))->getRepositoryServiceMock();
-        $emailLogReaderService      = (new Mockery($this))->getRepositoryServiceMock();
-        $emailLogWriterService      = (new Mockery($this))->getRepositoryServiceMock();
-        $smtpService                = (new Mockery($this))->getSMTPServiceMock();
-
         $composedEmailRepositoryWriter = (new Mockery($this))->getRepositoryMock(false, null, null, 1);
         $composedEmailWriterService    = (new Mockery($this))->getRepositoryServiceMock($composedEmailRepositoryWriter);
 
@@ -245,15 +218,15 @@ class EmailServiceTest extends TestCase
         $response = new Response();
 
         $emailService = new EmailService(
-            $view,
-            $logger,
-            $queueService,
-            $queueServiceSettings,
-            $composedEmailReaderService,
+            (new Mockery($this))->getViewServiceMock(),
+            (new Mockery($this))->getLoggerMock(),
+            (new Mockery($this))->getQueueServiceMock(),
+            [],
+            (new Mockery($this))->getRepositoryServiceMock(),
             $composedEmailWriterService,
-            $emailLogReaderService,
-            $emailLogWriterService,
-            $smtpService
+            (new Mockery($this))->getRepositoryServiceMock(),
+            (new Mockery($this))->getRepositoryServiceMock(),
+            (new Mockery($this))->getSMTPServiceMock()
         );
 
         /** @var \Slim\Http\Response $result */
