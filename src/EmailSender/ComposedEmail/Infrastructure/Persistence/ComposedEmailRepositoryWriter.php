@@ -3,6 +3,7 @@
 namespace EmailSender\ComposedEmail\Infrastructure\Persistence;
 
 use Closure;
+use EmailSender\ComposedEmail\Application\Catalog\ComposedEmailPropertyNameList;
 use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
 use EmailSender\ComposedEmail\Domain\Contract\ComposedEmailRepositoryWriterInterface;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
@@ -50,32 +51,32 @@ class ComposedEmailRepositoryWriter implements ComposedEmailRepositoryWriterInte
         $sql = '
             INSERT INTO
                 `composedEmail` (
-                    `' . ComposedEmailRepositoryFieldList::FROM . '`,
-                    `' . ComposedEmailRepositoryFieldList::RECIPIENTS . '`,
-                    `' . ComposedEmailRepositoryFieldList::EMAIL . '`
+                    `from`,
+                    `recipients`,
+                    `email`
                 )
             VALUES
                 (
-                    :' . ComposedEmailRepositoryFieldList::FROM . ',
-                    :' . ComposedEmailRepositoryFieldList::RECIPIENTS . ',
-                    :' . ComposedEmailRepositoryFieldList::EMAIL . '
+                    :' . ComposedEmailPropertyNameList::FROM . ',
+                    :' . ComposedEmailPropertyNameList::RECIPIENTS . ',
+                    :' . ComposedEmailPropertyNameList::EMAIL . '
                 ); 
         ';
 
         $statement = $pdo->prepare($sql);
 
         $statement->bindValue(
-            ':' . ComposedEmailRepositoryFieldList::FROM,
+            ':' . ComposedEmailPropertyNameList::FROM,
             $composedEmail->getFrom()->getAddress()->getValue()
         );
 
         $statement->bindValue(
-            ':' . ComposedEmailRepositoryFieldList::RECIPIENTS,
+            ':' . ComposedEmailPropertyNameList::RECIPIENTS,
             json_encode($composedEmail->getRecipients())
         );
 
         $statement->bindValue(
-            ':' . ComposedEmailRepositoryFieldList::EMAIL,
+            ':' . ComposedEmailPropertyNameList::EMAIL,
             $composedEmail->getEmail()->getValue()
         );
 

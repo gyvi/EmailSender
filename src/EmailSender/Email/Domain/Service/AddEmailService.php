@@ -12,6 +12,7 @@ use EmailSender\Core\ValueObject\EmailStatus;
 use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
 use EmailSender\EmailQueue\Application\Contract\EmailQueueServiceInterface;
 use EmailSender\EmailQueue\Application\Exception\EmailQueueException;
+use EmailSender\Email\Domain\Aggregate\Email;
 
 /**
  * Class AddEmailService
@@ -63,24 +64,28 @@ class AddEmailService
     /**
      * @param array $request
      *
-     * @return \EmailSender\Core\ValueObject\EmailStatus
+     * @return \EmailSender\Email\Domain\Aggregate\Email
      *
      * @throws \EmailSender\ComposedEmail\Application\Exception\ComposedEmailException
      * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
      * @throws \EmailSender\EmailQueue\Application\Exception\EmailQueueException
      * @throws \InvalidArgumentException
      */
-    public function add(array $request): EmailStatus
+    public function add(array $request): Email
     {
         $email         = $this->emailFactory->create($request);
         $composedEmail = $this->composedEmailService->add($email);
         $emailLog      = $this->emailLogService->add($email, $composedEmail);
 
         if ($email->getDelay()->getValue() > 0) {
-            return $this->addToQueue($emailLog);
+            $email->setEmailStatus($this->addToQueue($emailLog));
+
+            return $email;
         }
 
-        return $this->send($composedEmail, $emailLog);
+        $email->setEmailStatus($this->send($composedEmail, $emailLog));
+
+        return $email;
     }
 
     /**

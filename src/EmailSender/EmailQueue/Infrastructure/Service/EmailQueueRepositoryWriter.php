@@ -2,13 +2,11 @@
 
 namespace EmailSender\EmailQueue\Infrastructure\Service;
 
-use EmailSender\Core\ValueObject\EmailStatus;
 use EmailSender\EmailQueue\Domain\Aggregator\EmailQueue;
 use EmailSender\EmailQueue\Domain\Contract\EmailQueueRepositoryWriterInterface;
 use Closure;
 use EmailSender\EmailQueue\Infrastructure\Factory\AMQPMessageFactory;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
-use EmailSender\Core\Catalog\EmailStatusList;
 
 /**
  * Class EmailQueueRepositoryWriter
@@ -65,9 +63,9 @@ class EmailQueueRepositoryWriter implements EmailQueueRepositoryWriterInterface
     /**
      * @param \EmailSender\EmailQueue\Domain\Aggregator\EmailQueue $emailQueue
      *
-     * @return \EmailSender\Core\ValueObject\EmailStatus
+     * @return \EmailSender\EmailQueue\Domain\Aggregator\EmailQueue
      */
-    public function add(EmailQueue $emailQueue): EmailStatus
+    public function add(EmailQueue $emailQueue): EmailQueue
     {
         $connection = $this->getConnection();
         $channel    = $connection->channel();
@@ -100,7 +98,7 @@ class EmailQueueRepositoryWriter implements EmailQueueRepositoryWriterInterface
         $channel->close();
         $connection->close();
 
-        return new EmailStatus(EmailStatusList::STATUS_QUEUED);
+        return $emailQueue;
     }
 
     /**

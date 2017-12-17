@@ -4,7 +4,7 @@ namespace EmailSender\EmailLog\Application\Controller;
 
 use EmailSender\Core\Controller\AbstractController;
 use EmailSender\EmailLog\Application\Service\EmailLogService;
-use EmailSender\EmailLog\Application\Validator\ListRequestValidator;
+use EmailSender\EmailLog\Application\Validator\ListEmailLogRequestValidator;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -48,7 +48,7 @@ class EmailLogController extends AbstractController
         $emailLogWriter = $this->container->get(ServiceList::EMAIL_LOG_WRITER);
 
         try {
-            (new ListRequestValidator())->validate($request->getQueryParams());
+            (new ListEmailLogRequestValidator())->validate($request->getQueryParams());
         } catch (InvalidArgumentException $e) { // Invalid request.
             $logger->warning($e->getMessage(), $e->getTrace());
 

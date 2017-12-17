@@ -42,15 +42,6 @@ interface EmailLogServiceInterface
     ): void;
 
     /**
-     * @param int $emailLogIdInt
-     *
-     * @return \EmailSender\EmailLog\Domain\Aggregate\EmailLog
-     *
-     * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
-     */
-    public function get(int $emailLogIdInt): EmailLog;
-
-    /**
      * @param \Psr\Http\Message\ServerRequestInterface $request
      * @param \Psr\Http\Message\ResponseInterface      $response
      * @param array                                    $getRequest

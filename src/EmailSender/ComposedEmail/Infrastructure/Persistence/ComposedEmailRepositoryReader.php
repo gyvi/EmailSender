@@ -59,25 +59,20 @@ class ComposedEmailRepositoryReader implements ComposedEmailRepositoryReaderInte
 
         $sql = '
             SELECT
-                `' . ComposedEmailRepositoryFieldList::COMPOSED_EMAIL_ID . '` as `' .
-                    ComposedEmailPropertyNameList::COMPOSED_EMAIL_ID . '`,
-                `' . ComposedEmailRepositoryFieldList::FROM . '` as `' .
-                    ComposedEmailPropertyNameList::FROM . '`,
-                `' . ComposedEmailRepositoryFieldList::RECIPIENTS . '` as `' .
-                    ComposedEmailPropertyNameList::RECIPIENTS . '`,
-                `' . ComposedEmailRepositoryFieldList::EMAIL . '` as `' .
-                    ComposedEmailPropertyNameList::EMAIL . '`,
+                `composedEmailId` as `' . ComposedEmailPropertyNameList::COMPOSED_EMAIL_ID . '`,
+                `from`            as `' . ComposedEmailPropertyNameList::FROM . '`,
+                `recipients`      as `' . ComposedEmailPropertyNameList::RECIPIENTS . '`,
+                `email`           as `' . ComposedEmailPropertyNameList::EMAIL . '`,
             FROM
                 `composedEmail`
             WHERE
-                `' . ComposedEmailRepositoryFieldList::COMPOSED_EMAIL_ID . '` = :' .
-                    ComposedEmailRepositoryFieldList::COMPOSED_EMAIL_ID . '; 
+                `composedEmailId` = :' . ComposedEmailPropertyNameList::COMPOSED_EMAIL_ID . '; 
         ';
 
         $statement = $pdo->prepare($sql);
 
         $statement->bindValue(
-            ':' . ComposedEmailRepositoryFieldList::COMPOSED_EMAIL_ID,
+            ':' . ComposedEmailPropertyNameList::COMPOSED_EMAIL_ID,
             $composedEmailId->getValue(),
             PDO::PARAM_INT
         );

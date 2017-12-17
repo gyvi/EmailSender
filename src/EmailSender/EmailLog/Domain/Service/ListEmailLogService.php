@@ -4,7 +4,7 @@ namespace EmailSender\EmailLog\Domain\Service;
 
 use EmailSender\EmailLog\Application\Collection\EmailLogCollection;
 use EmailSender\EmailLog\Domain\Contract\EmailLogRepositoryReaderInterface;
-use EmailSender\EmailLog\Domain\Factory\ListRequestFactory;
+use EmailSender\EmailLog\Domain\Factory\ListEmailLogRequestFactory;
 
 /**
  * Class ListEmailLogService
@@ -19,22 +19,22 @@ class ListEmailLogService
     private $repositoryReader;
 
     /**
-     * @var \EmailSender\EmailLog\Domain\Factory\ListRequestFactory
+     * @var \EmailSender\EmailLog\Domain\Factory\ListEmailLogRequestFactory
      */
-    private $listRequestFactory;
+    private $listEmailLogRequestFactory;
 
     /**
      * GetEmailLogService constructor.
      *
      * @param \EmailSender\EmailLog\Domain\Contract\EmailLogRepositoryReaderInterface $repositoryReader
-     * @param \EmailSender\EmailLog\Domain\Factory\ListRequestFactory                 $listRequestFactory
+     * @param \EmailSender\EmailLog\Domain\Factory\ListEmailLogRequestFactory         $listEmailLogRequestFactory
      */
     public function __construct(
         EmailLogRepositoryReaderInterface $repositoryReader,
-        ListRequestFactory $listRequestFactory
+        ListEmailLogRequestFactory $listEmailLogRequestFactory
     ) {
-        $this->repositoryReader          = $repositoryReader;
-        $this->listRequestFactory        = $listRequestFactory;
+        $this->repositoryReader   = $repositoryReader;
+        $this->listEmailLogRequestFactory = $listEmailLogRequestFactory;
     }
 
     /**
@@ -46,7 +46,7 @@ class ListEmailLogService
      */
     public function list(array $request): EmailLogCollection
     {
-        $listEmailLogsRequest = $this->listRequestFactory->create($request);
+        $listEmailLogsRequest = $this->listEmailLogRequestFactory->create($request);
 
         return $this->repositoryReader->list($listEmailLogsRequest);
     }

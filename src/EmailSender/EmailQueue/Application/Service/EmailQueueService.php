@@ -2,6 +2,7 @@
 
 namespace EmailSender\EmailQueue\Application\Service;
 
+use EmailSender\Core\Catalog\EmailStatusList;
 use EmailSender\Core\ValueObject\EmailStatus;
 use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
 use EmailSender\EmailQueue\Application\Contract\EmailQueueServiceInterface;
@@ -73,13 +74,14 @@ class EmailQueueService implements EmailQueueServiceInterface
 
             $emailQueueFactory    = new EmailQueueFactory();
             $addEmailQueueService = new AddEmailQueueService($queueWriter, $emailQueueFactory);
-            $emailStatus          = $addEmailQueueService->add($emailLog);
+
+            $addEmailQueueService->add($emailLog);
         } catch (Throwable $e) {
             $this->logger->alert($e->getMessage(), $e->getTrace());
 
             throw new EmailQueueException('Something went wrong with the queue.', 0, $e);
         }
 
-        return $emailStatus;
+        return new EmailStatus(EmailStatusList::STATUS_QUEUED);
     }
 }

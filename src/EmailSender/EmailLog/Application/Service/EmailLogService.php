@@ -12,10 +12,9 @@ use EmailSender\EmailLog\Application\Contract\EmailLogServiceInterface;
 use EmailSender\EmailLog\Application\Exception\EmailLogException;
 use EmailSender\Core\ValueObject\EmailStatus;
 use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
-use EmailSender\EmailLog\Domain\Factory\ListRequestFactory;
+use EmailSender\EmailLog\Domain\Factory\ListEmailLogRequestFactory;
 use EmailSender\EmailLog\Domain\Factory\EmailLogCollectionFactory;
 use EmailSender\EmailLog\Domain\Service\AddEmailLogService;
-use EmailSender\EmailLog\Domain\Service\GetEmailLogService;
 use EmailSender\EmailLog\Domain\Service\ListEmailLogService;
 use EmailSender\EmailLog\Domain\Service\UpdateEmailLogService;
 use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
@@ -80,7 +79,6 @@ class EmailLogService implements EmailLogServiceInterface
 
         $this->repositoryReader    = new EmailLogRepositoryReader(
             $emailLogReaderService,
-            $emailLogFactory,
             $emailLogCollectionFactory
         );
 
@@ -134,29 +132,6 @@ class EmailLogService implements EmailLogServiceInterface
     }
 
     /**
-     * @param int $emailLogIdInt
-     *
-     * @return \EmailSender\EmailLog\Domain\Aggregate\EmailLog
-     *
-     * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
-     */
-    public function get(int $emailLogIdInt): EmailLog
-    {
-        try {
-            $emailLogId         = new UnsignedInteger($emailLogIdInt);
-            $getEmailLogService = new GetEmailLogService($this->repositoryReader);
-
-            $emailLog           = $getEmailLogService->get($emailLogId);
-        } catch (Throwable $e) {
-            $this->logger->alert($e->getMessage(), $e->getTrace());
-
-            throw new EmailLogException('Something went wrong when reading email log.', 0, $e);
-        }
-
-        return $emailLog;
-    }
-
-    /**
      * @param \Psr\Http\Message\ServerRequestInterface $request
      * @param \Psr\Http\Message\ResponseInterface      $response
      * @param array                                    $getRequest
@@ -171,11 +146,11 @@ class EmailLogService implements EmailLogServiceInterface
         try {
             $queryParams = $request->getQueryParams();
 
-            $emailAddressFactory = new EmailAddressFactory();
-            $listRequestFactory  = new ListRequestFactory($emailAddressFactory);
-            $getEmailLogService  = new ListEmailLogService($this->repositoryReader, $listRequestFactory);
+            $emailAddressFactory        = new EmailAddressFactory();
+            $listEmailLogRequestFactory = new ListEmailLogRequestFactory($emailAddressFactory);
+            $listEmailLogService        = new ListEmailLogService($this->repositoryReader, $listEmailLogRequestFactory);
 
-            $emailLogCollection  = $getEmailLogService->list($queryParams);
+            $emailLogCollection  = $listEmailLogService->list($queryParams);
 
             /** @var \Slim\Http\Response $response */
             $response = $response->withJson(['data' => $emailLogCollection])

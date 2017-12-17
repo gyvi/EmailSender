@@ -2,16 +2,13 @@
 
 namespace EmailSender\EmailLog\Infrastructure\Persistence;
 
-use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\EmailLog\Application\Catalog\EmailLogPropertyNamesList;
-use EmailSender\EmailLog\Application\Catalog\ListRequestPropertyNameList;
+use EmailSender\EmailLog\Application\Catalog\ListEmailLogRequestPropertyNameList;
 use EmailSender\EmailLog\Application\Collection\EmailLogCollection;
-use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
 use EmailSender\EmailLog\Domain\Contract\EmailLogRepositoryReaderInterface;
 use Closure;
-use EmailSender\EmailLog\Domain\Entity\ListRequest;
+use EmailSender\EmailLog\Domain\Entity\ListEmailLogRequest;
 use EmailSender\EmailLog\Domain\Factory\EmailLogCollectionFactory;
-use EmailSender\EmailLog\Domain\Factory\EmailLogFactory;
 use PDO;
 use PDOException;
 
@@ -33,11 +30,6 @@ class EmailLogRepositoryReader implements EmailLogRepositoryReaderInterface
     private $emailLogReaderService;
 
     /**
-     * @var \EmailSender\EmailLog\Domain\Factory\EmailLogFactory
-     */
-    private $emailLogFactory;
-
-    /**
      * @var \EmailSender\EmailLog\Domain\Factory\EmailLogCollectionFactory
      */
     private $emailLogCollectionFactory;
@@ -51,76 +43,18 @@ class EmailLogRepositoryReader implements EmailLogRepositoryReaderInterface
      * EmailLogRepositoryReader constructor.
      *
      * @param \Closure                                                       $emailLogReaderService
-     * @param \EmailSender\EmailLog\Domain\Factory\EmailLogFactory           $emailLogFactory
      * @param \EmailSender\EmailLog\Domain\Factory\EmailLogCollectionFactory $emailLogCollectionFactory
      */
     public function __construct(
         Closure $emailLogReaderService,
-        EmailLogFactory $emailLogFactory,
         EmailLogCollectionFactory $emailLogCollectionFactory
     ) {
         $this->emailLogReaderService     = $emailLogReaderService;
-        $this->emailLogFactory           = $emailLogFactory;
         $this->emailLogCollectionFactory = $emailLogCollectionFactory;
     }
 
     /**
-     * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $emailLogId
-     *
-     * @return \EmailSender\EmailLog\Domain\Aggregate\EmailLog
-     *
-     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
-     * @throws \InvalidArgumentException
-     * @throws \PDOException
-     */
-    public function get(UnsignedInteger $emailLogId): EmailLog
-    {
-        $pdo = $this->getConnection();
-
-        $sql = '
-            SELECT
-                `' . EmailLogRepositoryFieldList::EMAIL_LOG_ID . '` as `' .
-                    EmailLogPropertyNamesList::EMAIL_LOG_ID . '`,
-                `' . EmailLogRepositoryFieldList::COMPOSED_EMAIL_ID . '` as `' .
-                    EmailLogPropertyNamesList::COMPOSED_EMAIL_ID .'`,
-                `' . EmailLogRepositoryFieldList::FROM . '` as `' .
-                    EmailLogPropertyNamesList::FROM . '`,
-                `' . EmailLogRepositoryFieldList::RECIPIENTS . '` as `' .
-                    EmailLogPropertyNamesList::RECIPIENTS . '`,
-                `' . EmailLogRepositoryFieldList::SUBJECT . '` as `' .
-                    EmailLogPropertyNamesList::SUBJECT . '`,
-                `' . EmailLogRepositoryFieldList::LOGGED . '` as `' .
-                    EmailLogPropertyNamesList::LOGGED . '`,
-                `' . EmailLogRepositoryFieldList::QUEUED . '` as `' .
-                    EmailLogPropertyNamesList::QUEUED . '`,
-                `' . EmailLogRepositoryFieldList::SENT . '` as `' .
-                    EmailLogPropertyNamesList::SENT . '`,
-                `' . EmailLogRepositoryFieldList::DELAY . '` as `' .
-                    EmailLogPropertyNamesList::DELAY . '`,
-                `' . EmailLogRepositoryFieldList::STATUS . '` as `' .
-                    EmailLogPropertyNamesList::STATUS . '`,
-                `' . EmailLogRepositoryFieldList::ERROR_MESSAGE . '` as `' .
-                    EmailLogPropertyNamesList::ERROR_MESSAGE . '`
-            FROM
-                `emailLog`
-            WHERE
-                `' . EmailLogRepositoryFieldList::EMAIL_LOG_ID . '` = :' .
-                    EmailLogRepositoryFieldList::EMAIL_LOG_ID . '; 
-        ';
-
-        $statement = $pdo->prepare($sql);
-
-        $statement->bindValue(':' . EmailLogRepositoryFieldList::EMAIL_LOG_ID, $emailLogId->getValue(), PDO::PARAM_INT);
-
-        if (!$statement->execute()) {
-            throw new PDOException(static::SQL_ERROR_MESSAGE);
-        }
-
-        return $this->emailLogFactory->createFromArray($statement->fetch(PDO::FETCH_ASSOC));
-    }
-
-    /**
-     * @param \EmailSender\EmailLog\Domain\Entity\ListRequest $listRequest
+     * @param \EmailSender\EmailLog\Domain\Entity\ListEmailLogRequest $listEmailLogRequest
      *
      * @return \EmailSender\EmailLog\Application\Collection\EmailLogCollection
      *
@@ -128,72 +62,61 @@ class EmailLogRepositoryReader implements EmailLogRepositoryReaderInterface
      * @throws \InvalidArgumentException
      * @throws \PDOException
      */
-    public function list(ListRequest $listRequest): EmailLogCollection
+    public function list(ListEmailLogRequest $listEmailLogRequest): EmailLogCollection
     {
         $pdo = $this->getConnection();
 
-        $perPage = $this->getListLimitValue($listRequest);
+        $perPage = $this->getListLimitValue($listEmailLogRequest);
 
         $sql = '
             SELECT
-                `' . EmailLogRepositoryFieldList::EMAIL_LOG_ID . '` as `' .
-                    EmailLogPropertyNamesList::EMAIL_LOG_ID . '`,
-                `' . EmailLogRepositoryFieldList::COMPOSED_EMAIL_ID . '` as `' .
-                    EmailLogPropertyNamesList::COMPOSED_EMAIL_ID .'`,
-                `' . EmailLogRepositoryFieldList::FROM . '` as `' .
-                    EmailLogPropertyNamesList::FROM . '`,
-                `' . EmailLogRepositoryFieldList::RECIPIENTS . '` as `' .
-                    EmailLogPropertyNamesList::RECIPIENTS . '`,
-                `' . EmailLogRepositoryFieldList::SUBJECT . '` as `' .
-                    EmailLogPropertyNamesList::SUBJECT . '`,
-                `' . EmailLogRepositoryFieldList::LOGGED . '` as `' .
-                    EmailLogPropertyNamesList::LOGGED . '`,
-                `' . EmailLogRepositoryFieldList::QUEUED . '` as `' .
-                    EmailLogPropertyNamesList::QUEUED . '`,
-                `' . EmailLogRepositoryFieldList::SENT . '` as `' .
-                    EmailLogPropertyNamesList::SENT . '`,
-                `' . EmailLogRepositoryFieldList::DELAY . '` as `' .
-                    EmailLogPropertyNamesList::DELAY . '`,
-                `' . EmailLogRepositoryFieldList::STATUS . '` as `' .
-                    EmailLogPropertyNamesList::STATUS . '`,
-                `' . EmailLogRepositoryFieldList::ERROR_MESSAGE . '` as `' .
-                    EmailLogPropertyNamesList::ERROR_MESSAGE . '`
+                `emailLogId`      as `' . EmailLogPropertyNamesList::EMAIL_LOG_ID . '`,
+                `composedEmailId` as `' . EmailLogPropertyNamesList::COMPOSED_EMAIL_ID . '`,
+                `from`            as `' . EmailLogPropertyNamesList::FROM . '`,
+                `recipients`      as `' . EmailLogPropertyNamesList::RECIPIENTS . '`,
+                `subject`         as `' . EmailLogPropertyNamesList::SUBJECT . '`,
+                `logged`          as `' . EmailLogPropertyNamesList::LOGGED . '`,
+                `queued`          as `' . EmailLogPropertyNamesList::QUEUED . '`,
+                `sent`            as `' . EmailLogPropertyNamesList::SENT . '`,
+                `delay`           as `' . EmailLogPropertyNamesList::DELAY . '`,
+                `status`          as `' . EmailLogPropertyNamesList::STATUS . '`,
+                `errorMessage`    as `' . EmailLogPropertyNamesList::ERROR_MESSAGE . '`
             FROM
                 `emailLog`
-            ' . $this->getListWhereSQL($listRequest) . '
+            ' . $this->getListWhereSQL($listEmailLogRequest) . '
             ORDER BY
-                `' . EmailLogRepositoryFieldList::EMAIL_LOG_ID . '` DESC
-            ' . $this->getListLimitSQL($listRequest) . '; 
+                `emailLogId` DESC
+            ' . $this->getListLimitSQL($listEmailLogRequest) . '; 
         ';
 
         $statement = $pdo->prepare($sql);
 
-        if ($listRequest->getFrom()) {
+        if ($listEmailLogRequest->getFrom()) {
             $statement->bindValue(
-                ':' . EmailLogRepositoryFieldList::FROM,
-                $listRequest->getFrom()->getAddress()->getValue()
+                ':' . EmailLogPropertyNamesList::FROM,
+                $listEmailLogRequest->getFrom()->getAddress()->getValue()
             );
         }
 
         $statement->bindValue(
-            ':' . ListRequestPropertyNameList::PER_PAGE,
+            ':' . ListEmailLogRequestPropertyNameList::PER_PAGE,
             $perPage,
             PDO::PARAM_INT
         );
 
-        if ($listRequest->getLastComposedEmailId()) {
+        if ($listEmailLogRequest->getLastComposedEmailId()) {
             $statement->bindValue(
-                ':' . EmailLogRepositoryFieldList::COMPOSED_EMAIL_ID,
-                $listRequest->getLastComposedEmailId()->getValue(),
+                ':' . EmailLogPropertyNamesList::COMPOSED_EMAIL_ID,
+                $listEmailLogRequest->getLastComposedEmailId()->getValue(),
                 PDO::PARAM_INT
             );
         }
 
-        if ($listRequest->getPage()) {
+        if ($listEmailLogRequest->getPage()) {
             $statement->bindValue(
-                ':' . ListRequestPropertyNameList::PAGE,
-                ($listRequest->getPage()->getValue() > 0
-                    ? $listRequest->getPage()->getValue() - 1
+                ':' . ListEmailLogRequestPropertyNameList::PAGE,
+                ($listEmailLogRequest->getPage()->getValue() > 0
+                    ? $listEmailLogRequest->getPage()->getValue() - 1
                     : 0
                 ) * $perPage,
                 PDO::PARAM_INT
@@ -208,23 +131,22 @@ class EmailLogRepositoryReader implements EmailLogRepositoryReaderInterface
     }
 
     /**
-     * @param \EmailSender\EmailLog\Domain\Entity\ListRequest $listRequest
+     * @param \EmailSender\EmailLog\Domain\Entity\ListEmailLogRequest $listEmailLogRequest
      *
      * @return string
      */
-    private function getListWhereSQL(ListRequest $listRequest): string
+    private function getListWhereSQL(ListEmailLogRequest $listEmailLogRequest): string
     {
         $listWhereSQL = '';
 
         $expressions = [];
 
-        if ($listRequest->getFrom()) {
-            $expressions[]= '`' . EmailLogRepositoryFieldList::FROM . '` = :' . EmailLogRepositoryFieldList::FROM;
+        if ($listEmailLogRequest->getFrom()) {
+            $expressions[]= '`from` = :' . EmailLogPropertyNamesList::FROM;
         }
 
-        if ($listRequest->getLastComposedEmailId()) {
-            $expressions[]= '`' . EmailLogRepositoryFieldList::COMPOSED_EMAIL_ID .
-                '` < :' . EmailLogRepositoryFieldList::COMPOSED_EMAIL_ID;
+        if ($listEmailLogRequest->getLastComposedEmailId()) {
+            $expressions[]= '`composedEmailId` < :' . EmailLogPropertyNamesList::COMPOSED_EMAIL_ID;
         }
 
         if (!empty($expressions)) {
@@ -237,33 +159,34 @@ class EmailLogRepositoryReader implements EmailLogRepositoryReaderInterface
     }
 
     /**
-     * @param \EmailSender\EmailLog\Domain\Entity\ListRequest $listRequest
+     * @param \EmailSender\EmailLog\Domain\Entity\ListEmailLogRequest $listEmailLogRequest
      *
      * @return string
      */
-    private function getListLimitSQL(ListRequest $listRequest): string
+    private function getListLimitSQL(ListEmailLogRequest $listEmailLogRequest): string
     {
-        $listLimitSQL = 'LIMIT :' . ListRequestPropertyNameList::PER_PAGE;
+        $listLimitSQL = 'LIMIT :' . ListEmailLogRequestPropertyNameList::PER_PAGE;
 
-        if ($listRequest->getPage()) {
-            $listLimitSQL = 'LIMIT :' . ListRequestPropertyNameList::PAGE . ', :'
-                . ListRequestPropertyNameList::PER_PAGE;
+        if ($listEmailLogRequest->getPage()) {
+            $listLimitSQL = 'LIMIT :'
+                . ListEmailLogRequestPropertyNameList::PAGE . ', :'
+                . ListEmailLogRequestPropertyNameList::PER_PAGE;
         }
 
         return $listLimitSQL;
     }
 
     /**
-     * @param \EmailSender\EmailLog\Domain\Entity\ListRequest $listRequest
+     * @param \EmailSender\EmailLog\Domain\Entity\ListEmailLogRequest $listEmailLogRequest
      *
      * @return int
      */
-    private function getListLimitValue(ListRequest $listRequest): int
+    private function getListLimitValue(ListEmailLogRequest $listEmailLogRequest): int
     {
-        $listLimit = ListRequest::DEFAULT_PER_PAGE;
+        $listLimit = ListEmailLogRequest::DEFAULT_PER_PAGE;
 
-        if ($listRequest->getPerPage()) {
-            $listLimit = $listRequest->getPerPage()->getValue();
+        if ($listEmailLogRequest->getPerPage()) {
+            $listLimit = $listEmailLogRequest->getPerPage()->getValue();
         }
 
         return $listLimit;

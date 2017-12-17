@@ -6,7 +6,6 @@ use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
 use EmailSender\ComposedEmail\Domain\Contract\ComposedEmailRepositoryReaderInterface;
 use EmailSender\ComposedEmail\Domain\Contract\SMTPSenderInterface;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
-use EmailSender\Core\ValueObject\EmailStatus;
 
 /**
  * Class SendComposedEmailService
@@ -42,9 +41,9 @@ class SendComposedEmailService
     /**
      * @param \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail $composedEmail
      *
-     * @return \EmailSender\Core\ValueObject\EmailStatus
+     * @return \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail
      */
-    public function send(ComposedEmail $composedEmail): EmailStatus
+    public function send(ComposedEmail $composedEmail): ComposedEmail
     {
         return $this->smtpSenderInterface->send($composedEmail);
     }
@@ -52,9 +51,9 @@ class SendComposedEmailService
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $composedEmailId
      *
-     * @return \EmailSender\Core\ValueObject\EmailStatus
+     * @return \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail
      */
-    public function sendById(UnsignedInteger $composedEmailId): EmailStatus
+    public function sendById(UnsignedInteger $composedEmailId): ComposedEmail
     {
         $composedEmail = $this->repositoryReader->get($composedEmailId);
 

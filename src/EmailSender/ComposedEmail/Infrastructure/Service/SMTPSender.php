@@ -5,8 +5,6 @@ namespace EmailSender\ComposedEmail\Infrastructure\Service;
 use EmailSender\ComposedEmail\Domain\Contract\SMTPSenderInterface;
 use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
 use Closure;
-use EmailSender\Core\Catalog\EmailStatusList;
-use EmailSender\Core\ValueObject\EmailStatus;
 use SMTP;
 
 /**
@@ -34,11 +32,11 @@ class SMTPSender implements SMTPSenderInterface
     /**
      * @param \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail $composedEmail
      *
-     * @return \EmailSender\Core\ValueObject\EmailStatus
+     * @return \EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail
      *
      * @throws \EmailSender\ComposedEmail\Infrastructure\Service\SMTPException
      */
-    public function send(ComposedEmail $composedEmail): EmailStatus
+    public function send(ComposedEmail $composedEmail): ComposedEmail
     {
         /** @var SMTP $smtp */
         $smtp = ($this->smtpService)();
@@ -56,7 +54,7 @@ class SMTPSender implements SMTPSenderInterface
         $smtp->quit();
         $smtp->close();
 
-        return new EmailStatus(EmailStatusList::STATUS_SENT);
+        return $composedEmail;
     }
 
     /**

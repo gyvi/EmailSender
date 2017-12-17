@@ -10,6 +10,7 @@ use EmailSender\Core\Factory\EmailAddressFactory;
 use EmailSender\Core\Factory\RecipientsFactory;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\ValueObject\EmailStatus;
+use EmailSender\Core\Catalog\EmailStatusList;
 use EmailSender\Email\Domain\Aggregate\Email;
 use EmailSender\ComposedEmail\Application\Contract\ComposedEmailServiceInterface;
 use EmailSender\ComposedEmail\Domain\Aggregate\ComposedEmail;
@@ -134,14 +135,14 @@ class ComposedEmailService implements ComposedEmailServiceInterface
             $smtpSender               = new SMTPSender($this->smtpSenderService);
             $sendComposedEmailService = new SendComposedEmailService($smtpSender, $this->repositoryReader);
 
-            $emailStatus = $sendComposedEmailService->send($composedEmail);
+            $sendComposedEmailService->send($composedEmail);
         } catch (Throwable $e) {
             $this->logger->alert($e->getMessage(), $e->getTrace());
 
             throw new ComposedEmailException('Something went wrong when try to send the composed email.', 0, $e);
         }
 
-        return $emailStatus;
+        return new EmailStatus(EmailStatusList::STATUS_SENT);
     }
 
     /**
@@ -157,14 +158,14 @@ class ComposedEmailService implements ComposedEmailServiceInterface
             $smtpSender               = new SMTPSender($this->smtpSenderService);
             $sendComposedEmailService = new SendComposedEmailService($smtpSender, $this->repositoryReader);
 
-            $emailStatus = $sendComposedEmailService->sendById($composedEmailId);
+            $sendComposedEmailService->sendById($composedEmailId);
         } catch (Throwable $e) {
             $this->logger->alert($e->getMessage(), $e->getTrace());
 
             throw new ComposedEmailException('Something went wrong when try to send the composed email.', 0, $e);
         }
 
-        return $emailStatus;
+        return new EmailStatus(EmailStatusList::STATUS_SENT);
     }
 
     /**

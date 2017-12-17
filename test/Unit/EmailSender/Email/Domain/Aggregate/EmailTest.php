@@ -237,4 +237,28 @@ class EmailTest extends TestCase
 
         $this->assertEquals($expected, $email->getDelay());
     }
+
+    /**
+     * Test setEmailStatus and getEmailStatus methods.
+     */
+    public function testSetGetEmailStatus()
+    {
+        $emailStatus            = (new Mockery($this))->getEmailStatusMock(1);
+        $emailAddressCollection = (new Mockery($this))->getEmailAddressCollectionMock([]);
+
+        $email = new Email(
+            (new Mockery($this))->getEmailAddressMock(),
+            $emailAddressCollection,
+            $emailAddressCollection,
+            $emailAddressCollection,
+            (new Mockery($this))->getSubjectMock(''),
+            (new Mockery($this))->getBodyMock(''),
+            (new Mockery($this))->getEmailAddressMock(),
+            (new Mockery($this))->getUnSignedIntegerMock(0)
+        );
+
+        $email->setEmailStatus($emailStatus);
+
+        $this->assertEquals($emailStatus, $email->getEmailStatus());
+    }
 }

@@ -22,7 +22,7 @@ trait EmailMock
      * @param array|null  $replyTo
      * @param int|null    $delay
      *
-     * @return \EmailSender\Email\Domain\Aggregate\Email
+     * @return \EmailSender\Email\Domain\Aggregate\Email|\PHPUnit_Framework_MockObject_MockObject
      */
     public function getEmailMock(
         ?array $from = null,

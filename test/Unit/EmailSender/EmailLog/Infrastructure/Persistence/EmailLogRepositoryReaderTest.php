@@ -3,9 +3,8 @@
 namespace Test\Unit\EmailSender\EmailLog\Infrastructure\Persistence;
 
 use EmailSender\EmailLog\Application\Collection\EmailLogCollection;
-use EmailSender\EmailLog\Domain\Entity\ListRequest;
+use EmailSender\EmailLog\Domain\Entity\ListEmailLogRequest;
 use EmailSender\EmailLog\Domain\Factory\EmailLogCollectionFactory;
-use EmailSender\EmailLog\Domain\Factory\EmailLogFactory;
 use EmailSender\EmailLog\Infrastructure\Persistence\EmailLogRepositoryReader;
 use PHPUnit\Framework\TestCase;
 use Test\Helper\EmailSender\Mockery;
@@ -17,70 +16,6 @@ use Test\Helper\EmailSender\Mockery;
  */
 class EmailLogRepositoryReaderTest extends TestCase
 {
-    /**
-     * Test get method with valid values.
-     */
-    public function testGetWithValidValues()
-    {
-        $emailLogId        = (new Mockery($this))->getUnSignedIntegerMock(1);
-        $expected          = (new Mockery($this))->getEmailLogMock();
-        $repository        = (new Mockery($this))->getRepositoryMock(true, []);
-        $repositoryService = (new Mockery($this))->getRepositoryServiceMock($repository);
-
-        /** @var \EmailSender\EmailLog\Domain\Factory\EmailLogCollectionFactory|\PHPUnit_Framework_MockObject_MockObject $emailLogCollectionFactory */
-        $emailLogCollectionFactory = $this->getMockBuilder(EmailLogCollectionFactory::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        /** @var \EmailSender\EmailLog\Domain\Factory\EmailLogFactory|\PHPUnit_Framework_MockObject_MockObject $emailLogFactory */
-        $emailLogFactory = $this->getMockBuilder(EmailLogFactory::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $emailLogFactory->expects($this->once())
-            ->method('createFromArray')
-            ->willReturn($expected);
-
-        $emailLogRepositoryReader = new EmailLogRepositoryReader(
-            $repositoryService,
-            $emailLogFactory,
-            $emailLogCollectionFactory
-        );
-
-        $this->assertEquals($expected, $emailLogRepositoryReader->get($emailLogId));
-    }
-
-    /**
-     * Test get method with exception.
-     *
-     * @expectedException \PDOException
-     * @expectedExceptionMessage Unable read from the database.
-     */
-    public function testGetWithException()
-    {
-        $emailLogId        = (new Mockery($this))->getUnSignedIntegerMock(1);
-        $repository        = (new Mockery($this))->getRepositoryMock(false);
-        $repositoryService = (new Mockery($this))->getRepositoryServiceMock($repository);
-
-        /** @var \EmailSender\EmailLog\Domain\Factory\EmailLogCollectionFactory|\PHPUnit_Framework_MockObject_MockObject $emailLogCollectionFactory */
-        $emailLogCollectionFactory = $this->getMockBuilder(EmailLogCollectionFactory::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        /** @var \EmailSender\EmailLog\Domain\Factory\EmailLogFactory|\PHPUnit_Framework_MockObject_MockObject $emailLogFactory */
-        $emailLogFactory = $this->getMockBuilder(EmailLogFactory::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $emailLogRepositoryReader = new EmailLogRepositoryReader(
-            $repositoryService,
-            $emailLogFactory,
-            $emailLogCollectionFactory
-        );
-
-        $emailLogRepositoryReader->get($emailLogId);
-    }
-
     /**
      * Test list method with valid values.
      *
@@ -107,39 +42,30 @@ class EmailLogRepositoryReaderTest extends TestCase
             ->method('create')
             ->willReturn($emailLogCollection);
 
-        /** @var \EmailSender\EmailLog\Domain\Factory\EmailLogFactory|\PHPUnit_Framework_MockObject_MockObject $emailLogFactory */
-        $emailLogFactory = $this->getMockBuilder(EmailLogFactory::class)
+        /** @var \EmailSender\EmailLog\Domain\Entity\ListEmailLogRequest|\PHPUnit_Framework_MockObject_MockObject $listEmailLogRequest */
+        $listEmailLogRequest = $this->getMockBuilder(ListEmailLogRequest::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var \EmailSender\EmailLog\Domain\Entity\ListRequest|\PHPUnit_Framework_MockObject_MockObject $listRequest */
-        $listRequest = $this->getMockBuilder(ListRequest::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $listRequest->expects($this->any())
+        $listEmailLogRequest->expects($this->any())
             ->method('getFrom')
             ->willReturn((new Mockery($this))->getEmailAddressMock('emailAddress'));
 
-        $listRequest->expects($this->any())
+        $listEmailLogRequest->expects($this->any())
             ->method('getPerPage')
             ->willReturn((new Mockery($this))->getUnSignedIntegerMock(5));
 
-        $listRequest->expects($this->any())
+        $listEmailLogRequest->expects($this->any())
             ->method('getLastComposedEmailId')
             ->willReturn((new Mockery($this))->getUnSignedIntegerMock(2));
 
-        $listRequest->expects($this->any())
+        $listEmailLogRequest->expects($this->any())
             ->method('getPage')
             ->willReturn((new Mockery($this))->getUnSignedIntegerMock($page));
 
-        $emailLogRepositoryReader = new EmailLogRepositoryReader(
-            $repositoryService,
-            $emailLogFactory,
-            $emailLogCollectionFactory
-        );
+        $emailLogRepositoryReader = new EmailLogRepositoryReader($repositoryService, $emailLogCollectionFactory);
 
-        $this->assertEquals($emailLogCollection, $emailLogRepositoryReader->list($listRequest));
+        $this->assertEquals($emailLogCollection, $emailLogRepositoryReader->list($listEmailLogRequest));
     }
 
     /**
@@ -163,23 +89,14 @@ class EmailLogRepositoryReaderTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var \EmailSender\EmailLog\Domain\Factory\EmailLogFactory|\PHPUnit_Framework_MockObject_MockObject $emailLogFactory */
-        $emailLogFactory = $this->getMockBuilder(EmailLogFactory::class)
+        /** @var \EmailSender\EmailLog\Domain\Entity\ListEmailLogRequest|\PHPUnit_Framework_MockObject_MockObject $listEmailLogRequest */
+        $listEmailLogRequest = $this->getMockBuilder(ListEmailLogRequest::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var \EmailSender\EmailLog\Domain\Entity\ListRequest|\PHPUnit_Framework_MockObject_MockObject $listRequest */
-        $listRequest = $this->getMockBuilder(ListRequest::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $emailLogRepositoryReader = new EmailLogRepositoryReader($repositoryService, $emailLogCollectionFactory);
 
-        $emailLogRepositoryReader = new EmailLogRepositoryReader(
-            $repositoryService,
-            $emailLogFactory,
-            $emailLogCollectionFactory
-        );
-
-        $this->assertEquals($emailLogCollection, $emailLogRepositoryReader->list($listRequest));
+        $this->assertEquals($emailLogCollection, $emailLogRepositoryReader->list($listEmailLogRequest));
     }
 
     /**

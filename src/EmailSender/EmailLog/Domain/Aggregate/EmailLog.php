@@ -4,19 +4,18 @@ namespace EmailSender\EmailLog\Domain\Aggregate;
 
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\ValueObject\EmailAddress;
+use EmailSender\Core\ValueObject\EmailStatus;
 use EmailSender\Core\ValueObject\Subject;
-use EmailSender\Core\Scalar\Application\ValueObject\Numeric\SignedInteger;
 use EmailSender\Core\Entity\Recipients;
 use EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
-use JsonSerializable;
 
 /**
  * Class EmailLog
  *
  * @package EmailSender\EmailLog
  */
-class EmailLog implements JsonSerializable
+class EmailLog
 {
     /**
      * @var \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
@@ -39,7 +38,7 @@ class EmailLog implements JsonSerializable
     private $recipients;
 
     /**
-     * @var Subject
+     * @var \EmailSender\Core\ValueObject\Subject
      */
     private $subject;
 
@@ -59,12 +58,12 @@ class EmailLog implements JsonSerializable
     private $sent;
 
     /**
-     * @var UnsignedInteger
+     * @var \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
      */
     private $delay;
 
     /**
-     * @var SignedInteger
+     * @var \EmailSender\Core\ValueObject\EmailStatus
      */
     private $status;
 
@@ -201,17 +200,17 @@ class EmailLog implements JsonSerializable
     }
 
     /**
-     * @return \EmailSender\Core\Scalar\Application\ValueObject\Numeric\SignedInteger
+     * @return \EmailSender\Core\ValueObject\EmailStatus
      */
-    public function getStatus(): SignedInteger
+    public function getStatus(): EmailStatus
     {
         return $this->status;
     }
 
     /**
-     * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\SignedInteger $status
+     * @param \EmailSender\Core\ValueObject\EmailStatus $status
      */
-    public function setStatus(SignedInteger $status)
+    public function setStatus(EmailStatus $status)
     {
         $this->status = $status;
     }

@@ -2,8 +2,8 @@
 
 namespace EmailSender\EmailQueue\Domain\Service;
 
-use EmailSender\Core\ValueObject\EmailStatus;
 use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
+use EmailSender\EmailQueue\Domain\Aggregator\EmailQueue;
 use EmailSender\EmailQueue\Domain\Factory\EmailQueueFactory;
 use EmailSender\EmailQueue\Domain\Contract\EmailQueueRepositoryWriterInterface;
 
@@ -41,12 +41,14 @@ class AddEmailQueueService
     /**
      * @param \EmailSender\EmailLog\Domain\Aggregate\EmailLog $emailLog
      *
-     * @return \EmailSender\Core\ValueObject\EmailStatus
+     * @return \EmailSender\EmailQueue\Domain\Aggregator\EmailQueue
      */
-    public function add(EmailLog $emailLog): EmailStatus
+    public function add(EmailLog $emailLog): EmailQueue
     {
         $emailQueue = $this->emailQueueFactory->create($emailLog);
 
-        return $this->queueWriter->add($emailQueue);
+        $this->queueWriter->add($emailQueue);
+
+        return $emailQueue;
     }
 }

@@ -6,11 +6,11 @@ use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\ValueObject\EmailAddress;
 
 /**
- * Class ListRequest
+ * Class ListEmailLogRequest
  *
  * @package EmailSender\EmailLog\Domain\Entity
  */
-class ListRequest
+class ListEmailLogRequest
 {
     /** Default value for perPage property. */
     const DEFAULT_PER_PAGE = 50;

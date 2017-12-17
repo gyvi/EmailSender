@@ -2,7 +2,6 @@
 
 namespace Test\Unit\EmailSender\EmailQueue\Domain\Service;
 
-use EmailSender\Core\Catalog\EmailStatusList;
 use EmailSender\EmailQueue\Domain\Contract\EmailQueueRepositoryWriterInterface;
 use EmailSender\EmailQueue\Domain\Factory\EmailQueueFactory;
 use EmailSender\EmailQueue\Domain\Service\AddEmailQueueService;
@@ -21,7 +20,6 @@ class AddEmailQueueServiceTest extends TestCase
      */
     public function testAdd()
     {
-        $expected   = (new Mockery($this))->getEmailStatusMock(EmailStatusList::STATUS_QUEUED);
         $emailQueue = (new Mockery($this))->getEmailQueueMock();
         $emailLog   = (new Mockery($this))->getEmailLogMock();
 
@@ -32,7 +30,7 @@ class AddEmailQueueServiceTest extends TestCase
 
         $queueWriter->expects($this->once())
             ->method('add')
-            ->willReturn($expected);
+            ->willReturn($emailQueue);
 
         /** @var \EmailSender\EmailQueue\Domain\Factory\EmailQueueFactory|\PHPUnit_Framework_MockObject_MockObject $emailQueueFactory */
         $emailQueueFactory = $this->getMockBuilder(EmailQueueFactory::class)
@@ -45,6 +43,6 @@ class AddEmailQueueServiceTest extends TestCase
 
         $addEmailQueueService = new AddEmailQueueService($queueWriter, $emailQueueFactory);
 
-        $this->assertEquals($expected, $addEmailQueueService->add($emailLog));
+        $this->assertEquals($emailQueue, $addEmailQueueService->add($emailLog));
     }
 }

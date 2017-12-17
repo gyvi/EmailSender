@@ -8,8 +8,6 @@ use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 use PHPUnit\Framework\TestCase;
 use Test\Helper\EmailSender\Mockery;
-use EmailSender\Core\ValueObject\EmailStatus;
-use EmailSender\Core\Catalog\EmailStatusList;
 
 /**
  * Class EmailQueueRepositoryWriterTest
@@ -23,8 +21,6 @@ class EmailQueueRepositoryWriterTest extends TestCase
      */
     public function testAdd()
     {
-        $expected = new EmailStatus(EmailStatusList::STATUS_QUEUED);
-
         /** @var \PhpAmqpLib\Channel\AMQPChannel|\PHPUnit_Framework_MockObject_MockObject $channel */
         $channel = $this->getMockBuilder(AMQPChannel::class)
             ->disableOriginalConstructor()
@@ -72,6 +68,6 @@ class EmailQueueRepositoryWriterTest extends TestCase
 
         $emailQueue = (new Mockery($this))->getEmailQueueMock();
 
-        $this->assertEquals($expected, $emailQueueRepositoryWriter->add($emailQueue));
+        $this->assertEquals($emailQueue, $emailQueueRepositoryWriter->add($emailQueue));
     }
 }

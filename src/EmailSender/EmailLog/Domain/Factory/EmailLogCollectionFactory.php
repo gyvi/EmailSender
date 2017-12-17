@@ -30,6 +30,7 @@ class EmailLogCollectionFactory
      * @param array $emailLogCollectionArray
      *
      * @return \EmailSender\EmailLog\Application\Collection\EmailLogCollection
+     *
      * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
      * @throws \InvalidArgumentException
      */

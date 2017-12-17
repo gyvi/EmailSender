@@ -7,7 +7,7 @@ namespace EmailSender\EmailLog\Application\Catalog;
  *
  * @package EmailSender\EmailLog
  */
-class ListRequestPropertyNameList
+class ListEmailLogRequestPropertyNameList
 {
     /**
      * Sender email address.
@@ -25,8 +25,7 @@ class ListRequestPropertyNameList
     const PAGE            = 'page';
 
     /**
-     * Last emailLogId. Responded email logs will be smaller emailLogId's than this property.
-     * (Used for FB like 'more' button).
+     * Last composedEmailId. Returned email logs will be smaller composedEmailId's than this property.
      */
-    const LAST_EMAIL_LOG_ID = 'lastEmailLogId';
+    const LAST_COMPOSED_EMAIL_ID = 'lastComposedEmailId';
 }

@@ -86,8 +86,8 @@ class AddEmailServiceTest extends TestCase
      */
     public function testAddWithoutDelay()
     {
-        $expected = (new Mockery($this))->getEmailStatusMock(EmailStatusList::STATUS_SENT);
-        $email    = (new Mockery($this))->getEmailMock(null, null, null, null, null, null, null, 0);
+        $email       = (new Mockery($this))->getEmailMock(null, null, null, null, null, null, null, 0);
+        $emailStatus = (new Mockery($this))->getEmailStatusMock(EmailStatusList::STATUS_SENT);
 
         $this->emailFactory->expects($this->once())
             ->method('create')
@@ -95,7 +95,13 @@ class AddEmailServiceTest extends TestCase
 
         $this->composedEmailService->expects($this->once())
             ->method('send')
-            ->willReturn($expected);
+            ->willReturn($emailStatus);
+
+        $email->expects($this->once())
+            ->method('setEmailStatus')
+            ->with(
+                $this->equalTo($emailStatus)
+            )->willReturn(null);
 
         $addEmailService = new AddEmailService(
             $this->composedEmailService,
@@ -104,7 +110,7 @@ class AddEmailServiceTest extends TestCase
             $this->emailFactory
         );
 
-        $this->assertEquals($expected, $addEmailService->add([]));
+        $this->assertEquals($email, $addEmailService->add([]));
     }
 
     /**
@@ -141,8 +147,8 @@ class AddEmailServiceTest extends TestCase
      */
     public function testAddWithDelay()
     {
-        $expected = (new Mockery($this))->getEmailStatusMock(EmailStatusList::STATUS_SENT);
-        $email    = (new Mockery($this))->getEmailMock(null, null, null, null, null, null, null, 1);
+        $emailStatus = (new Mockery($this))->getEmailStatusMock(EmailStatusList::STATUS_SENT);
+        $email       = (new Mockery($this))->getEmailMock(null, null, null, null, null, null, null, 1);
 
         $this->emailFactory->expects($this->once())
             ->method('create')
@@ -150,7 +156,13 @@ class AddEmailServiceTest extends TestCase
 
         $this->emailQueueService->expects($this->once())
             ->method('add')
-            ->willReturn($expected);
+            ->willReturn($emailStatus);
+
+        $email->expects($this->once())
+            ->method('setEmailStatus')
+            ->with(
+                $this->equalTo($emailStatus)
+            )->willReturn(null);
 
         $addEmailService = new AddEmailService(
             $this->composedEmailService,
@@ -159,7 +171,7 @@ class AddEmailServiceTest extends TestCase
             $this->emailFactory
         );
 
-        $this->assertEquals($expected, $addEmailService->add([]));
+        $this->assertEquals($email, $addEmailService->add([]));
     }
 
     /**

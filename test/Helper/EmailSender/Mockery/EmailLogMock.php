@@ -127,7 +127,7 @@ trait EmailLogMock
             $emailLogMock->expects($testCase->any())
                 ->method('getStatus')
                 ->willReturn(
-                    $this->getSignedIntegerMock($status)
+                    $this->getEmailStatusMock($status)
                 );
         }
 

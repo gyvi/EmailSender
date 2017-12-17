@@ -2,10 +2,8 @@
 
 namespace EmailSender\EmailLog\Domain\Contract;
 
-use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\EmailLog\Application\Collection\EmailLogCollection;
-use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
-use EmailSender\EmailLog\Domain\Entity\ListRequest;
+use EmailSender\EmailLog\Domain\Entity\ListEmailLogRequest;
 
 /**
  * Interface EmailLogRepositoryReaderInterface
@@ -15,16 +13,9 @@ use EmailSender\EmailLog\Domain\Entity\ListRequest;
 interface EmailLogRepositoryReaderInterface
 {
     /**
-     * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $emailLogId
-     *
-     * @return \EmailSender\EmailLog\Domain\Aggregate\EmailLog
-     */
-    public function get(UnsignedInteger $emailLogId): EmailLog;
-
-    /**
-     * @param \EmailSender\EmailLog\Domain\Entity\ListRequest $listRequest
+     * @param \EmailSender\EmailLog\Domain\Entity\ListEmailLogRequest $listEmailLogRequest
      *
      * @return \EmailSender\EmailLog\Application\Collection\EmailLogCollection
      */
-    public function list(ListRequest $listRequest): EmailLogCollection;
+    public function list(ListEmailLogRequest $listEmailLogRequest): EmailLogCollection;
 }

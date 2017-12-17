@@ -5,9 +5,9 @@ namespace EmailSender\EmailLog\Domain\Factory;
 use EmailSender\Core\Factory\EmailAddressFactory;
 use EmailSender\Core\Factory\RecipientsFactory;
 use EmailSender\Core\Scalar\Application\Factory\DateTimeFactory;
-use EmailSender\Core\Scalar\Application\ValueObject\Numeric\SignedInteger;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
+use EmailSender\Core\ValueObject\EmailStatus;
 use EmailSender\Core\ValueObject\Subject;
 use EmailSender\Email\Domain\Aggregate\Email;
 use EmailSender\EmailLog\Application\Catalog\EmailLogPropertyNamesList;
@@ -90,7 +90,7 @@ class EmailLogFactory
         );
 
         $emailLog->setEmailLogId(new UnsignedInteger($emailLogArray[EmailLogPropertyNamesList::EMAIL_LOG_ID]));
-        $emailLog->setStatus(new SignedInteger((int)$emailLogArray[EmailLogPropertyNamesList::STATUS]));
+        $emailLog->setStatus(new EmailStatus((string)$emailLogArray[EmailLogPropertyNamesList::STATUS]));
         $emailLog->setLogged(
             $this->dateTimeFactory->createFromDateTime(new \DateTime($emailLogArray[EmailLogPropertyNamesList::LOGGED]))
         );

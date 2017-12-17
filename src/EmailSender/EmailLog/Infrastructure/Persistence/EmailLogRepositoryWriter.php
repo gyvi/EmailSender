@@ -4,6 +4,7 @@ namespace EmailSender\EmailLog\Infrastructure\Persistence;
 
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
 use EmailSender\Core\Catalog\EmailStatusList;
+use EmailSender\EmailLog\Application\Catalog\EmailLogPropertyNamesList;
 use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
 use EmailSender\EmailLog\Domain\Contract\EmailLogRepositoryWriterInterface;
 use Closure;
@@ -53,38 +54,35 @@ class EmailLogRepositoryWriter implements EmailLogRepositoryWriterInterface
         $sql = '
             INSERT INTO
                 `emailLog` (
-                    `' . EmailLogRepositoryFieldList::COMPOSED_EMAIL_ID . '`,
-                    `' . EmailLogRepositoryFieldList::FROM . '`,
-                    `' . EmailLogRepositoryFieldList::RECIPIENTS . '`,
-                    `' . EmailLogRepositoryFieldList::SUBJECT . '`,
-                    `' . EmailLogRepositoryFieldList::DELAY . '`
+                    `composedEmailId`,
+                    `from`,
+                    `recipients`,
+                    `subject`,
+                    `delay`
                 )
             VALUES
                 (
-                    :' . EmailLogRepositoryFieldList::COMPOSED_EMAIL_ID . ',
-                    :' . EmailLogRepositoryFieldList::FROM . ',
-                    :' . EmailLogRepositoryFieldList::RECIPIENTS . ',
-                    :' . EmailLogRepositoryFieldList::SUBJECT . ',
-                    :' . EmailLogRepositoryFieldList::DELAY . '
+                    :' . EmailLogPropertyNamesList::COMPOSED_EMAIL_ID . ',
+                    :' . EmailLogPropertyNamesList::FROM . ',
+                    :' . EmailLogPropertyNamesList::RECIPIENTS . ',
+                    :' . EmailLogPropertyNamesList::SUBJECT . ',
+                    :' . EmailLogPropertyNamesList::DELAY . '
                 ); 
         ';
 
         $statement = $pdo->prepare($sql);
 
         $statement->bindValue(
-            ':' . EmailLogRepositoryFieldList::COMPOSED_EMAIL_ID,
+            ':' . EmailLogPropertyNamesList::COMPOSED_EMAIL_ID,
             $emailLog->getComposedEmailId()->getValue(),
             PDO::PARAM_INT
         );
 
-        $statement->bindValue(':' . EmailLogRepositoryFieldList::FROM, $emailLog->getFrom()->getAddress()->getValue());
-
-        $statement->bindValue(':' . EmailLogRepositoryFieldList::RECIPIENTS, json_encode($emailLog->getRecipients()));
-
-        $statement->bindValue(':' . EmailLogRepositoryFieldList::SUBJECT, $emailLog->getSubject()->getValue());
-
+        $statement->bindValue(':' . EmailLogPropertyNamesList::FROM, $emailLog->getFrom()->getAddress()->getValue());
+        $statement->bindValue(':' . EmailLogPropertyNamesList::RECIPIENTS, json_encode($emailLog->getRecipients()));
+        $statement->bindValue(':' . EmailLogPropertyNamesList::SUBJECT, $emailLog->getSubject()->getValue());
         $statement->bindValue(
-            ':' . EmailLogRepositoryFieldList::DELAY,
+            ':' . EmailLogPropertyNamesList::DELAY,
             $emailLog->getDelay()->getValue(),
             PDO::PARAM_INT
         );
@@ -114,27 +112,26 @@ class EmailLogRepositoryWriter implements EmailLogRepositoryWriterInterface
             UPDATE
                 `emailLog`
             SET
-                `' . EmailLogRepositoryFieldList::STATUS . '` = :' . EmailLogRepositoryFieldList::STATUS
+                `status` = :' . EmailLogPropertyNamesList::STATUS
             . $this->getSetStatusDateTimeUpdate($emailStatus)
             . $this->getSetStatusErrorMessageUpdate($emailStatus)
             . '
             WHERE
-                `' . EmailLogRepositoryFieldList::EMAIL_LOG_ID .
-                '` = :' .  EmailLogRepositoryFieldList::EMAIL_LOG_ID . ';
+                `emailLogId` = :' .  EmailLogPropertyNamesList::EMAIL_LOG_ID . ';
         ';
 
         $statement = $pdo->prepare($sql);
 
-        $statement->bindValue(':' . EmailLogRepositoryFieldList::STATUS, $emailStatus->getValue());
+        $statement->bindValue(':' . EmailLogPropertyNamesList::STATUS, $emailStatus->getValue());
 
         $statement->bindValue(
-            ':' . EmailLogRepositoryFieldList::EMAIL_LOG_ID,
+            ':' . EmailLogPropertyNamesList::EMAIL_LOG_ID,
             $emailLogId->getValue(),
             PDO::PARAM_INT
         );
 
         if ($emailStatus->getValue() === EmailStatusList::STATUS_ERROR) {
-            $statement->bindValue(':' . EmailLogRepositoryFieldList::ERROR_MESSAGE, $errorMessage->getValue());
+            $statement->bindValue(':' . EmailLogPropertyNamesList::ERROR_MESSAGE, $errorMessage->getValue());
         }
 
         if (!$statement->execute()) {
@@ -152,13 +149,13 @@ class EmailLogRepositoryWriter implements EmailLogRepositoryWriterInterface
         switch ($emailStatus->getValue()) {
             case EmailStatusList::STATUS_QUEUED:
                 $sqlDateTimeUpdate = ',
-                    `' . EmailLogRepositoryFieldList::QUEUED . '` = NOW() 
+                    `queued` = NOW() 
                 ';
                 break;
 
             case EmailStatusList::STATUS_SENT:
                 $sqlDateTimeUpdate = ',
-                    `' . EmailLogRepositoryFieldList::SENT . '` = NOW()
+                    `sent` = NOW()
                 ';
                 break;
 
@@ -181,8 +178,7 @@ class EmailLogRepositoryWriter implements EmailLogRepositoryWriterInterface
 
         if ($emailStatus->getValue() === EmailStatusList::STATUS_ERROR) {
             $sqlDateTimeUpdate = ',
-                    `' . EmailLogRepositoryFieldList::ERROR_MESSAGE .
-                    '` = :' . EmailLogRepositoryFieldList::ERROR_MESSAGE . '
+                    `errorMessage` = :' . EmailLogPropertyNamesList::ERROR_MESSAGE . '
                 ';
         }
 

@@ -152,9 +152,9 @@ class EmailService implements EmailServiceInterface
                 $emailFactory
             );
 
-            $addResult = $addEmailService->add($postRequest);
+            $email = $addEmailService->add($postRequest);
 
-            switch ($addResult->getValue()) {
+            switch ($email->getEmailStatus()->getValue()) {
                 case EmailStatusList::STATUS_SENT:
                     $response = $response->withStatus(204);
 

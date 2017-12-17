@@ -7,6 +7,7 @@ use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\ValueObject\EmailAddress;
 use EmailSender\Core\ValueObject\Subject;
 use EmailSender\Email\Domain\ValueObject\Body;
+use EmailSender\Core\ValueObject\EmailStatus;
 
 /**
  * Class Email
@@ -54,6 +55,9 @@ class Email
      * @var \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
      */
     private $delay;
+
+    /** @var \EmailSender\Core\ValueObject\EmailStatus */
+    private $emailStatus;
 
     /**
      * Email constructor.
@@ -149,5 +153,21 @@ class Email
     public function getDelay(): UnsignedInteger
     {
         return $this->delay;
+    }
+
+    /**
+     * @return \EmailSender\Core\ValueObject\EmailStatus
+     */
+    public function getEmailStatus(): EmailStatus
+    {
+        return $this->emailStatus;
+    }
+
+    /**
+     * @param \EmailSender\Core\ValueObject\EmailStatus $emailStatus
+     */
+    public function setEmailStatus(EmailStatus $emailStatus): void
+    {
+        $this->emailStatus = $emailStatus;
     }
 }
