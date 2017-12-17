@@ -3,8 +3,11 @@
 namespace Test\Integration\EmailSender\EmailQueue\Application\Service;
 
 use EmailSender\Core\Catalog\EmailStatusList;
+use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\ValueObject\EmailStatus;
+use EmailSender\EmailQueue\Application\Catalog\EmailQueuePropertyNamesList;
 use EmailSender\EmailQueue\Application\Service\EmailQueueService;
+use EmailSender\EmailQueue\Domain\Aggregator\EmailQueue;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PHPUnit\Framework\TestCase;
 use Test\Helper\EmailSender\Mockery;
@@ -90,5 +93,57 @@ class EmailQueueServiceTest extends TestCase
         $emailQueueService = new EmailQueueService($logger, $queueService, $queueServiceSettings);
 
         $emailQueueService->add($emailLog);
+    }
+
+    /**
+     * Test get method.
+     */
+    public function testGet()
+    {
+        $logger               = (new Mockery($this))->getLoggerMock();
+        $queueService         = (new Mockery($this))->getQueueServiceMock();
+        $queueServiceSettings = [];
+
+        $emailLogId      = 1;
+        $composedEmailId = 1;
+        $delay           = 1;
+
+        $emailQueueArray = [
+            EmailQueuePropertyNamesList::EMAIL_LOG_ID      => $emailLogId,
+            EmailQueuePropertyNamesList::COMPOSED_EMAIL_ID => $composedEmailId,
+            EmailQueuePropertyNamesList::DELAY             => $delay,
+        ];
+
+        $expected = new EmailQueue(
+            new UnsignedInteger($emailQueueArray[EmailQueuePropertyNamesList::EMAIL_LOG_ID]),
+            new UnsignedInteger($emailQueueArray[EmailQueuePropertyNamesList::COMPOSED_EMAIL_ID]),
+            new UnsignedInteger($emailQueueArray[EmailQueuePropertyNamesList::DELAY])
+        );
+
+        $emailQueueService = new EmailQueueService($logger, $queueService, $queueServiceSettings);
+
+        $this->assertEquals($expected, $emailQueueService->get($emailQueueArray));
+    }
+
+    /**
+     * Test get method with exception.
+     *
+     * @expectedException \EmailSender\EmailQueue\Application\Exception\EmailQueueException
+     * @expectedExceptionMessage Invalid email queue.
+     */
+    public function testGetWithException()
+    {
+        $logger = (new Mockery($this))->getLoggerMock();
+
+        $logger->expects($this->once())
+            ->method('alert')
+            ->willReturn(null);
+
+        $queueService         = (new Mockery($this))->getQueueServiceMock();
+        $queueServiceSettings = [];
+
+        $emailQueueService = new EmailQueueService($logger, $queueService, $queueServiceSettings);
+
+        $emailQueueService->get([]);
     }
 }

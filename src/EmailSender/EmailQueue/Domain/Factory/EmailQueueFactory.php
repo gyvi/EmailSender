@@ -25,16 +25,16 @@ class EmailQueueFactory
     }
 
     /**
-     * @param array $emailQueue
+     * @param array $emailQueueArray
      *
      * @return \EmailSender\EmailQueue\Domain\Aggregator\EmailQueue
      */
-    public function createFromArray(array $emailQueue): EmailQueue
+    public function createFromArray(array $emailQueueArray): EmailQueue
     {
         return new EmailQueue(
-            new UnsignedInteger($emailQueue[EmailQueuePropertyNamesList::EMAIL_LOG_ID]),
-            new UnsignedInteger($emailQueue[EmailQueuePropertyNamesList::COMPOSED_EMAIL_ID]),
-            new UnsignedInteger($emailQueue[EmailQueuePropertyNamesList::DELAY])
+            new UnsignedInteger($emailQueueArray[EmailQueuePropertyNamesList::EMAIL_LOG_ID]),
+            new UnsignedInteger($emailQueueArray[EmailQueuePropertyNamesList::COMPOSED_EMAIL_ID]),
+            new UnsignedInteger($emailQueueArray[EmailQueuePropertyNamesList::DELAY])
         );
     }
 }

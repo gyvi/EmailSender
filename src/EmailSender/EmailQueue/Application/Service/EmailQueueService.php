@@ -7,7 +7,9 @@ use EmailSender\Core\ValueObject\EmailStatus;
 use EmailSender\EmailLog\Domain\Aggregate\EmailLog;
 use EmailSender\EmailQueue\Application\Contract\EmailQueueServiceInterface;
 use EmailSender\EmailQueue\Application\Exception\EmailQueueException;
+use EmailSender\EmailQueue\Domain\Aggregator\EmailQueue;
 use EmailSender\EmailQueue\Domain\Service\AddEmailQueueService;
+use EmailSender\EmailQueue\Domain\Service\GetEmailQueueService;
 use EmailSender\EmailQueue\Infrastructure\Factory\AMQPMessageFactory;
 use EmailSender\EmailQueue\Infrastructure\Service\EmailQueueRepositoryWriter;
 use Closure;
@@ -49,9 +51,9 @@ class EmailQueueService implements EmailQueueServiceInterface
         Closure $queueService,
         array $queueServiceSettings
     ) {
-        $this->logger                     = $logger;
-        $this->queueService               = $queueService;
-        $this->queueServiceSettings       = $queueServiceSettings;
+        $this->logger               = $logger;
+        $this->queueService         = $queueService;
+        $this->queueServiceSettings = $queueServiceSettings;
     }
 
     /**
@@ -83,5 +85,28 @@ class EmailQueueService implements EmailQueueServiceInterface
         }
 
         return new EmailStatus(EmailStatusList::STATUS_QUEUED);
+    }
+
+    /**
+     * @param array $emailQueueArray
+     *
+     * @return \EmailSender\EmailQueue\Domain\Aggregator\EmailQueue
+     *
+     * @throws \EmailSender\EmailQueue\Application\Exception\EmailQueueException
+     */
+    public function get(array $emailQueueArray): EmailQueue
+    {
+        $emailQueueFactory    = new EmailQueueFactory();
+        $getEmailQueueService = new GetEmailQueueService($emailQueueFactory);
+
+        try {
+            $emailQueue = $getEmailQueueService->get($emailQueueArray);
+        } catch (Throwable $e) {
+            $this->logger->alert($e->getMessage(), $e->getTrace());
+
+            throw new EmailQueueException('Invalid email queue.', 0, $e);
+        }
+
+        return $emailQueue;
     }
 }

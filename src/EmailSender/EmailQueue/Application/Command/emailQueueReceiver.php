@@ -13,7 +13,7 @@ use Slim\Container;
 use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
 use EmailSender\Core\Catalog\EmailStatusList;
 use EmailSender\Core\ValueObject\EmailStatus;
-use EmailSender\EmailQueue\Domain\Factory\EmailQueueFactory;
+use EmailSender\EmailQueue\Application\Service\EmailQueueService;
 
 $settings  = require dirname(__DIR__, 5) . '/config/settings.php';
 $container = new Container($settings);
@@ -24,10 +24,30 @@ $container = new Container($settings);
 /** @var \Psr\Log\LoggerInterface $logger */
 $logger        = $container->get(ServiceList::LOGGER);
 $queueSettings = $container->get('settings')[ServiceList::QUEUE];
-$view          = $container->get('view');
+$queueService  = $container->get(ServiceList::QUEUE);
+
+$emailLogService = new EmailLogService(
+    $container->get(ServiceList::VIEW),
+    $logger,
+    $container->get(ServiceList::EMAIL_LOG_READER),
+    $container->get(ServiceList::EMAIL_LOG_WRITER)
+);
+
+$composedEmailService = new ComposedEmailService(
+    $logger,
+    $container->get(ServiceList::COMPOSED_EMAIL_READER),
+    $container->get(ServiceList::COMPOSED_EMAIL_WRITER),
+    $container->get(ServiceList::SMTP)
+);
+
+$emailQueueService = new EmailQueueService(
+    $logger,
+    $queueService,
+    $queueSettings
+);
 
 /** @var \PhpAmqpLib\Connection\AMQPStreamConnection $connection */
-$connection = $container->get(ServiceList::QUEUE)();
+$connection = $queueService();
 
 /** @var \PhpAmqpLib\Channel\AMQPChannel $channel */
 $channel = $connection->channel();
@@ -35,29 +55,17 @@ $channel = $connection->channel();
 /** @var array $queueName */
 $queueName = $queueSettings['queue'];
 
-$callback = function ($message) use ($container, $view, $logger) {
+$callback = function ($message) use ($logger, $emailLogService, $composedEmailService, $emailQueueService) {
     /** @var \PhpAmqpLib\Message\AMQPMessage $message */
 
     /** @var \PhpAmqpLib\Channel\AMQPChannel $deliveryChannel */
     $deliveryChannel = $message->delivery_info['channel'];
 
     $emailQueueArray = json_decode($message->body, true);
-    $emailQueue      = (new EmailQueueFactory())->createFromArray($emailQueueArray);
-    $emailLogService = new EmailLogService(
-        $view,
-        $logger,
-        $container->get(ServiceList::EMAIL_LOG_READER),
-        $container->get(ServiceList::EMAIL_LOG_WRITER)
-    );
-
-    $composedEmailService = new ComposedEmailService(
-        $logger,
-        $container->get(ServiceList::COMPOSED_EMAIL_READER),
-        $container->get(ServiceList::COMPOSED_EMAIL_WRITER),
-        $container->get(ServiceList::SMTP)
-    );
 
     try {
+        $emailQueue = $emailQueueService->get($emailQueueArray);
+
         $composedEmailService->sendById($emailQueue->getComposedEmailId());
 
         $emailLogService->setStatus(
@@ -71,15 +79,23 @@ $callback = function ($message) use ($container, $view, $logger) {
         $deliveryChannel->basic_nack($message->delivery_info['delivery_tag']);
 
         $logger->alert(
-            'Unable to sent email: ' . $message->body . PHP_EOL . ' Error: ' .
-            $e->getMessage() . $e->getTraceAsString()
+            'Unable to sent email: ' . $message->body . PHP_EOL . ' Error: ' . $e->getMessage(),
+            $e->getTrace()
         );
 
-        $emailLogService->setStatus(
-            new UnsignedInteger($emailQueue[EmailQueuePropertyNamesList::EMAIL_LOG_ID]),
-            new EmailStatus(EmailStatusList::STATUS_ERROR),
-            $e->getMessage()
-        );
+        try {
+            $emailLogService->setStatus(
+                new UnsignedInteger($emailQueueArray[EmailQueuePropertyNamesList::EMAIL_LOG_ID]),
+                new EmailStatus(EmailStatusList::STATUS_ERROR),
+                $e->getMessage()
+            );
+        } catch (Throwable $exception) {
+            $logger->alert(
+                'Unable set error message to emailLog: ' . $message->body . PHP_EOL . ' Error: ' .
+                $exception->getMessage(),
+                $exception->getTrace()
+            );
+        }
     }
 };
 
