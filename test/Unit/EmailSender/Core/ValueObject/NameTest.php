@@ -64,6 +64,18 @@ class NameTest extends TestCase
     }
 
     /**
+     * Test __toString method.
+     */
+    public function testToString()
+    {
+        $nameValue = 'testName';
+
+        $name = new Name($nameValue);
+
+        $this->assertEquals($nameValue, (string)$name);
+    }
+
+    /**
      * Data provider for testConstructWithValidValues.
      *
      * @return array

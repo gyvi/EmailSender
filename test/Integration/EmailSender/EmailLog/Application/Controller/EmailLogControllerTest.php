@@ -4,7 +4,6 @@ namespace Test\Integration\EmailSender\EmailLog\Application\Controller;
 
 use EmailSender\Core\Services\ServiceList;
 use EmailSender\EmailLog\Application\Controller\EmailLogController;
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Response;
@@ -24,11 +23,7 @@ class EmailLogControllerTest extends TestCase
     {
         $emailLogRepositoryReader = (new Mockery($this))->getRepositoryMock(true, null, []);
         $emailLogReaderService    = (new Mockery($this))->getRepositoryServiceMock($emailLogRepositoryReader);
-
-        /** @var \Interop\Container\ContainerInterface|\PHPUnit_Framework_MockObject_MockObject $container */
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container                = (new Mockery($this))->getContainerMock();
 
         $container->expects($this->any())
             ->method('get')
@@ -72,10 +67,7 @@ class EmailLogControllerTest extends TestCase
             ->method('warning')
             ->willReturn(null);
 
-        /** @var \Interop\Container\ContainerInterface|\PHPUnit_Framework_MockObject_MockObject $container */
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = (new Mockery($this))->getContainerMock();
 
         $container->expects($this->any())
             ->method('get')
@@ -123,10 +115,7 @@ class EmailLogControllerTest extends TestCase
             ->method('render')
             ->willReturn($expected);
 
-        /** @var \Interop\Container\ContainerInterface|\PHPUnit_Framework_MockObject_MockObject $container */
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = (new Mockery($this))->getContainerMock();
 
         $container->expects($this->any())
             ->method('get')

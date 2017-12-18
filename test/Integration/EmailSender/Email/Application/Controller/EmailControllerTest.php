@@ -5,7 +5,6 @@ namespace Test\Integration\EmailSender\Email\Application\Controller;
 use EmailSender\Core\Services\ServiceList;
 use EmailSender\Email\Application\Catalog\EmailPropertyNameList;
 use EmailSender\Email\Application\Controller\EmailController;
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Response;
@@ -43,10 +42,7 @@ class EmailControllerTest extends TestCase
 
         $smtpService = (new Mockery($this))->getSMTPServiceMock($smtp);
 
-        /** @var \Interop\Container\ContainerInterface|\PHPUnit_Framework_MockObject_MockObject $container */
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = (new Mockery($this))->getContainerMock();
 
         $container->expects($this->any())
             ->method('get')
@@ -100,10 +96,7 @@ class EmailControllerTest extends TestCase
             ->method('warning')
             ->willReturn(null);
 
-        /** @var \Interop\Container\ContainerInterface|\PHPUnit_Framework_MockObject_MockObject $container */
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $container = (new Mockery($this))->getContainerMock();
 
         $container->expects($this->any())
             ->method('get')

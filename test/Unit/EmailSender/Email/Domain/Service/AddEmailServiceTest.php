@@ -87,7 +87,7 @@ class AddEmailServiceTest extends TestCase
     public function testAddWithoutDelay()
     {
         $email       = (new Mockery($this))->getEmailMock(null, null, null, null, null, null, null, 0);
-        $emailStatus = (new Mockery($this))->getEmailStatusMock(EmailStatusList::STATUS_SENT);
+        $emailStatus = (new Mockery($this))->getEmailStatusMock(EmailStatusList::SENT);
 
         $this->emailFactory->expects($this->once())
             ->method('create')
@@ -121,7 +121,7 @@ class AddEmailServiceTest extends TestCase
      */
     public function testAddWithoutDelayWithComposedEmailException()
     {
-        $expected = (new Mockery($this))->getEmailStatusMock(EmailStatusList::STATUS_SENT);
+        $expected = (new Mockery($this))->getEmailStatusMock(EmailStatusList::SENT);
         $email    = (new Mockery($this))->getEmailMock(null, null, null, null, null, null, null, 0);
 
         $this->emailFactory->expects($this->once())
@@ -147,7 +147,7 @@ class AddEmailServiceTest extends TestCase
      */
     public function testAddWithDelay()
     {
-        $emailStatus = (new Mockery($this))->getEmailStatusMock(EmailStatusList::STATUS_SENT);
+        $emailStatus = (new Mockery($this))->getEmailStatusMock(EmailStatusList::SENT);
         $email       = (new Mockery($this))->getEmailMock(null, null, null, null, null, null, null, 1);
 
         $this->emailFactory->expects($this->once())
@@ -182,7 +182,7 @@ class AddEmailServiceTest extends TestCase
      */
     public function testAddWithDelayWithEmailQueueException()
     {
-        $expected = (new Mockery($this))->getEmailStatusMock(EmailStatusList::STATUS_SENT);
+        $expected = (new Mockery($this))->getEmailStatusMock(EmailStatusList::SENT);
         $email    = (new Mockery($this))->getEmailMock(null, null, null, null, null, null, null, 1);
 
         $this->emailFactory->expects($this->once())

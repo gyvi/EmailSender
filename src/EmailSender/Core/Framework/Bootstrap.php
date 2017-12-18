@@ -2,7 +2,7 @@
 
 namespace EmailSender\Core\Framework;
 
-use EmailSender\Core\Services\ComposedReaderService;
+use EmailSender\Core\Services\ComposedEmailReaderService;
 use EmailSender\Core\Services\ComposedEmailWriterService;
 use EmailSender\Core\Services\EmailLogReaderService;
 use EmailSender\Core\Services\EmailLogWriterService;
@@ -68,7 +68,7 @@ class Bootstrap
         $serviceProvider->addService(ServiceList::LOGGER, new LoggerService());
         $serviceProvider->addService(ServiceList::ERROR_HANDLER, new ErrorHandler());
         $serviceProvider->addService(ServiceList::PHP_ERROR_HANDLER, new PhpErrorHandler());
-        $serviceProvider->addService(ServiceList::COMPOSED_EMAIL_READER, new ComposedReaderService());
+        $serviceProvider->addService(ServiceList::COMPOSED_EMAIL_READER, new ComposedEmailReaderService());
         $serviceProvider->addService(ServiceList::COMPOSED_EMAIL_WRITER, new ComposedEmailWriterService());
         $serviceProvider->addService(ServiceList::EMAIL_LOG_READER, new EmailLogReaderService());
         $serviceProvider->addService(ServiceList::EMAIL_LOG_WRITER, new EmailLogWriterService());

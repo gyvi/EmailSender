@@ -117,7 +117,7 @@ class EmailLogServiceTest extends TestCase
         $emailLogWriterService    = (new Mockery($this))->getRepositoryServiceMock($emailLogRepositoryWriter);
 
         $emailLogId     = (new Mockery($this))->getUnSignedIntegerMock(1);
-        $emailLogStatus = (new Mockery($this))->getEmailStatusMock(EmailStatusList::STATUS_SENT);
+        $emailLogStatus = (new Mockery($this))->getEmailStatusMock(EmailStatusList::SENT);
         $errorMessage   = '';
 
         $emailLogService = new EmailLogService(
@@ -144,7 +144,7 @@ class EmailLogServiceTest extends TestCase
         $emailLogWriterService    = (new Mockery($this))->getRepositoryServiceMock($emailLogRepositoryWriter);
 
         $emailLogId     = (new Mockery($this))->getUnSignedIntegerMock(1);
-        $emailLogStatus = (new Mockery($this))->getEmailStatusMock(EmailStatusList::STATUS_SENT);
+        $emailLogStatus = (new Mockery($this))->getEmailStatusMock(EmailStatusList::SENT);
         $errorMessage   = '';
 
         $emailLogService = new EmailLogService(

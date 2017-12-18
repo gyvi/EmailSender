@@ -2,11 +2,9 @@
 
 namespace EmailSender\Core\Factory;
 
-use EmailSender\Core\Catalog\EmailAddressPropertyNameList;
 use EmailSender\Core\Collection\EmailAddressCollection;
-use EmailSender\Core\ValueObject\Address;
-use EmailSender\Core\ValueObject\Name;
-use EmailSender\Core\ValueObject\EmailAddress;
+use EmailSender\Core\Scalar\Application\Exception\ValueObjectException;
+use InvalidArgumentException;
 
 /**
  * Class EmailAddressCollectionFactory
@@ -67,21 +65,24 @@ class EmailAddressCollectionFactory
      * @param array $emailAddressCollectionArray
      *
      * @return \EmailSender\Core\Collection\EmailAddressCollection
+     *
      * @throws \InvalidArgumentException
      */
     public function createFromArray(array $emailAddressCollectionArray): EmailAddressCollection
     {
         $emailAddressCollection = new EmailAddressCollection();
 
-        foreach ($emailAddressCollectionArray as $emailAddressArray) {
-            $emailAddressCollection->add(
-                new EmailAddress(
-                    new Address($emailAddressArray[EmailAddressPropertyNameList::ADDRESS]),
-                    (!empty($emailAddressArray[EmailAddressPropertyNameList::NAME])
-                        ? new Name($emailAddressArray[EmailAddressPropertyNameList::NAME])
-                        : null
-                    )
-                )
+        try {
+            foreach ($emailAddressCollectionArray as $emailAddressArray) {
+                $emailAddressCollection->add(
+                    $this->emailAddressFactory->createFromArray($emailAddressArray)
+                );
+            }
+        } catch (ValueObjectException $e) {
+            throw new InvalidArgumentException(
+                'Invalid EmailAddress.',
+                0,
+                $e
             );
         }
 

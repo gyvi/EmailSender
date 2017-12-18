@@ -2,6 +2,8 @@
 
 namespace Test\Helper\EmailSender\Mockery;
 
+use EmailSender\Core\Services\ServiceInterface;
+use Interop\Container\ContainerInterface;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use Psr\Log\LoggerInterface;
 use PHPUnit_Framework_MockObject_MockObject;
@@ -179,5 +181,37 @@ trait ServiceMock
         return $testCase->getMockBuilder(Twig::class)
             ->disableOriginalConstructor()
             ->getMock();
+    }
+
+    /**
+     * @return \Interop\Container\ContainerInterface|PHPUnit_Framework_MockObject_MockObject
+     */
+    public function getContainerMock(): ContainerInterface
+    {
+        /** @var \PHPUnit\Framework\TestCase $testCase */
+        $testCase = $this->testCase;
+
+        return $testCase->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
+     * @return \EmailSender\Core\Services\ServiceInterface|PHPUnit_Framework_MockObject_MockObject
+     */
+    public function getServiceInterfaceMock(): ServiceInterface
+    {
+        /** @var \PHPUnit\Framework\TestCase $testCase */
+        $testCase = $this->testCase;
+
+        $serviceInterface = $testCase->getMockBuilder(ServiceInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $serviceInterface->expects($testCase->any())
+            ->method('getService')
+            ->willReturn(function (){});
+
+        return $serviceInterface;
     }
 }

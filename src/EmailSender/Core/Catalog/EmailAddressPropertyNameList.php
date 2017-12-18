@@ -12,10 +12,10 @@ class EmailAddressPropertyNameList
     /**
      * @var string
      */
-    const NAME = 'name';
+    const NAME    = 'name';
 
     /**
      * @var string
      */
-    const ADDRESS      = 'address';
+    const ADDRESS = 'address';
 }

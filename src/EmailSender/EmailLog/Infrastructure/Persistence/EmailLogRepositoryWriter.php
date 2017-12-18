@@ -130,7 +130,7 @@ class EmailLogRepositoryWriter implements EmailLogRepositoryWriterInterface
             PDO::PARAM_INT
         );
 
-        if ($emailStatus->getValue() === EmailStatusList::STATUS_ERROR) {
+        if ($emailStatus->getValue() === EmailStatusList::ERROR) {
             $statement->bindValue(':' . EmailLogPropertyNamesList::ERROR_MESSAGE, $errorMessage->getValue());
         }
 
@@ -147,13 +147,13 @@ class EmailLogRepositoryWriter implements EmailLogRepositoryWriterInterface
     private function getSetStatusDateTimeUpdate(EmailStatus $emailStatus): string
     {
         switch ($emailStatus->getValue()) {
-            case EmailStatusList::STATUS_QUEUED:
+            case EmailStatusList::QUEUED:
                 $sqlDateTimeUpdate = ',
                     `queued` = NOW() 
                 ';
                 break;
 
-            case EmailStatusList::STATUS_SENT:
+            case EmailStatusList::SENT:
                 $sqlDateTimeUpdate = ',
                     `sent` = NOW()
                 ';
@@ -176,7 +176,7 @@ class EmailLogRepositoryWriter implements EmailLogRepositoryWriterInterface
     {
         $sqlDateTimeUpdate = '';
 
-        if ($emailStatus->getValue() === EmailStatusList::STATUS_ERROR) {
+        if ($emailStatus->getValue() === EmailStatusList::ERROR) {
             $sqlDateTimeUpdate = ',
                     `errorMessage` = :' . EmailLogPropertyNamesList::ERROR_MESSAGE . '
                 ';

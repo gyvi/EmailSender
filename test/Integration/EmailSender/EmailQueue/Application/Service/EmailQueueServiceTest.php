@@ -55,7 +55,7 @@ class EmailQueueServiceTest extends TestCase
 
         $emailLog = (new Mockery($this))->getEmailLogMock();
 
-        $expected = new EmailStatus(EmailStatusList::STATUS_QUEUED);
+        $expected = new EmailStatus(EmailStatusList::QUEUED);
 
         $emailQueueService = new EmailQueueService(
             (new Mockery($this))->getLoggerMock(),

@@ -84,12 +84,7 @@ class Date implements ValueObjectInterface
      */
     public function __toString(): string
     {
-        return sprintf(
-            '%d-%02d-%02d',
-            $this->year->getValue(),
-            $this->month->getValue(),
-            $this->day->getValue()
-        );
+        return sprintf('%d-%02d-%02d', $this->year->getValue(), $this->month->getValue(), $this->day->getValue());
     }
 
     /**

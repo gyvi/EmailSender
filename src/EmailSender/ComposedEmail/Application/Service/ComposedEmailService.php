@@ -142,7 +142,7 @@ class ComposedEmailService implements ComposedEmailServiceInterface
             throw new ComposedEmailException('Something went wrong when try to send the composed email.', 0, $e);
         }
 
-        return new EmailStatus(EmailStatusList::STATUS_SENT);
+        return new EmailStatus(EmailStatusList::SENT);
     }
 
     /**
@@ -165,7 +165,7 @@ class ComposedEmailService implements ComposedEmailServiceInterface
             throw new ComposedEmailException('Something went wrong when try to send the composed email.', 0, $e);
         }
 
-        return new EmailStatus(EmailStatusList::STATUS_SENT);
+        return new EmailStatus(EmailStatusList::SENT);
     }
 
     /**

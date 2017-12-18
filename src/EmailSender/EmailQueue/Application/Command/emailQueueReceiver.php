@@ -70,7 +70,7 @@ $callback = function ($message) use ($logger, $emailLogService, $composedEmailSe
 
         $emailLogService->setStatus(
             $emailQueue->getEmailLogId(),
-            new EmailStatus(EmailStatusList::STATUS_SENT),
+            new EmailStatus(EmailStatusList::SENT),
             ''
         );
 
@@ -86,7 +86,7 @@ $callback = function ($message) use ($logger, $emailLogService, $composedEmailSe
         try {
             $emailLogService->setStatus(
                 new UnsignedInteger($emailQueueArray[EmailQueuePropertyNamesList::EMAIL_LOG_ID]),
-                new EmailStatus(EmailStatusList::STATUS_ERROR),
+                new EmailStatus(EmailStatusList::ERROR),
                 $e->getMessage()
             );
         } catch (Throwable $exception) {

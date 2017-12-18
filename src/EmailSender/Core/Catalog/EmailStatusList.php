@@ -14,26 +14,26 @@ class EmailStatusList
      *
      * @var int
      */
-    const STATUS_ERROR  = '-1';
+    const ERROR  = '-1';
 
     /**
      * Message is saved, and logged.
      *
      * @var int
      */
-    const STATUS_LOGGED = '0';
+    const LOGGED = '0';
 
     /**
      * Message sent to the queue.
      *
      * @var int
      */
-    const STATUS_QUEUED = '1';
+    const QUEUED = '1';
 
     /**
      * Message sent.
      *
      * @var int
      */
-    const STATUS_SENT   = '2';
+    const SENT   = '2';
 }

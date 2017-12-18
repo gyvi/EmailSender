@@ -51,6 +51,18 @@ class StringLiteralTest extends TestCase
     }
 
     /**
+     * Test jsonSerialize method.
+     */
+    public function testJsonSerialize()
+    {
+        $string = 'test string';
+
+        $stringLiteral = new StringLiteral($string);
+
+        $this->assertEquals($string, $stringLiteral->jsonSerialize());
+    }
+
+    /**
      * Data provider for testConstructWithInvalidValues.
      *
      * @return array

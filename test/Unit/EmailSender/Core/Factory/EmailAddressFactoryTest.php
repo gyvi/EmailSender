@@ -2,7 +2,9 @@
 
 namespace Test\Unit\EmailSender\Core\Factory;
 
+use EmailSender\Core\Catalog\EmailAddressPropertyNameList;
 use EmailSender\Core\Factory\EmailAddressFactory;
+use EmailSender\Core\ValueObject\EmailAddress;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -39,6 +41,60 @@ class EmailAddressFactoryTest extends TestCase
 
         $this->assertEquals($expectedAddress, $address->getValue());
         $this->assertEquals($expectedName, $name);
+    }
+
+    /**
+     * Test create with invalid values. (More than one email address.)
+     *
+     * @expectedException \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     * @expectedExceptionMessage Invalid email address.
+     */
+    public function testCreateWithInvalidValues() {
+        $emailAddressFactory = new EmailAddressFactory();
+
+        $emailAddressFactory->create('John Doe <test@test.com>, John Doe2 <test2@test.com>');
+    }
+
+    /**
+     * Test createFromArray method.
+     *
+     * @param array $emailAddressArray
+     *
+     * @dataProvider providerForTestCreateFromArrayWithValidValues
+     */
+    public function testCreateFromArrayWithValidValues(array $emailAddressArray)
+    {
+        $emailAddressFactory = new EmailAddressFactory();
+
+        $emailAddress = $emailAddressFactory->createFromArray($emailAddressArray);
+
+        $this->assertInstanceOf(EmailAddress::class, $emailAddress);
+
+        if (!empty($emailAddressArray[EmailAddressPropertyNameList::NAME])) {
+            $this->assertEquals(
+                $emailAddressArray[EmailAddressPropertyNameList::NAME],
+                $emailAddress->getName()->getValue()
+            );
+        }
+
+        $this->assertEquals(
+            $emailAddressArray[EmailAddressPropertyNameList::ADDRESS],
+            $emailAddress->getAddress()->getValue()
+        );
+    }
+
+    /**
+     * Test createFromArray with with invalid value.
+     *
+     * @expectedException \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     */
+    public function testCreateFromArrayWithInvalidValue()
+    {
+        $emailAddressFactory = new EmailAddressFactory();
+
+        $emailAddressFactory->createFromArray([
+            EmailAddressPropertyNameList::ADDRESS => 'test',
+        ]);
     }
 
     /**
@@ -84,6 +140,31 @@ class EmailAddressFactoryTest extends TestCase
                 'test@test.com',
                 null,
             ],
+        ];
+    }
+
+    /**
+     * Data provider for testCreateFromArrayWithValidValues method.
+     *
+     * @return array
+     */
+    public function providerForTestCreateFromArrayWithValidValues(): array
+    {
+        return [
+            [
+                [
+                    EmailAddressPropertyNameList::ADDRESS => 'test@test.com',
+                    EmailAddressPropertyNameList::NAME    => 'John Doe',
+                ],
+                [
+                    EmailAddressPropertyNameList::ADDRESS => 'test@test.com',
+                    EmailAddressPropertyNameList::NAME    => null,
+                ],
+                [
+                    EmailAddressPropertyNameList::ADDRESS => 'test@test.com',
+                ],
+            ],
+
         ];
     }
 }

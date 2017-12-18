@@ -1,29 +1,29 @@
 <?php
 
-namespace Test\Unit\EmailSender\Core\Scalar\Application\ValueObject\Numeric;
+namespace Test\Unit\EmailSender\Core\Scalar\Application\ValueObject\DateTime;
 
-use EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger;
+use EmailSender\Core\Scalar\Application\ValueObject\DateTime\Minute;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class UnsignedIntegerTest
+ * Class MinuteTest
  *
  * @package Test\Unit\EmailSender\Core\Scalar
  */
-class UnsignedIntegerTest extends TestCase
+class MinuteTest extends TestCase
 {
     /**
      * Test __construct with valid values.
      */
     public function testConstructWithValidValues()
     {
-        $withLowerLimitValue = new UnsignedInteger(UnsignedInteger::LIMIT_LOWER);
-        $withPositiveValue   = new UnsignedInteger(1);
-        $withUpperLimitValue = new UnsignedInteger(UnsignedInteger::LIMIT_UPPER);
+        $withLowerLimitValue = new Minute(Minute::LIMIT_LOWER);
+        $withPositiveValue   = new Minute(1);
+        $withUpperLimitValue = new Minute(Minute::LIMIT_UPPER);
 
-        $this->assertInstanceOf(UnsignedInteger::class, $withLowerLimitValue);
-        $this->assertInstanceOf(UnsignedInteger::class, $withPositiveValue);
-        $this->assertInstanceOf(UnsignedInteger::class, $withUpperLimitValue);
+        $this->assertInstanceOf(Minute::class, $withLowerLimitValue);
+        $this->assertInstanceOf(Minute::class, $withPositiveValue);
+        $this->assertInstanceOf(Minute::class, $withUpperLimitValue);
     }
 
     /**
@@ -37,9 +37,7 @@ class UnsignedIntegerTest extends TestCase
      */
     public function testConstructWithInvalidValues(mixed $value)
     {
-        new UnsignedInteger($value);
-
-        $this->fail();
+        new Minute($value);
     }
 
     /**
@@ -53,9 +51,7 @@ class UnsignedIntegerTest extends TestCase
      */
     public function testConstructWithOutOfRangeValues(int $value)
     {
-        new UnsignedInteger($value);
-
-        $this->fail();
+        new Minute($value);
     }
 
     /**
@@ -63,10 +59,21 @@ class UnsignedIntegerTest extends TestCase
      */
     public function testGetValue()
     {
-        $int             = 1;
-        $unsignedInteger = new UnsignedInteger($int);
+        $int    = 1;
+        $minute = new Minute($int);
 
-        $this->assertEquals($int, $unsignedInteger->getValue());
+        $this->assertEquals($int, $minute->getValue());
+    }
+
+    /**
+     * Test jsonSerialize method.
+     */
+    public function testJsonSerialize()
+    {
+        $int    = 1;
+        $minute = new Minute($int);
+
+        $this->assertEquals($int, $minute->jsonSerialize());
     }
 
     /**
@@ -113,7 +120,7 @@ class UnsignedIntegerTest extends TestCase
                 -1
             ],
             [
-                PHP_INT_MIN
+                60
             ],
         ];
     }

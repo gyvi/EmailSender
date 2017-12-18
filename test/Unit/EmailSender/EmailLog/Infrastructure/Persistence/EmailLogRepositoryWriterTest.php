@@ -100,7 +100,7 @@ class EmailLogRepositoryWriterTest extends TestCase
 
         $errorMessage = (new Mockery($this))->getStringLiteralMock($errorMessageString);
 
-        if ($emailStatus === EmailStatusList::STATUS_ERROR) {
+        if ($emailStatus === EmailStatusList::ERROR) {
             $emailLogId->expects($this->once())
                 ->method('getValue')
                 ->willReturn($errorMessageString);
@@ -127,7 +127,7 @@ class EmailLogRepositoryWriterTest extends TestCase
         $repositoryService = (new Mockery($this))->getRepositoryServiceMock($repository);
         $emailLogId        = (new Mockery($this))->getUnSignedIntegerMock(1);
         $errorMessage      = (new Mockery($this))->getStringLiteralMock('errorMessage');
-        $emailStatus       = (new Mockery($this))->getEmailStatusMock(EmailStatusList::STATUS_QUEUED);
+        $emailStatus       = (new Mockery($this))->getEmailStatusMock(EmailStatusList::QUEUED);
 
         $emailLogRepositoryWriter = new EmailLogRepositoryWriter($repositoryService);
 
@@ -143,15 +143,15 @@ class EmailLogRepositoryWriterTest extends TestCase
     {
         return [
             [
-                EmailStatusList::STATUS_QUEUED,
+                EmailStatusList::QUEUED,
                 'error',
             ],
             [
-                EmailStatusList::STATUS_SENT,
+                EmailStatusList::SENT,
                 'error',
             ],
             [
-                EmailStatusList::STATUS_ERROR,
+                EmailStatusList::ERROR,
                 'error',
             ],
         ];

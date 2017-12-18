@@ -20,10 +20,10 @@ class LoggerService implements ServiceInterface
     public function getService(): Closure
     {
         return function (): LoggerInterface {
-            $log = new Logger('EmailSenderLog');
-            $log->pushHandler(new ErrorLogHandler());
+            $logger = new Logger('EmailSenderLog');
+            $logger->pushHandler(new ErrorLogHandler());
 
-            return $log;
+            return $logger;
         };
     }
 }

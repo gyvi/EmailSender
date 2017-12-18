@@ -2,6 +2,7 @@
 
 namespace Test\Unit\EmailSender\Core\ValueObject;
 
+use EmailSender\Core\Catalog\EmailAddressPropertyNameList;
 use EmailSender\Core\ValueObject\EmailAddress;
 use PHPUnit\Framework\TestCase;
 use Test\Helper\EmailSender\Mockery;
@@ -52,9 +53,9 @@ class EmailAddressTest extends TestCase
         $address = $this->getAddressMock();
         $name    = $this->getNameMock();
 
-        $mailAddress = new EmailAddress($address, $name);
+        $emailAddress = new EmailAddress($address, $name);
 
-        $this->assertEquals($address, $mailAddress->getAddress());
+        $this->assertEquals($address, $emailAddress->getAddress());
     }
 
     /**
@@ -65,9 +66,9 @@ class EmailAddressTest extends TestCase
         $address = $this->getAddressMock();
         $name    = $this->getNameMock();
 
-        $mailAddress = new EmailAddress($address, $name);
+        $emailAddress = new EmailAddress($address, $name);
 
-        $this->assertEquals($name, $mailAddress->getName());
+        $this->assertEquals($name, $emailAddress->getName());
     }
 
     /**
@@ -76,9 +77,27 @@ class EmailAddressTest extends TestCase
     public function testGetNameWithNullValue()
     {
         $address     = $this->getAddressMock();
-        $mailAddress = new EmailAddress($address, null);
+        $emailAddress = new EmailAddress($address, null);
 
-        $this->assertNull($mailAddress->getName());
+        $this->assertNull($emailAddress->getName());
+    }
+
+    /**
+     * Test jsonSerialize method.
+     */
+    public function testJsonSerialize()
+    {
+        $address = $this->getAddressMock();
+        $name    = $this->getNameMock();
+
+        $expected = [
+            EmailAddressPropertyNameList::ADDRESS => $address,
+            EmailAddressPropertyNameList::NAME    => $name,
+        ];
+
+        $emailAddress = new EmailAddress($address, $name);
+
+        $this->assertEquals($expected, $emailAddress->jsonSerialize());
     }
 
     /**

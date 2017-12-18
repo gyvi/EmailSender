@@ -2,6 +2,7 @@
 
 namespace EmailSender\Core\Factory;
 
+use EmailSender\Core\Catalog\EmailAddressPropertyNameList;
 use EmailSender\Core\ValueObject\EmailAddress;
 use EmailSender\Core\Scalar\Application\Exception\ValueObjectException;
 use EmailSender\Core\ValueObject\Address;
@@ -18,6 +19,7 @@ class EmailAddressFactory
      * @param string $emailAddress
      *
      * @return \EmailSender\Core\ValueObject\EmailAddress
+     *
      * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
      */
     public function create(string $emailAddress): EmailAddress
@@ -39,5 +41,23 @@ class EmailAddressFactory
         }
 
         return new EmailAddress($address, $name);
+    }
+
+    /**
+     * @param array $emailAddressArray
+     *
+     * @return \EmailSender\Core\ValueObject\EmailAddress
+     *
+     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
+     */
+    public function createFromArray(array $emailAddressArray): EmailAddress
+    {
+        return new EmailAddress(
+            new Address($emailAddressArray[EmailAddressPropertyNameList::ADDRESS]),
+            (!empty($emailAddressArray[EmailAddressPropertyNameList::NAME])
+                ? new Name($emailAddressArray[EmailAddressPropertyNameList::NAME])
+                : null
+            )
+        );
     }
 }

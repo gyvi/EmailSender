@@ -62,7 +62,7 @@ class ComposedEmailRepositoryReader implements ComposedEmailRepositoryReaderInte
                 `composedEmailId` as `' . ComposedEmailPropertyNameList::COMPOSED_EMAIL_ID . '`,
                 `from`            as `' . ComposedEmailPropertyNameList::FROM . '`,
                 `recipients`      as `' . ComposedEmailPropertyNameList::RECIPIENTS . '`,
-                `email`           as `' . ComposedEmailPropertyNameList::EMAIL . '`,
+                `email`           as `' . ComposedEmailPropertyNameList::EMAIL . '`
             FROM
                 `composedEmail`
             WHERE

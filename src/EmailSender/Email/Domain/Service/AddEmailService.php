@@ -103,7 +103,7 @@ class AddEmailService
         } catch (EmailQueueException $e) {
             $this->emailLogService->setStatus(
                 $emailLog->getEmailLogId(),
-                new EmailStatus(EmailStatusList::STATUS_ERROR),
+                new EmailStatus(EmailStatusList::ERROR),
                 $e->getMessage()
             );
 
@@ -135,7 +135,7 @@ class AddEmailService
         } catch (ComposedEmailException $e) {
             $this->emailLogService->setStatus(
                 $emailLog->getEmailLogId(),
-                new EmailStatus(EmailStatusList::STATUS_ERROR),
+                new EmailStatus(EmailStatusList::ERROR),
                 $e->getMessage()
             );
 

@@ -155,11 +155,11 @@ class EmailService implements EmailServiceInterface
             $email = $addEmailService->add($postRequest);
 
             switch ($email->getEmailStatus()->getValue()) {
-                case EmailStatusList::STATUS_SENT:
+                case EmailStatusList::SENT:
                     $response = $response->withStatus(204);
 
                     break;
-                case EmailStatusList::STATUS_QUEUED:
+                case EmailStatusList::QUEUED:
                     $response = $response->withAddedHeader('Location', '/api/v1/emails/logs')
                                          ->withStatus(201);
 

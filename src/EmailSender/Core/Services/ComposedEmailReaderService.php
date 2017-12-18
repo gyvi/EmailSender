@@ -7,11 +7,11 @@ use Psr\Container\ContainerInterface;
 use PDO;
 
 /**
- * Class ComposedReaderService
+ * Class ComposedEmailReaderService
  *
  * @package EmailSender\Core
  */
-class ComposedReaderService implements ServiceInterface
+class ComposedEmailReaderService implements ServiceInterface
 {
     /**
      * @return \Closure

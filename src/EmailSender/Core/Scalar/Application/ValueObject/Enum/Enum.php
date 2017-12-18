@@ -10,7 +10,7 @@ use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
  *
  * @package EmailSender\Core\Scalar
  */
-class Enum extends StringLiteral
+abstract class Enum extends StringLiteral
 {
     /**
      * List of enabled values.

@@ -204,7 +204,7 @@ class ComposedEmailServiceTest extends TestCase
         $emailStatus = $composedEmailService->send($composedEmail);
 
         $this->assertInstanceOf(EmailStatus::class, $emailStatus);
-        $this->assertEquals(EmailStatusList::STATUS_SENT, $emailStatus->getValue());
+        $this->assertEquals(EmailStatusList::SENT, $emailStatus->getValue());
     }
 
     /**
@@ -301,7 +301,7 @@ class ComposedEmailServiceTest extends TestCase
         $emailStatus = $composedEmailService->sendById($composedEmailIdMock);
 
         $this->assertInstanceOf(EmailStatus::class, $emailStatus);
-        $this->assertEquals(EmailStatusList::STATUS_SENT, $emailStatus->getValue());
+        $this->assertEquals(EmailStatusList::SENT, $emailStatus->getValue());
     }
 
     /**

@@ -55,10 +55,7 @@ class DateTime implements ValueObjectInterface, JsonSerializable
      */
     public function getDateTime(): \DateTime
     {
-        return date_create_from_format(
-            'Y-m-d H:i:s',
-            sprintf('%s %s', $this->date->__toString(), $this->time->getValue())
-        );
+        return date_create_from_format('Y-m-d H:i:s', sprintf('%s %s', (string)$this->date, (string)$this->time));
     }
 
     /**
@@ -82,11 +79,7 @@ class DateTime implements ValueObjectInterface, JsonSerializable
      */
     public function __toString(): string
     {
-        return sprintf(
-            '%s %s',
-            $this->date->__toString(),
-            $this->time->__toString()
-        );
+        return sprintf('%s %s', (string)$this->date, (string)$this->time);
     }
 
     /**

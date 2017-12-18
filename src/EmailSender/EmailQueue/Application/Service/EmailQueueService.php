@@ -84,7 +84,7 @@ class EmailQueueService implements EmailQueueServiceInterface
             throw new EmailQueueException('Something went wrong with the queue.', 0, $e);
         }
 
-        return new EmailStatus(EmailStatusList::STATUS_QUEUED);
+        return new EmailStatus(EmailStatusList::QUEUED);
     }
 
     /**

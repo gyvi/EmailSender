@@ -3,9 +3,9 @@
 namespace EmailSender\Core\Services;
 
 use Closure;
-use EmailSender\EmailQueue\Infrastructure\Service\SMTPException;
 use Interop\Container\ContainerInterface;
 use SMTP;
+use EmailSender\ComposedEmail\Infrastructure\Service\SMTPException;
 
 /**
  * Class SmtpService

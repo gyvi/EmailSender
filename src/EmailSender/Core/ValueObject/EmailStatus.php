@@ -13,9 +13,9 @@ class EmailStatus extends Enum
      * @var array
      */
     protected $enabledValues = [
-        EmailStatusList::STATUS_ERROR,
-        EmailStatusList::STATUS_LOGGED,
-        EmailStatusList::STATUS_QUEUED,
-        EmailStatusList::STATUS_SENT,
+        EmailStatusList::ERROR,
+        EmailStatusList::LOGGED,
+        EmailStatusList::QUEUED,
+        EmailStatusList::SENT,
     ];
 }

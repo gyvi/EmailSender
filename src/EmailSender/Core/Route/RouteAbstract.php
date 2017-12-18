@@ -9,7 +9,7 @@ use Slim\App;
  *
  * @package EmailSender\Core
  */
-class RouteAbstract
+abstract class RouteAbstract
 {
     /**
      * @var \Slim\App
