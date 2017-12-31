@@ -9,13 +9,14 @@ use EmailSender\Core\ValueObject\Subject;
 use EmailSender\Core\Entity\Recipients;
 use EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime;
 use EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral;
+use JsonSerializable;
 
 /**
  * Class EmailLog
  *
  * @package EmailSender\EmailLog
  */
-class EmailLog
+class EmailLog implements JsonSerializable
 {
     /**
      * @var \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger
@@ -106,7 +107,7 @@ class EmailLog
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\Numeric\UnsignedInteger $emailLogId
      */
-    public function setEmailLogId(UnsignedInteger $emailLogId)
+    public function setEmailLogId(UnsignedInteger $emailLogId): void
     {
         $this->emailLogId = $emailLogId;
     }
@@ -154,7 +155,7 @@ class EmailLog
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime $logged
      */
-    public function setLogged(DateTime $logged)
+    public function setLogged(DateTime $logged): void
     {
         $this->logged = $logged;
     }
@@ -170,7 +171,7 @@ class EmailLog
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime $queued
      */
-    public function setQueued(DateTime $queued)
+    public function setQueued(DateTime $queued): void
     {
         $this->queued = $queued;
     }
@@ -186,7 +187,7 @@ class EmailLog
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\DateTime\DateTime $sent
      */
-    public function setSent(DateTime $sent)
+    public function setSent(DateTime $sent): void
     {
         $this->sent = $sent;
     }
@@ -210,7 +211,7 @@ class EmailLog
     /**
      * @param \EmailSender\Core\ValueObject\EmailStatus $status
      */
-    public function setStatus(EmailStatus $status)
+    public function setStatus(EmailStatus $status): void
     {
         $this->status = $status;
     }
@@ -226,7 +227,7 @@ class EmailLog
     /**
      * @param \EmailSender\Core\Scalar\Application\ValueObject\String\StringLiteral $errorMessage
      */
-    public function setErrorMessage(StringLiteral $errorMessage)
+    public function setErrorMessage(StringLiteral $errorMessage): void
     {
         $this->errorMessage = $errorMessage;
     }

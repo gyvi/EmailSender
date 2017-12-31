@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         xmlHttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
+                console.log(this);
                 var result = JSON.parse(this.responseText);
                 showResult(result);
             } else if (this.readyState === 4 && this.status === 400) {
@@ -98,11 +99,11 @@ document.addEventListener("DOMContentLoaded", function() {
         delay.innerText           = email.delay;
         error.innerText           = email.errorMessage;
 
-        if (email.status === -1) {
+        if (email.status === "-1") {
             row.classList.add('error');
-        } else if (email.status === 1) {
+        } else if (email.status === "1") {
             row.classList.add('queued');
-        } else if (email.status === 2) {
+        } else if (email.status === "2") {
             row.classList.add('sent');
         } else {
             row.classList.add('stored');
