@@ -24,12 +24,10 @@ class EmailController extends AbstractController
      * @param array                                    $getRequest
      *
      * @return \Psr\Http\Message\MessageInterface
-     * @throws \Error
-     * @throws \InvalidArgumentException
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \RuntimeException
-     * @throws \phpmailerException
      */
     public function add(
         ServerRequestInterface $request,

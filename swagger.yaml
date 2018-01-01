@@ -69,24 +69,22 @@ paths:
           required: false
           type: integer
       responses:
-        '200':
-          description: Successful queue add
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/StatusResponse'
+        '201':
+          description: Email added and sent successfully.
+        '204':
+          description: Email added succesfully to the queue.
         '400':
-          description: Bad request
+          description: Invalid request.
           schema:
             type: array
             items:
-              $ref: '#/definitions/StatusResponseError'
+              $ref: '#/definitions/InvalidRequestResponse'
         '500':
-          description: 'Errors happened during the queue insert (database, etc...).'
+          description: 'Errors happened during the email adding (database, queue, etc...).'
           schema:
             type: array
             items:
-              $ref: '#/definitions/StatusResponseError'
+              $ref: '#/definitions/UnexceptedErrorResponse'
   /api/v1/emails/logs:
     get:
       summary: List email logs
@@ -129,17 +127,17 @@ paths:
             items:
               $ref: '#/definitions/LogResponse'
         '400':
-          description: Bad request
+          description: Invalid request.
           schema:
             type: array
             items:
-              $ref: '#/definitions/StatusResponseError'
+              $ref: '#/definitions/InvalidRequestResponse'
         '500':
           description: 'Errors happened during the logs reading (database, etc...).'
           schema:
             type: array
             items:
-              $ref: '#/definitions/StatusResponseError'
+              $ref: '#/definitions/UnexceptedErrorResponse'
   /emails/list:
     get:
       summary: List logs html
@@ -151,26 +149,24 @@ paths:
         '200':
           description: Email log lister viewer.
 definitions:
-  StatusResponse:
+  InvalidRequestResponse:
     type: object
     properties:
-      status:
-        type: integer
-        format: int32
-        example: 0
-      statusMessage:
+      message:
         type: string
-        example: Queued.
-  StatusResponseError:
+        example: Invalid request.
+      description:
+        type: string
+        example: 'Not allowed property: wrongProperty'
+  UnexceptedErrorResponse:
     type: object
     properties:
-      status:
-        type: integer
-        format: int32
-        example: -1
-      statusMessage:
+      message:
         type: string
-        example: An unexpected error occurred.
+        example: Something went wrong when adding a new email.
+      description:
+        type: string
+        example: Something went wrong when try to store the composed email.
   LogResponse:
     type: object
     properties:

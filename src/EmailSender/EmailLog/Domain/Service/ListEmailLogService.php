@@ -3,8 +3,10 @@
 namespace EmailSender\EmailLog\Domain\Service;
 
 use EmailSender\EmailLog\Application\Collection\EmailLogCollection;
+use EmailSender\EmailLog\Application\Exception\EmailLogException;
 use EmailSender\EmailLog\Domain\Contract\EmailLogRepositoryReaderInterface;
 use EmailSender\EmailLog\Domain\Factory\ListEmailLogRequestFactory;
+use Throwable;
 
 /**
  * Class ListEmailLogService
@@ -42,12 +44,19 @@ class ListEmailLogService
      *
      * @return \EmailSender\EmailLog\Application\Collection\EmailLogCollection
      *
+     * @throws \EmailSender\EmailLog\Application\Exception\EmailLogException
      * @throws \InvalidArgumentException
      */
     public function list(array $request): EmailLogCollection
     {
         $listEmailLogsRequest = $this->listEmailLogRequestFactory->create($request);
 
-        return $this->repositoryReader->list($listEmailLogsRequest);
+        try {
+            $emailLogCollection = $this->repositoryReader->list($listEmailLogsRequest);
+        } catch (Throwable $e) {
+            throw new EmailLogException('Something went wrong when try to read from the database.', 0, $e);
+        }
+
+        return $emailLogCollection;
     }
 }

@@ -24,8 +24,7 @@ class EmailLogController extends AbstractController
      * @param array                                    $getRequest
      *
      * @return \Psr\Http\Message\MessageInterface
-     * @throws \EmailSender\Core\Scalar\Application\Exception\ValueObjectException
-     * @throws \InvalidArgumentException
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \RuntimeException
@@ -79,6 +78,7 @@ class EmailLogController extends AbstractController
      * @param array                                    $getRequest
      *
      * @return \Psr\Http\Message\MessageInterface
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
