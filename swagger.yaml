@@ -170,11 +170,7 @@ definitions:
   LogResponse:
     type: object
     properties:
-      status:
-        type: integer
-        format: int32
-        example: 0
-      messages:
+      data:
         type: array
         items:
           $ref: '#/definitions/MessageLog'
